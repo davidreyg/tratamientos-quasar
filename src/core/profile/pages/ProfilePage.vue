@@ -10,18 +10,18 @@
               icon="fas fa-user-gear"
               :label="$q.screen.gt.sm ? 'Datos del Usuario' : undefined"
             />
-            <q-tab
+            <!-- <q-tab
               no-caps
               name="personal-data"
               icon="fas fa-file-lines"
               :label="$q.screen.gt.sm ? 'Datos Personales' : undefined"
-            />
-            <q-tab
+            /> -->
+            <!-- <q-tab
               no-caps
               name="gol-data"
               icon="fas fa-people-roof"
               :label="$q.screen.gt.sm ? 'Gol' : undefined"
-            />
+            /> -->
           </q-tabs>
         </template>
 
@@ -37,9 +37,9 @@
             <q-tab-panel name="user-data">
               <user-information-tab />
             </q-tab-panel>
-            <q-tab-panel name="personal-data">
+            <!-- <q-tab-panel name="personal-data">
               <personal-information-tab />
-            </q-tab-panel>
+            </q-tab-panel> -->
           </q-tab-panels>
         </template>
       </q-splitter>
@@ -50,7 +50,6 @@
 <script setup lang="ts">
 import BasePage from 'shared/components/base/BasePage.vue';
 import { ref } from 'vue';
-import PersonalInformationTab from '../components/tabs/PersonalInformationTab.vue';
 import UserInformationTab from '../components/tabs/UserInformationTab.vue';
 const tab = ref('user-data');
 const splitterModel = ref(17);

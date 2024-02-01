@@ -1,13 +1,13 @@
 import { ApiatoError } from 'shared/utils';
 import { useMutation } from 'vue-query';
-import { UpdateUserDataRequest } from '../requests';
+import { UpdatePasswordRequest } from '../requests';
 import { UpdateUserDataTask } from '../tasks';
 
-export function useUpdateUserInfoMutation() {
+export function useUpdatePasswordMutation() {
   return useMutation<
     unknown,
-    ApiatoError<UpdateUserDataRequest>,
-    UpdateUserDataRequest,
+    ApiatoError<UpdatePasswordRequest>,
+    UpdatePasswordRequest,
     unknown
   >((data) => UpdateUserDataTask.run(data));
 }

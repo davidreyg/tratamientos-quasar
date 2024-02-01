@@ -1,10 +1,13 @@
 import { sttpClient } from 'shared/api';
-import { UpdateUserDataRequest } from '../requests';
+import { UpdatePasswordRequest } from '../requests';
 
 export class ProfileApi {
   private static _api = sttpClient;
 
-  static async updatePassword(data: UpdateUserDataRequest): Promise<void> {
-    await ProfileApi._api.put('/profile/update-user-data', data);
+  static async updatePassword(
+    data: UpdatePasswordRequest,
+    user_id: string
+  ): Promise<void> {
+    await ProfileApi._api.patch(`/users/${user_id}/password`, data);
   }
 }

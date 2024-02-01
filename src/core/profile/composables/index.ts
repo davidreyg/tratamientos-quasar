@@ -1,2 +1,2 @@
 export * from './confirmCurrentPasswordMutation';
-export * from './updateUserInfoMutation';
+export * from './updatePasswordMutation';

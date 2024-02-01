@@ -55,8 +55,8 @@
 
 <script setup lang="ts">
 import { useAuthStore } from 'core/auth/stores';
-import { useUpdateUserInfoMutation } from 'core/profile/composables';
-import { UpdateUserDataRequest } from 'core/profile/requests';
+import { useUpdatePasswordMutation } from 'core/profile/composables';
+import { UpdatePasswordRequest } from 'core/profile/requests';
 import BaseForm from 'shared/components/base/BaseForm.vue';
 import BaseInput from 'shared/components/base/BaseInput.vue';
 import { NotifyUtils } from 'shared/utils';
@@ -76,14 +76,14 @@ const validationSchema = object().shape({
     .label('Contraseña'),
 });
 const { handleSubmit, setErrors, resetForm, meta } =
-  useForm<UpdateUserDataRequest>({
+  useForm<UpdatePasswordRequest>({
     validationSchema,
     initialValues: {
       name: user?.name,
     },
   });
 
-const { mutate } = useUpdateUserInfoMutation();
+const { mutate } = useUpdatePasswordMutation();
 const isModalOpen = ref(false);
 const onSubmit = handleSubmit(
   async (values) => {

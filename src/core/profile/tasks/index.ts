@@ -1,1 +1,1 @@
-export * from './UpdateUserDataTask';
+export * from './UpdatePasswordTask';

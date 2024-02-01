@@ -1,1 +1,1 @@
-export * from './UpdateUserDataRequest';
+export * from './UpdatePasswordRequest';
