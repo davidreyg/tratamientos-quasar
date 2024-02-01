@@ -1,0 +1,25 @@
+{
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": true,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "always",
+    "source.organizeImports": "always"
+  },
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "vue"],
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "cSpell.words": [
+    "Apiato",
+    "Capellan",
+    "composables",
+    "gols",
+    "Luxon",
+    "Modulos",
+    "pinia",
+    "sttp",
+    "Swal",
+    "vueuse"
+  ],
+  "conventionalCommits.scopes": ["conventionalCommits"]
+}
