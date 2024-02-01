@@ -1,3 +1,4 @@
+import { Establecimiento } from 'core/establecimiento';
 import { Role } from 'core/role';
 import { User } from 'core/user';
 import { defineStore } from 'pinia';
@@ -8,11 +9,11 @@ export const useAuthStore = defineStore('auth', () => {
   // const person = ref<Person>();
   // const modulos = ref<Modulo[]>();
   const roles = ref<Role[]>();
-  // const privileges = ref<Privilege[]>();
+  const establecimiento = ref<Establecimiento>();
 
   function $reset() {
     user.value = undefined;
-    // modulos.value = undefined;
+    establecimiento.value = undefined;
     roles.value = undefined;
     // person.value = undefined;
   }
@@ -25,9 +26,9 @@ export const useAuthStore = defineStore('auth', () => {
   //   modulos.value = data;
   // }
 
-  // function setPrivileges(data: Privilege[]) {
-  //   privileges.value = data;
-  // }
+  function setEstablecimiento(data: Establecimiento) {
+    establecimiento.value = data;
+  }
 
   function setRoles(data: Role[]) {
     roles.value = data;
@@ -42,12 +43,12 @@ export const useAuthStore = defineStore('auth', () => {
     // modulos,
     roles,
     // person,
-    // privileges,
+    establecimiento,
     $reset,
     setUser,
     setRoles,
     // setModulos,
     // setPerson,
-    // setPrivileges,
+    setEstablecimiento,
   };
 });
