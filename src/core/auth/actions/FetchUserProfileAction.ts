@@ -11,6 +11,7 @@ export class FetchUserProfileAction {
       StoreUserProfileInStore.run({
         user: user.user.data,
         roles: user.roles.data,
+        establecimiento: user.establecimiento.data,
       });
       APP_LOADING.value = false;
     } catch (error) {

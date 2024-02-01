@@ -1,15 +1,24 @@
+import { Establecimiento } from 'core/establecimiento';
 import { Role } from 'core/role';
 import { User } from 'core/user';
 import { useAuthStore } from '../stores';
 
 export class StoreUserProfileInStore {
-  static run({ user, roles }: { user: User; roles: Role[] }): void {
-    console.log('Store user in AUTH STORE TASK...');
+  static run({
+    user,
+    roles,
+    establecimiento,
+  }: {
+    user: User;
+    roles: Role[];
+    establecimiento: Establecimiento;
+  }): void {
+    console.log('Store user in AUTH STO||RE TASK...');
     try {
-      const { setUser, setRoles } = useAuthStore();
+      const { setUser, setRoles, setEstablecimiento } = useAuthStore();
       setUser(user);
       setRoles(roles);
-      // setModulos(modulos);
+      setEstablecimiento(establecimiento);
       // setPerson(person);
       // setPrivileges(privileges);
     } catch (error) {
