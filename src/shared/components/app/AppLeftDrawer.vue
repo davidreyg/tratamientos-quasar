@@ -3,28 +3,20 @@
     <!-- drawer content -->
 
     <q-scroll-area class="scroll-area">
-      <!-- <q-list padding>
+      <q-list padding>
         <q-expansion-item
-          v-for="(modulo, index) in modulos"
-          :key="index"
           clickable
-          :icon="modulo.icon"
-          :label="modulo.name"
+          icon="fab fa-apple"
+          label="Gestión de Diagnosticos"
         >
-          <q-item
-            v-for="(item, i) in privileges?.filter(
-              (p) => p.modulo_id === modulo.id
-            )"
-            :key="i"
-            :to="item.route"
-          >
+          <q-item>
             <q-item-section avatar>
-              <q-icon :name="item.icon" />
+              <q-icon name="fab fa-500px" />
             </q-item-section>
-            <q-item-section>{{ item.name }}</q-item-section>
+            <q-item-section>Registrar Diagnóstico</q-item-section>
           </q-item>
         </q-expansion-item>
-      </q-list> -->
+      </q-list>
     </q-scroll-area>
     <q-img
       class="absolute-top"
@@ -38,7 +30,8 @@
         <div class="text-weight-bold">
           {{ user?.name }}
         </div>
-        <!-- <div>{{ person?.email }}</div> -->
+        <div>Establecimiento: {{ establecimiento?.nombre }}</div>
+        <div>RIS: {{ establecimiento?.ris }}</div>
       </div>
     </q-img>
   </q-drawer>
@@ -50,7 +43,7 @@ import { storeToRefs } from 'pinia';
 defineProps({
   leftDrawer: { required: true, type: Boolean },
 });
-const { user } = storeToRefs(useAuthStore());
+const { user, establecimiento } = storeToRefs(useAuthStore());
 </script>
 <style scoped>
 .scroll-area {

@@ -38,6 +38,9 @@
                   <q-item-label caption>
                     {{ roles![0].display_name }}
                   </q-item-label>
+                  <q-item-label caption>
+                    RIS: {{ establecimiento?.ris }}
+                  </q-item-label>
                 </q-item-section>
               </q-item>
             </q-card-section>
@@ -70,7 +73,7 @@ import { storeToRefs } from 'pinia';
 const emit = defineEmits<{
   (e: 'toggleDrawer'): void;
 }>();
-const { roles, user } = storeToRefs(useAuthStore());
+const { roles, user, establecimiento } = storeToRefs(useAuthStore());
 const logout = async () => {
   await LogoutAction.run();
 };
