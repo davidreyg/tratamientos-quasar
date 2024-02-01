@@ -16,24 +16,19 @@ const routes: RouteRecordRaw[] = [
         component: () => import('core/profile/pages/ProfilePage.vue'),
       },
       {
-        path: 'roles',
-        name: 'roles',
+        path: 'diagnosticos',
+        name: 'diagnosticos',
         children: [
+          // {
+          //   path: '',
+          //   name: 'diagnosticos.index',
+          //   component: () => import('core/role/pages/RoleIndex.vue'),
+          // },
           {
-            path: '',
-            name: 'roles.index',
-            component: () => import('core/role/pages/RoleIndex.vue'),
-          },
-          {
-            path: 'create',
-            name: 'roles.create',
-            component: () => import('core/role/pages/RoleCreate.vue'),
-          },
-          {
-            path: ':id/permissions',
-            name: 'roles.permissions',
-            component: () => import('core/role/pages/RolePermissionPage.vue'),
-            props: true,
+            path: 'registrar-diagnostico',
+            name: 'diagnosticos.create',
+            component: () =>
+              import('core/diagnostico/pages/DiagnosticoCreate.vue'),
           },
         ],
       },
