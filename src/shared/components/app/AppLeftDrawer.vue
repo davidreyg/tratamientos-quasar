@@ -9,7 +9,7 @@
           icon="fab fa-apple"
           label="Gestión de Diagnosticos"
         >
-          <q-item :to="{ name: 'diagnosticos.create' }">
+          <q-item :to="{ name: 'diagnosticos.index' }">
             <q-item-section avatar>
               <q-icon name="fab fa-500px" />
             </q-item-section>

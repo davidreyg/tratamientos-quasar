@@ -43,7 +43,7 @@ const {
   // handleChange,
 } = useField<string | number | boolean | Date>(name, undefined, {
   type: 'radio',
-  initialValue: props.options[0].value,
+  // initialValue: props.options[0].value,
 });
 </script>
 

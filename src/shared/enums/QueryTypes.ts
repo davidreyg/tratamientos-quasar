@@ -6,4 +6,6 @@ export const enum QueryTypes {
   PERIODS_ALL = 'periods-all',
   GOL_ALL = 'gol-all',
   ACADEMIC_ENTITY_ALL = 'academic-entity-all',
+  TIPO_DOCUMENTO_ALL = 'tipo-documento-all',
+  PERSONA_ALL = 'personas',
 }

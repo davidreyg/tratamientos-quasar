@@ -19,16 +19,17 @@ const routes: RouteRecordRaw[] = [
         path: 'diagnosticos',
         name: 'diagnosticos',
         children: [
-          // {
-          //   path: '',
-          //   name: 'diagnosticos.index',
-          //   component: () => import('core/role/pages/RoleIndex.vue'),
-          // },
           {
-            path: 'registrar-diagnostico',
-            name: 'diagnosticos.create',
+            path: '',
+            name: 'diagnosticos.index',
             component: () =>
               import('core/diagnostico/pages/DiagnosticoCreate.vue'),
+          },
+          {
+            path: 'editar-diagnostico',
+            name: 'diagnosticos.create',
+            component: () =>
+              import('core/diagnostico/pages/DiagnosticoEdit.vue'),
           },
         ],
       },

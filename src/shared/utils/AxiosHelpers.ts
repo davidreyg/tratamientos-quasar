@@ -28,6 +28,7 @@ export interface Query {
   orderBy?: string;
   sortedBy?: 'asc' | 'desc';
   search?: string;
+  searchJoin?: string;
   include?: string;
 }
 export interface ApiatoResponse<T> {
