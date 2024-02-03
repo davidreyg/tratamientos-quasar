@@ -1,14 +1,179 @@
 <template>
-  <base-page title="Registrar nuevo Diagnóstico" :loading="false">
+  <base-page title="Registrar Atención" :loading="false">
     <template #content>
-      CONTENIDO
-      <!-- <roles-table /> -->
+      <div class="row q-col-gutter-md">
+        <q-form
+          class="col-12 row q-col-gutter-lg items-start justify-center"
+          @submit="onSubmit"
+        >
+          <base-select
+            :options="arr_tipo_documentos"
+            name="tipo_documento_id"
+            class="col-xs-12 col-sm-4"
+            label="Tipo de Documento"
+            :loading="false"
+            required
+          />
+          <base-input
+            name="numero_documento"
+            label="N° de Documento"
+            class="col-xs-12 col-sm-4"
+            required
+          />
+          <q-card-actions class="col-auto justify-center">
+            <q-btn
+              color="primary"
+              outline
+              size="lg"
+              icon="search"
+              label="Buscar"
+              no-caps
+              type="submit"
+              :loading="isLoading"
+            />
+          </q-card-actions>
+        </q-form>
+        <div class="col-12">
+          <q-expansion-item
+            icon="fas fa-person"
+            label="Datos del Paciente"
+            caption="Editar / Crear"
+          >
+            <q-card class="my-card">
+              <q-card-section v-if="!isLoading">
+                <persona-edit-form
+                  v-if="persona"
+                  :persona="persona"
+                  @cancel="onCancelPersonaForm"
+                />
+                <persona-create-form
+                  v-else-if="!persona && isPacienteFormVisible"
+                  @cancel="onCancelPersonaForm"
+                />
+                <div
+                  v-if="!persona && !isPacienteFormVisible"
+                  class="col-12 row justify-center"
+                >
+                  <div class="col-auto">
+                    <q-icon name="fas fa-face-frown" size="xl" />
+                  </div>
+                  <div class="col-12 text-center text-h6">
+                    Lo sentimos. ¡No se encontró ningun paciente!
+                  </div>
+                  <q-btn
+                    class="q-mt-lg"
+                    color="primary"
+                    icon="fas fa-plus"
+                    no-caps
+                    label="Agregar nuevo paciente"
+                    outline
+                    @click="isPacienteFormVisible = !isPacienteFormVisible"
+                  />
+                </div>
+              </q-card-section>
+            </q-card>
+          </q-expansion-item>
+          <q-expansion-item
+            v-if="persona"
+            icon="fas fa-folder-open"
+            label="Diagnósticos"
+            caption="Solo 1"
+          >
+            <q-card class="my-card">
+              <q-card-section
+                v-if="
+                  persona.diagnosticos.data.length === 0 &&
+                  !isDiagnosticoFormVisible
+                "
+              >
+                <div class="col-12 row justify-center">
+                  <div class="col-auto">
+                    <q-icon name="fas fa-face-frown" size="xl" />
+                  </div>
+                  <div class="col-12 text-center text-h6">
+                    Lo sentimos. ¡No se encontró ningun diagnóstico!. Porfavor
+                    registre uno para empezar :)
+                  </div>
+                  <q-btn
+                    class="q-mt-lg"
+                    color="primary"
+                    icon="fas fa-plus"
+                    no-caps
+                    label="Agregar nuevo diagnostico"
+                    outline
+                    @click="
+                      isDiagnosticoFormVisible = !isDiagnosticoFormVisible
+                    "
+                  />
+                </div>
+              </q-card-section>
+              <q-card-section v-if="isDiagnosticoFormVisible">
+                <diagnostico-create-form
+                  :paciente-id="persona.id"
+                  @cancel="isDiagnosticoFormVisible = false"
+                />
+              </q-card-section>
+            </q-card>
+          </q-expansion-item>
+        </div>
+      </div>
     </template>
   </base-page>
 </template>
 
 <script setup lang="ts">
+import {
+  usePersonaByNumeroDocumentoQuery,
+  useTipoDocumentoFetchAllQuery,
+} from 'core/persona';
+import PersonaCreateForm from 'core/persona/components/PersonaCreateForm.vue';
+import PersonaEditForm from 'core/persona/components/PersonaEditForm.vue';
+import BaseInput from 'shared/components/base/BaseInput.vue';
 import BasePage from 'shared/components/base/BasePage.vue';
+import BaseSelect from 'shared/components/base/BaseSelect.vue';
+import { useForm } from 'vee-validate';
+import { computed, ref } from 'vue';
+import { number, object } from 'yup';
+import DiagnosticoCreateForm from '../components/DiagnosticoCreateForm.vue';
+
+const { data: tipo_documentos } = useTipoDocumentoFetchAllQuery();
+const isPacienteFormVisible = ref(false);
+const isDiagnosticoFormVisible = ref(false);
+const arr_tipo_documentos = computed(() => {
+  if (tipo_documentos.value) {
+    return tipo_documentos.value.map((val) => {
+      return {
+        label: val.nombre,
+        value: val.id,
+      };
+    });
+  }
+  return [];
+});
+const validationSchema = object().shape({
+  numero_documento: number()
+    .typeError('Debe ingresar un número')
+    .min(8)
+    .required()
+    .label('Número de Documento'),
+  tipo_documento_id: number().required().label('Tipo de Documento'),
+});
+const { handleSubmit, resetForm } = useForm<{ numero_documento: string }>({
+  validationSchema,
+});
+const { fetch, persona, isLoading } = usePersonaByNumeroDocumentoQuery();
+const onSubmit = handleSubmit(async (values) => {
+  isPacienteFormVisible.value = false;
+  isDiagnosticoFormVisible.value = false;
+  await fetch(values.numero_documento);
+});
+
+const onCancelPersonaForm = () => {
+  isPacienteFormVisible.value = false;
+  isDiagnosticoFormVisible.value = false;
+  persona.value = undefined;
+  resetForm();
+};
 </script>
 
 <style scoped></style>
