@@ -1,5 +1,5 @@
 <template>
-  <base-form :loading="isLoading" @submit="onSubmit">
+  <base-form :loading="isLoading" @submit="onSubmit" @cancel="$emit('cancel')">
     <base-input
       name="nombres"
       label="Nombres"
@@ -84,6 +84,11 @@ import {
   useTipoDocumentoFetchAllQuery,
 } from '../composables';
 import { PersonaRequest } from '../requests';
+
+defineEmits<{
+  // (e: 'submit'): void;
+  (e: 'cancel'): void;
+}>();
 
 const { data: tipo_documentos } = useTipoDocumentoFetchAllQuery();
 

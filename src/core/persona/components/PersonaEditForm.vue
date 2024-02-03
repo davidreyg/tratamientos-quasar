@@ -1,5 +1,5 @@
 <template>
-  <base-form :loading="isLoading" @submit="onSubmit">
+  <base-form :loading="isLoading" @submit="onSubmit" @cancel="$emit('cancel')">
     <base-input
       :outlined="false"
       :borderless="true"
@@ -27,12 +27,11 @@
       class="col-xs-12 col-sm-4"
       required
     />
-    <base-select
+    <base-input
       :outlined="false"
       :borderless="true"
       readonly
-      :options="arr_tipo_documentos"
-      name="tipo_documento_id"
+      name="tipo_documento"
       class="col-xs-12 col-sm-4"
       label="Tipo de Documento"
       :loading="false"
@@ -83,18 +82,14 @@
       class="col-xs-12 col-sm-4"
       required
     />
-    <base-radio
+    <base-input
       :outlined="false"
       :borderless="true"
-      disable
-      required
-      :options="[
-        { label: 'Masculino', value: 'Masculino' },
-        { label: 'Femenino', value: 'Femenino' },
-      ]"
+      readonly
       name="sexo"
       label="Sexo"
-      class="col-xs-12 col-sm-8"
+      class="col-xs-12 col-sm-4"
+      required
     />
   </base-form>
 </template>
@@ -102,16 +97,11 @@
 <script setup lang="ts">
 import BaseForm from 'shared/components/base/BaseForm.vue';
 import BaseInput from 'shared/components/base/BaseInput.vue';
-import BaseRadio from 'shared/components/base/BaseRadio.vue';
-import BaseSelect from 'shared/components/base/BaseSelect.vue';
 import { NotifyUtils } from 'shared/utils';
 import { useForm } from 'vee-validate';
-import { PropType, computed } from 'vue';
+import { PropType } from 'vue';
 import { number, object, string } from 'yup';
-import {
-  usePacienteUpdateMutation,
-  useTipoDocumentoFetchAllQuery,
-} from '../composables';
+import { usePacienteUpdateMutation } from '../composables';
 import { Persona } from '../models';
 import { PersonaRequest } from '../requests';
 const props = defineProps({
@@ -121,19 +111,11 @@ const props = defineProps({
   },
 });
 
-const { data: tipo_documentos } = useTipoDocumentoFetchAllQuery();
+defineEmits<{
+  // (e: 'submit'): void;
+  (e: 'cancel'): void;
+}>();
 
-const arr_tipo_documentos = computed(() => {
-  if (tipo_documentos.value) {
-    return tipo_documentos.value.map((val) => {
-      return {
-        label: val.nombre,
-        value: val.id,
-      };
-    });
-  }
-  return [];
-});
 const validationSchema = object().shape({
   nombres: string().trim().required().label('Nombres'),
   apellido_paterno: string().trim().required().label('Apellido Paterno'),
