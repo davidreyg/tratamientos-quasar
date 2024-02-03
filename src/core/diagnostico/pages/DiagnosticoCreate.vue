@@ -49,6 +49,7 @@
                 <persona-create-form
                   v-else-if="!persona && isPacienteFormVisible"
                   @cancel="onCancelPersonaForm"
+                  @submit="onSubmitPersonaCreateForm"
                 />
                 <div
                   v-if="!persona && !isPacienteFormVisible"
@@ -158,7 +159,7 @@ const validationSchema = object().shape({
     .label('Número de Documento'),
   tipo_documento_id: number().required().label('Tipo de Documento'),
 });
-const { handleSubmit, resetForm } = useForm<{ numero_documento: string }>({
+const { handleSubmit, resetForm } = useForm<{ numero_documento: number }>({
   validationSchema,
 });
 const { fetch, persona, isLoading } = usePersonaByNumeroDocumentoQuery();
@@ -173,6 +174,10 @@ const onCancelPersonaForm = () => {
   isDiagnosticoFormVisible.value = false;
   persona.value = undefined;
   resetForm();
+};
+const onSubmitPersonaCreateForm = async (numero_documento: number) => {
+  onCancelPersonaForm();
+  await fetch(numero_documento);
 };
 </script>
 

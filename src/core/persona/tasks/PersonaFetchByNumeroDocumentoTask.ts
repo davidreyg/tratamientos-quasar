@@ -3,7 +3,7 @@ import { PersonaApi } from '../api';
 import { Persona } from '../models';
 
 export class PersonaFetchByNumeroDocumentoTask {
-  static async run(numero_documento: string): Promise<Persona> {
+  static async run(numero_documento: number): Promise<Persona> {
     try {
       const response = await PersonaApi.fetchByNumeroDocumento(
         numero_documento

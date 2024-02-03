@@ -85,8 +85,8 @@ import {
 } from '../composables';
 import { PersonaRequest } from '../requests';
 
-defineEmits<{
-  // (e: 'submit'): void;
+const emit = defineEmits<{
+  (e: 'submit', numero_documento: number): void;
   (e: 'cancel'): void;
 }>();
 
@@ -145,11 +145,10 @@ const { handleSubmit, setFieldValue, setErrors } = useForm<PersonaRequest>({
 const { isLoading, mutate } = usePacienteCreateMutation();
 setFieldValue('tipo_persona_id', 2);
 const onSubmit = handleSubmit(async (values) => {
-  // Seteamos tipo persona a Paciente
   mutate(values, {
     onSuccess: () => {
-      NotifyUtils.success();
-      // emit('submit');
+      NotifyUtils.success('Paciente registrado correctamente.');
+      emit('submit', values.numero_documento);
     },
     onError: (err) => {
       setErrors(err.data.errors);

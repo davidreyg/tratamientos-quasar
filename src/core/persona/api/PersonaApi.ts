@@ -6,7 +6,7 @@ export class PersonaApi {
   private static _api = sttpClient;
   private static _endpoint = '/pacientes';
 
-  static fetchByNumeroDocumento(numero_documento: string) {
+  static fetchByNumeroDocumento(numero_documento: number) {
     return PersonaApi._api.get<Persona[]>(`${PersonaApi._endpoint}`, {
       search: `numero_documento:${numero_documento}`,
       searchJoin: 'and',

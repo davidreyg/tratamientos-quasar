@@ -5,7 +5,7 @@ import { PersonaFetchByNumeroDocumentoTask } from '../tasks/PersonaFetchByNumero
 export function usePersonaByNumeroDocumentoQuery() {
   const persona = ref<Persona>();
   const isLoading = ref(false);
-  const fetch = async (numero_documento: string) => {
+  const fetch = async (numero_documento: number) => {
     isLoading.value = true;
     persona.value = undefined;
     try {
