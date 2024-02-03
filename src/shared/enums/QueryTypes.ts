@@ -8,4 +8,5 @@ export const enum QueryTypes {
   ACADEMIC_ENTITY_ALL = 'academic-entity-all',
   TIPO_DOCUMENTO_ALL = 'tipo-documento-all',
   PERSONA_ALL = 'personas',
+  FINANCIAMIENTO_ALL = 'financiamiento',
 }

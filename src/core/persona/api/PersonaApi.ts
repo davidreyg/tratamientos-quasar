@@ -13,6 +13,10 @@ export class PersonaApi {
     });
   }
 
+  static fetchMedicos() {
+    return PersonaApi._api.get<Persona[]>('/medicos');
+  }
+
   static async create(data: PersonaRequest): Promise<void> {
     await PersonaApi._api.post('/personas', data);
   }
