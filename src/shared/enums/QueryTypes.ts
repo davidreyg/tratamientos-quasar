@@ -9,4 +9,6 @@ export const enum QueryTypes {
   TIPO_DOCUMENTO_ALL = 'tipo-documento-all',
   PERSONA_ALL = 'personas',
   FINANCIAMIENTO_ALL = 'financiamiento',
+  ENFERMEDAD_ALL = 'enfermedades',
+  DIAGNOSTICO_ALL = 'diagnosticos',
 }

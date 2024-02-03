@@ -18,6 +18,22 @@ export class NotifyUtils {
       rtl: false,
     });
   }
+  static warn(message = 'Exito!') {
+    toast.warning(message, {
+      position: POSITION.TOP_RIGHT,
+      timeout: 3000,
+      closeOnClick: true,
+      pauseOnFocusLoss: true,
+      pauseOnHover: true,
+      draggable: true,
+      draggablePercent: 0.6,
+      showCloseButtonOnHover: true,
+      hideProgressBar: false,
+      closeButton: 'button',
+      icon: true,
+      rtl: false,
+    });
+  }
 
   static error(message: string) {
     toast.error(message, {

@@ -25,12 +25,12 @@ const routes: RouteRecordRaw[] = [
             component: () =>
               import('core/diagnostico/pages/DiagnosticoCreate.vue'),
           },
-          {
-            path: 'editar-diagnostico',
-            name: 'diagnosticos.create',
-            component: () =>
-              import('core/diagnostico/pages/DiagnosticoEdit.vue'),
-          },
+          // {
+          //   path: 'editar-diagnostico',
+          //   name: 'diagnosticos.create',
+          //   component: () =>
+          //     import('core/diagnostico/pages/DiagnosticoEdit.vue'),
+          // },
         ],
       },
     ],
