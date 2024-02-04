@@ -32,12 +32,13 @@
       class="col-xs-12 col-sm-4"
       required
     />
-    <base-input
-      name="fecha_nacimiento"
-      label="Fecha de Nacimiento"
-      class="col-xs-12 col-sm-4"
-      required
-    />
+    <div class="col-xs-12 col-sm-4">
+      <base-date-picker
+        required
+        name="fecha_nacimiento"
+        label="Fecha Nacimiento"
+      />
+    </div>
     <base-input
       name="direccion"
       label="Dirección"
@@ -71,6 +72,7 @@
 </template>
 
 <script setup lang="ts">
+import BaseDatePicker from 'shared/components/base/BaseDatePicker.vue';
 import BaseForm from 'shared/components/base/BaseForm.vue';
 import BaseInput from 'shared/components/base/BaseInput.vue';
 import BaseRadio from 'shared/components/base/BaseRadio.vue';
