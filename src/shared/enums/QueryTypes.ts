@@ -11,4 +11,5 @@ export const enum QueryTypes {
   FINANCIAMIENTO_ALL = 'financiamiento',
   ENFERMEDAD_ALL = 'enfermedades',
   DIAGNOSTICO_ALL = 'diagnosticos',
+  MEDICAMENTO_ALL = 'medicamentos',
 }
