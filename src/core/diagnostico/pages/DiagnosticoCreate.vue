@@ -80,6 +80,13 @@
             label="Diagnóstico"
             caption="Editar"
           >
+            <diagnosticos-list-modal
+              v-model="isModalOpen"
+              :persona="persona"
+              :diagnosticos="diagnosticos || []"
+              @select="onSelectedDiagnostico"
+              @add-diagnostico="onAddDiagnostico"
+            />
             <q-card v-if="!diagnostico" class="my-card">
               <q-card-section
                 v-if="isDiagnosticosEmpty && !isDiagnosticoFormVisible"
@@ -209,11 +216,6 @@
           </q-expansion-item>
         </div>
       </div>
-      <diagnosticos-list-modal
-        v-model="isModalOpen"
-        :diagnosticos="diagnosticos || []"
-        @select="onSelectedDiagnostico"
-      />
     </template>
   </base-page>
 </template>
@@ -230,6 +232,7 @@ import PersonaEditForm from 'core/persona/components/PersonaEditForm.vue';
 import BaseInput from 'shared/components/base/BaseInput.vue';
 import BasePage from 'shared/components/base/BasePage.vue';
 import BaseSelect from 'shared/components/base/BaseSelect.vue';
+import Swal from 'sweetalert2';
 import { useForm } from 'vee-validate';
 import { computed, ref } from 'vue';
 import { number, object } from 'yup';
@@ -277,8 +280,25 @@ const {
 const onSubmit = handleSubmit(async (values) => {
   onCancelPersonaForm();
   await fetch(values.numero_documento);
-  if (!isDiagnosticosEmpty.value) {
-    isModalOpen.value = true;
+
+  if (persona.value) {
+    Swal.fire({
+      title: 'Exito!',
+      text: 'Paciente encontrado correctamente!',
+      icon: 'success',
+    }).then(({ isConfirmed }) => {
+      if (isConfirmed) {
+        if (!isDiagnosticosEmpty.value) {
+          isModalOpen.value = true;
+        }
+      }
+    });
+  } else {
+    Swal.fire({
+      title: 'Error!',
+      text: 'No se encontro el paciente indicado!',
+      icon: 'warning',
+    });
   }
 });
 const isModalOpen = ref(false);
@@ -310,6 +330,12 @@ const onSelectedDiagnostico = async (id: string) => {
   await fetchSelectedDiagnostico(id);
   isModalOpen.value = false;
 };
+const onAddDiagnostico = async () => {
+  onCancelDiagnosticoForm();
+  isModalOpen.value = false;
+  isDiagnosticoFormVisible.value = true;
+};
+
 const onCancelDiagnosticoForm = () => {
   diagnostico.value = undefined;
   isDiagnosticoFormVisible.value = false;

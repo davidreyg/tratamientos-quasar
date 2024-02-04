@@ -18,7 +18,53 @@
               Por favor, seleccione un diagnostico para continuar.
             </q-item-label>
           </q-item-section>
+          <q-item-section avatar>
+            <q-btn
+              flat
+              color="primary"
+              icon="fas fa-folder-plus"
+              label="Nuevo"
+              no-caps
+              @click="$emit('addDiagnostico')"
+            />
+          </q-item-section>
         </q-item>
+      </q-card-section>
+      <q-card-section class="row">
+        <q-input
+          borderless
+          readonly
+          :model-value="
+            persona.nombres +
+            ' ' +
+            persona.apellido_paterno +
+            ' ' +
+            persona.apellido_materno
+          "
+          label="Nombre Completo"
+          class="col-6"
+        />
+        <q-input
+          borderless
+          readonly
+          :model-value="persona.historia_clinica"
+          label="Historia Clinica"
+          class="col-6"
+        />
+        <q-input
+          borderless
+          readonly
+          :model-value="persona.tipo_documento"
+          label="Tipo de Documento"
+          class="col-6"
+        />
+        <q-input
+          borderless
+          readonly
+          :model-value="persona.numero_documento"
+          label="Numero de Documento"
+          class="col-6"
+        />
       </q-card-section>
       <q-card-section>
         <diagnosticos-table
@@ -32,13 +78,20 @@
 
 <script setup lang="ts">
 import { useVModel } from '@vueuse/core';
+import { Persona } from 'core/persona';
 import { Diagnostico } from '../models';
 import DiagnosticosTable from './DiagnosticosTable.vue';
 const props = defineProps<{
   modelValue: boolean;
   diagnosticos: Diagnostico[];
+  persona: Persona;
 }>();
 
-const emit = defineEmits(['update:modelValue', 'submit', 'select']);
+const emit = defineEmits([
+  'update:modelValue',
+  'submit',
+  'select',
+  'addDiagnostico',
+]);
 const open = useVModel(props, 'modelValue', emit);
 </script>
