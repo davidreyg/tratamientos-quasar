@@ -300,6 +300,7 @@ const onCancelPersonaForm = () => {
   persona.value = undefined;
   isPacienteFormVisible.value = false;
   isDiagnosticoFormVisible.value = false;
+  onCancelDiagnosticoForm();
   resetForm();
 };
 const onSubmitPersonaCreateForm = async (numero_documento: number) => {

@@ -1,10 +1,20 @@
 <template>
   <base-form @submit="onSubmit" @cancel="$emit('cancel')">
     <div class="col-xs-12 col-sm-4">
-      <base-date-picker required name="fecha_inicio" label="Fecha Inicio" />
+      <base-date-picker
+        required
+        name="fecha_inicio"
+        label="Fecha Inicio"
+        :min-date="DateTime.now()"
+      />
     </div>
     <div class="col-xs-12 col-sm-4">
-      <base-date-picker required name="fecha_fin" label="Fecha Fin" />
+      <base-date-picker
+        required
+        name="fecha_fin"
+        label="Fecha Fin"
+        :min-date="DateTime.now()"
+      />
     </div>
     <base-select
       :options="arr_medicos"
@@ -97,6 +107,7 @@ import { useComplicacionFetchAllQuery } from 'core/complicacion';
 import { useManageEnfermedadesArray } from 'core/diagnostico';
 import { useMedicamentoFetchAllQuery } from 'core/medicamento';
 import { useMedicoFetchAllQuery } from 'core/persona';
+import { DateTime } from 'luxon';
 import { QSelectOption } from 'quasar';
 import BaseDatePicker from 'shared/components/base/BaseDatePicker.vue';
 import BaseForm from 'shared/components/base/BaseForm.vue';
@@ -167,6 +178,10 @@ const validationSchema = object().shape({
 
 const { handleSubmit, setFieldValue } = useForm<ControlCreateRequest>({
   validationSchema,
+  initialValues: {
+    fecha_inicio: DateTime.now().toISODate(),
+    fecha_fin: DateTime.now().toISODate(),
+  },
 });
 setFieldValue('diagnostico_id', props.diagnosticoId);
 const selectMedicamentos = ref<QSelectOption>();
