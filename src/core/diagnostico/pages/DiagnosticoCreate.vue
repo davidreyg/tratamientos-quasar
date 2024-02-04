@@ -176,25 +176,17 @@
                   />
                 </div>
               </q-card-section>
-              <div v-if="!isControlesEmpty && !isControlFormVisible">
-                <div class="col-12 row justify-center">
-                  <div class="col-auto">
-                    <q-icon name="fas fa-face-grin-beam-sweat" size="xl" />
-                  </div>
-                  <div class="col-12 text-center text-h6">
-                    Por favor seleccione un control. :)
-                  </div>
-                  <q-btn
-                    class="q-mt-lg"
-                    color="primary"
-                    icon="fas fa-list-check"
-                    no-caps
-                    label="Visualizar Diagnosticos"
-                    outline
-                    @click="isModalOpen = !isModalOpen"
-                  />
-                </div>
-              </div>
+              <q-card-section v-if="!isControlesEmpty && !isControlFormVisible">
+                <controles-table
+                  :controles="controles"
+                  @add-control="
+                    () => {
+                      onCancelControlForm();
+                      isControlFormVisible = true;
+                    }
+                  "
+                />
+              </q-card-section>
               <q-card-section v-else>
                 <control-create-form
                   v-if="isControlFormVisible"
@@ -223,6 +215,7 @@
 <script setup lang="ts">
 import { useFetchControlByIdQuery } from 'core/control';
 import ControlCreateForm from 'core/control/components/ControlCreateForm.vue';
+import ControlesTable from 'core/control/components/ControlesTable.vue';
 import {
   usePersonaByNumeroDocumentoQuery,
   useTipoDocumentoFetchAllQuery,
@@ -323,6 +316,7 @@ const onSubmitDiagnosticoCreateForm = async (paciente_id: string) => {
 const {
   diagnostico,
   isControlesEmpty,
+  controles,
   fetchControles,
   fetch: fetchSelectedDiagnostico,
 } = useFetchDiagnosticoByIdQuery();
