@@ -80,7 +80,7 @@
             label="Diagnóstico"
             caption="Editar"
           >
-            <q-card class="my-card">
+            <q-card v-if="!diagnostico" class="my-card">
               <q-card-section
                 v-if="isDiagnosticosEmpty && !isDiagnosticoFormVisible"
               >
@@ -133,12 +133,21 @@
                 />
               </q-card-section>
             </q-card>
+            <q-card v-else>
+              <q-card-section>
+                <diagnostico-edit-form
+                  :diagnostico="diagnostico"
+                  @cancel="onCancelDiagnosticoForm"
+                />
+              </q-card-section>
+            </q-card>
           </q-expansion-item>
         </div>
       </div>
       <diagnosticos-list-modal
         v-model="isModalOpen"
         :diagnosticos="diagnosticos || []"
+        @select="onSelectedDiagnostico"
       />
     </template>
   </base-page>
@@ -158,7 +167,9 @@ import { useForm } from 'vee-validate';
 import { computed, ref } from 'vue';
 import { number, object } from 'yup';
 import DiagnosticoCreateForm from '../components/DiagnosticoCreateForm.vue';
+import DiagnosticoEditForm from '../components/DiagnosticoEditForm.vue';
 import DiagnosticosListModal from '../components/DiagnosticosListModal.vue';
+import { useFetchDiagnosticoByIdQuery } from '../composables';
 
 const { data: tipo_documentos } = useTipoDocumentoFetchAllQuery();
 const isPacienteFormVisible = ref(false);
@@ -204,6 +215,8 @@ const onSubmit = handleSubmit(async (values) => {
 });
 const isModalOpen = ref(false);
 const onCancelPersonaForm = () => {
+  diagnostico.value = undefined;
+  persona.value = undefined;
   isPacienteFormVisible.value = false;
   isDiagnosticoFormVisible.value = false;
   resetForm();
@@ -215,6 +228,17 @@ const onSubmitPersonaCreateForm = async (numero_documento: number) => {
 const onSubmitDiagnosticoCreateForm = async (paciente_id: string) => {
   onCancelPersonaForm();
   await fetchDiagnosticos(paciente_id);
+};
+
+const { diagnostico, fetch: fetchSelectedDiagnostico } =
+  useFetchDiagnosticoByIdQuery();
+const onSelectedDiagnostico = async (id: string) => {
+  await fetchSelectedDiagnostico(id);
+  isModalOpen.value = false;
+};
+
+const onCancelDiagnosticoForm = () => {
+  diagnostico.value = undefined;
 };
 </script>
 

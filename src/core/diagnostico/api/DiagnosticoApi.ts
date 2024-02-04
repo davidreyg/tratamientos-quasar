@@ -9,12 +9,19 @@ export class DiagnosticoApi {
   static async create(data: DiagnosticoCreateRequest) {
     await DiagnosticoApi._api.post(DiagnosticoApi._endpoint, data);
   }
+
   static async fetchDiagnosticosByPaciente(paciente_id: string) {
     return await DiagnosticoApi._api.get<Diagnostico[]>(
       DiagnosticoApi._endpoint,
       {
         search: `paciente_id:${paciente_id}`,
       }
+    );
+  }
+
+  static async fetchDiagnosticoById(id: string) {
+    return await DiagnosticoApi._api.get<Diagnostico>(
+      `${DiagnosticoApi._endpoint}/${id}`
     );
   }
 }

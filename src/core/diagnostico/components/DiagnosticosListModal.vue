@@ -21,7 +21,10 @@
         </q-item>
       </q-card-section>
       <q-card-section>
-        <diagnosticos-table :diagnosticos="diagnosticos" />
+        <diagnosticos-table
+          :diagnosticos="diagnosticos"
+          @select="(id) => $emit('select', id)"
+        />
       </q-card-section>
     </q-card>
   </q-dialog>
@@ -35,6 +38,7 @@ const props = defineProps<{
   modelValue: boolean;
   diagnosticos: Diagnostico[];
 }>();
-const emit = defineEmits(['update:modelValue', 'submit']);
+
+const emit = defineEmits(['update:modelValue', 'submit', 'select']);
 const open = useVModel(props, 'modelValue', emit);
 </script>

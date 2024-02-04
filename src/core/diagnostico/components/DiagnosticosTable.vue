@@ -5,9 +5,16 @@
     row-key="id"
     :loading="false"
   >
-    <template #body-cell-actions>
+    <template #body-cell-actions="props">
       <q-td class="text-right">
-        <q-btn flat color="primary" icon="fas fa-check" round padding="0" />
+        <q-btn
+          flat
+          color="primary"
+          icon="fas fa-check"
+          round
+          padding="0"
+          @click="$emit('select', props.key)"
+        />
       </q-td>
     </template>
     <template #body-cell-enfermedades="props">
@@ -42,6 +49,9 @@ defineProps({
     required: true,
   },
 });
+defineEmits<{
+  (e: 'select', id: string): void;
+}>();
 const { formatDate } = useLuxonFormat();
 const columns: QTable['columns'] = [
   {
