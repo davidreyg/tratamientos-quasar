@@ -84,8 +84,8 @@ const props = defineProps({
     required: true,
   },
 });
-defineEmits<{
-  // (e: 'submit'): void;
+const emit = defineEmits<{
+  (e: 'submit', paciente_id: string): void;
   (e: 'cancel'): void;
 }>();
 
@@ -147,7 +147,7 @@ const onSubmit = handleSubmit(async (values) => {
   mutate(values, {
     onSuccess: () => {
       NotifyUtils.success('Diagnostico registrado correctamente');
-      // emit('submit');
+      emit('submit', props.pacienteId);
     },
     onError: (err) => {
       console.log(err);

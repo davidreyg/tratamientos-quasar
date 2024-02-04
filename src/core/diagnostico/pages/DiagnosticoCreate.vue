@@ -77,15 +77,12 @@
           <q-expansion-item
             v-if="persona"
             icon="fas fa-folder-open"
-            label="Diagnósticos"
-            caption="Solo 1"
+            label="Diagnóstico"
+            caption="Editar"
           >
             <q-card class="my-card">
               <q-card-section
-                v-if="
-                  persona.diagnosticos.data.length === 0 &&
-                  !isDiagnosticoFormVisible
-                "
+                v-if="isDiagnosticosEmpty && !isDiagnosticoFormVisible"
               >
                 <div class="col-12 row justify-center">
                   <div class="col-auto">
@@ -108,16 +105,41 @@
                   />
                 </div>
               </q-card-section>
-              <q-card-section v-if="isDiagnosticoFormVisible">
+              <div v-if="!isDiagnosticosEmpty && !isDiagnosticoFormVisible">
+                <div class="col-12 row justify-center">
+                  <div class="col-auto">
+                    <q-icon name="fas fa-face-grin-beam-sweat" size="xl" />
+                  </div>
+                  <div class="col-12 text-center text-h6">
+                    Por favor seleccione un diagnostico. :)
+                  </div>
+                  <q-btn
+                    class="q-mt-lg"
+                    color="primary"
+                    icon="fas fa-list-check"
+                    no-caps
+                    label="Visualizar Diagnosticos"
+                    outline
+                    @click="isModalOpen = !isModalOpen"
+                  />
+                </div>
+              </div>
+              <q-card-section v-else>
                 <diagnostico-create-form
+                  v-if="isDiagnosticoFormVisible"
                   :paciente-id="persona.id"
                   @cancel="isDiagnosticoFormVisible = false"
+                  @submit="onSubmitDiagnosticoCreateForm"
                 />
               </q-card-section>
             </q-card>
           </q-expansion-item>
         </div>
       </div>
+      <diagnosticos-list-modal
+        v-model="isModalOpen"
+        :diagnosticos="diagnosticos || []"
+      />
     </template>
   </base-page>
 </template>
@@ -136,6 +158,7 @@ import { useForm } from 'vee-validate';
 import { computed, ref } from 'vue';
 import { number, object } from 'yup';
 import DiagnosticoCreateForm from '../components/DiagnosticoCreateForm.vue';
+import DiagnosticosListModal from '../components/DiagnosticosListModal.vue';
 
 const { data: tipo_documentos } = useTipoDocumentoFetchAllQuery();
 const isPacienteFormVisible = ref(false);
@@ -162,22 +185,36 @@ const validationSchema = object().shape({
 const { handleSubmit, resetForm } = useForm<{ numero_documento: number }>({
   validationSchema,
 });
-const { fetch, persona, isLoading } = usePersonaByNumeroDocumentoQuery();
-const onSubmit = handleSubmit(async (values) => {
-  isPacienteFormVisible.value = false;
-  isDiagnosticoFormVisible.value = false;
-  await fetch(values.numero_documento);
-});
 
+const {
+  fetch,
+  fetchDiagnosticos,
+  persona,
+  isLoading,
+  diagnosticos,
+  isDiagnosticosEmpty,
+} = usePersonaByNumeroDocumentoQuery();
+
+const onSubmit = handleSubmit(async (values) => {
+  onCancelPersonaForm();
+  await fetch(values.numero_documento);
+  if (!isDiagnosticosEmpty.value) {
+    isModalOpen.value = true;
+  }
+});
+const isModalOpen = ref(false);
 const onCancelPersonaForm = () => {
   isPacienteFormVisible.value = false;
   isDiagnosticoFormVisible.value = false;
-  persona.value = undefined;
   resetForm();
 };
 const onSubmitPersonaCreateForm = async (numero_documento: number) => {
   onCancelPersonaForm();
   await fetch(numero_documento);
+};
+const onSubmitDiagnosticoCreateForm = async (paciente_id: string) => {
+  onCancelPersonaForm();
+  await fetchDiagnosticos(paciente_id);
 };
 </script>
 
