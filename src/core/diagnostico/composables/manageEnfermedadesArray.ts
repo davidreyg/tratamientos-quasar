@@ -4,7 +4,7 @@ import { useFieldArray } from 'vee-validate';
 import { ref } from 'vue';
 
 export function useManageEnfermedadesArray(field: string) {
-  const arr_enfermedades_seleccionadas = ref(<QSelectOption[]>[]);
+  const arr_seleccionados = ref(<QSelectOption[]>[]);
   const {
     remove: removeField,
     push: pushField,
@@ -12,24 +12,24 @@ export function useManageEnfermedadesArray(field: string) {
   } = useFieldArray<string>(field);
 
   const push = (data: QSelectOption) => {
-    const exists = arr_enfermedades_seleccionadas.value.some(
+    const exists = arr_seleccionados.value.some(
       (item) => item.value === data.value
     );
     if (exists) {
-      NotifyUtils.warn('Ya has agregado esta enfermedad');
+      NotifyUtils.warn('Ya has agregado este item');
       return;
     }
-    arr_enfermedades_seleccionadas.value.push(data);
+    arr_seleccionados.value.push(data);
     pushField(data.value);
   };
 
   const remove = (id: number) => {
-    arr_enfermedades_seleccionadas.value.splice(id, 1);
+    arr_seleccionados.value.splice(id, 1);
     removeField(id);
   };
 
   return {
-    arr_enfermedades_seleccionadas,
+    arr_seleccionados,
     push,
     remove,
     fields,

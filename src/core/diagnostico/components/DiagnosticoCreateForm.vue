@@ -33,10 +33,7 @@
         </template>
       </q-select>
       <q-list>
-        <q-item
-          v-for="(field, idx) in arr_enfermedades_seleccionadas"
-          :key="field.value"
-        >
+        <q-item v-for="(field, idx) in arr_seleccionados" :key="field.value">
           <q-item-section>{{ field.label }}</q-item-section>
           <q-item-section side>
             <q-btn
@@ -139,7 +136,7 @@ const { handleSubmit, setFieldValue } = useForm<DiagnosticoCreateRequest>({
 });
 setFieldValue('paciente_id', props.pacienteId);
 const selectEnfermedad = ref<QSelectOption>();
-const { arr_enfermedades_seleccionadas, remove, push } =
+const { arr_seleccionados, remove, push } =
   useManageEnfermedadesArray('enfermedades');
 const { mutate } = useDiagnosticoCreateMutation();
 

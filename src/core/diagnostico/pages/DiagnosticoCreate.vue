@@ -142,6 +142,71 @@
               </q-card-section>
             </q-card>
           </q-expansion-item>
+          <q-expansion-item
+            v-if="diagnostico"
+            icon="fas fa-list-ul"
+            label="Controles"
+            caption="Editar"
+          >
+            <q-card v-if="!control" class="my-card">
+              <q-card-section v-if="isControlesEmpty && !isControlFormVisible">
+                <div class="col-12 row justify-center">
+                  <div class="col-auto">
+                    <q-icon name="fas fa-face-frown" size="xl" />
+                  </div>
+                  <div class="col-12 text-center text-h6">
+                    Lo sentimos. ¡No se encontró ningun control!. Porfavor
+                    registre uno para empezar.
+                  </div>
+                  <q-btn
+                    class="q-mt-lg"
+                    color="primary"
+                    icon="fas fa-plus"
+                    no-caps
+                    label="Agregar nuevo control"
+                    outline
+                    @click="isControlFormVisible = !isControlFormVisible"
+                  />
+                </div>
+              </q-card-section>
+              <div v-if="!isControlesEmpty && !isControlFormVisible">
+                <div class="col-12 row justify-center">
+                  <div class="col-auto">
+                    <q-icon name="fas fa-face-grin-beam-sweat" size="xl" />
+                  </div>
+                  <div class="col-12 text-center text-h6">
+                    Por favor seleccione un control. :)
+                  </div>
+                  <q-btn
+                    class="q-mt-lg"
+                    color="primary"
+                    icon="fas fa-list-check"
+                    no-caps
+                    label="Visualizar Diagnosticos"
+                    outline
+                    @click="isModalOpen = !isModalOpen"
+                  />
+                </div>
+              </div>
+              <q-card-section v-else>
+                <control-create-form
+                  v-if="isControlFormVisible"
+                  :diagnostico-id="diagnostico.id"
+                  @cancel="onCancelControlForm"
+                  @submit="onSubmitControlCreateForm"
+                />
+              </q-card-section>
+            </q-card>
+            <q-card v-else>
+              {{ control }}
+              <!-- <q-card-section>
+                <diagnostico-edit-form
+                  :diagnostico="diagnostico"
+                  @cancel="onCancelDiagnosticoForm"
+                />
+              </q-card-section> -->
+            </q-card>
+          </q-expansion-item>
         </div>
       </div>
       <diagnosticos-list-modal
@@ -154,6 +219,8 @@
 </template>
 
 <script setup lang="ts">
+import { useFetchControlByIdQuery } from 'core/control';
+import ControlCreateForm from 'core/control/components/ControlCreateForm.vue';
 import {
   usePersonaByNumeroDocumentoQuery,
   useTipoDocumentoFetchAllQuery,
@@ -174,6 +241,7 @@ import { useFetchDiagnosticoByIdQuery } from '../composables';
 const { data: tipo_documentos } = useTipoDocumentoFetchAllQuery();
 const isPacienteFormVisible = ref(false);
 const isDiagnosticoFormVisible = ref(false);
+const isControlFormVisible = ref(false);
 const arr_tipo_documentos = computed(() => {
   if (tipo_documentos.value) {
     return tipo_documentos.value.map((val) => {
@@ -225,20 +293,42 @@ const onSubmitPersonaCreateForm = async (numero_documento: number) => {
   onCancelPersonaForm();
   await fetch(numero_documento);
 };
+
+// Diagnostico
 const onSubmitDiagnosticoCreateForm = async (paciente_id: string) => {
-  onCancelPersonaForm();
+  onCancelDiagnosticoForm();
   await fetchDiagnosticos(paciente_id);
 };
 
-const { diagnostico, fetch: fetchSelectedDiagnostico } =
-  useFetchDiagnosticoByIdQuery();
+const {
+  diagnostico,
+  isControlesEmpty,
+  fetchControles,
+  fetch: fetchSelectedDiagnostico,
+} = useFetchDiagnosticoByIdQuery();
 const onSelectedDiagnostico = async (id: string) => {
   await fetchSelectedDiagnostico(id);
   isModalOpen.value = false;
 };
-
 const onCancelDiagnosticoForm = () => {
   diagnostico.value = undefined;
+  isDiagnosticoFormVisible.value = false;
+  onCancelControlForm();
+};
+
+//Control
+const {
+  control,
+  // fetch: fetchSelectedControl,
+} = useFetchControlByIdQuery();
+
+const onCancelControlForm = () => {
+  control.value = undefined;
+  isControlFormVisible.value = false;
+};
+const onSubmitControlCreateForm = async (diagnostico_id: string) => {
+  onCancelControlForm();
+  await fetchControles(diagnostico_id);
 };
 </script>
 
