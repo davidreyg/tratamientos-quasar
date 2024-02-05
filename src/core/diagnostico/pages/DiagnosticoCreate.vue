@@ -190,6 +190,7 @@
               <q-card-section v-else>
                 <control-create-form
                   v-if="isControlFormVisible"
+                  :ultimo-control="controles[controles.length - 1]"
                   :diagnostico-id="diagnostico.id"
                   @cancel="onCancelControlForm"
                   @submit="onSubmitControlCreateForm"

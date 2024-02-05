@@ -114,14 +114,20 @@ import BaseForm from 'shared/components/base/BaseForm.vue';
 import BaseSelect from 'shared/components/base/BaseSelect.vue';
 import { NotifyUtils } from 'shared/utils';
 import { useForm } from 'vee-validate';
-import { computed, ref } from 'vue';
+import { PropType, computed, ref, watch } from 'vue';
 import { array, object, string } from 'yup';
 import { useControlCreateMutation } from '../composables';
+import { Control } from '../models';
 import { ControlCreateRequest } from '../requests';
 const props = defineProps({
   diagnosticoId: {
     type: String,
     required: true,
+  },
+  ultimoControl: {
+    type: Object as PropType<Control>,
+    required: false,
+    default: undefined,
   },
 });
 const emit = defineEmits<{
@@ -183,6 +189,7 @@ const { handleSubmit, setFieldValue } = useForm<ControlCreateRequest>({
     fecha_fin: DateTime.now().toISODate(),
   },
 });
+
 setFieldValue('diagnostico_id', props.diagnosticoId);
 const selectMedicamentos = ref<QSelectOption>();
 const selectComplicacion = ref<QSelectOption>();
@@ -208,6 +215,17 @@ const onSubmit = handleSubmit(async (values) => {
     },
   });
 });
-</script>
 
-<style scoped></style>
+watch(
+  () => props.ultimoControl,
+  (newValue) => {
+    if (newValue) {
+      setFieldValue('medico_id', newValue.medico.data.id);
+      newValue.medicamentos.data.forEach((v) => {
+        push({ label: v.nombre, value: v.id });
+      });
+    }
+  },
+  { immediate: true }
+);
+</script>
