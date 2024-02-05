@@ -70,6 +70,8 @@ module.exports = configure(function (ctx) {
         API_URL: ctx.dev
           ? 'http://localhost:8000/api'
           : 'http://localhost:8000/api',
+        RENIEC_URL: 'https://192.168.1.4/api/web-service/person-complete',
+        RENIEC_TOKEN: 'eed63ab26117dacf4986f37ca1e61c4ccafc2aea',
       },
       // rawDefine: {}
       // ignorePublicFolder: true,

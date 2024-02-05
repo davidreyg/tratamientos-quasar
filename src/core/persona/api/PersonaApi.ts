@@ -1,5 +1,7 @@
+import Sttp from '@supercharge/sttp';
 import { sttpClient } from 'shared/api';
 import { Persona } from '../models';
+import { Reniec } from '../models/Reniec';
 import { PersonaRequest } from '../requests';
 
 export class PersonaApi {
@@ -11,6 +13,12 @@ export class PersonaApi {
       search: `numero_documento:${numero_documento}`,
       searchJoin: 'and',
     });
+  }
+
+  static fetchReniecByDNI(numero_documento: number) {
+    return Sttp.withHeaders({
+      Authorization: 'token eed63ab26117dacf4986f37ca1e61c4ccafc2aea',
+    }).get<Reniec>(`${process.env.RENIEC_URL}/${numero_documento}`, {});
   }
 
   static fetchMedicos() {

@@ -1,5 +1,33 @@
 <template>
   <base-form :loading="isLoading" @submit="onSubmit" @cancel="$emit('cancel')">
+    <base-select
+      :options="arr_tipo_documentos"
+      name="tipo_documento_id"
+      class="col-xs-12 col-sm-4"
+      label="Tipo de Documento"
+      :loading="false"
+      required
+    />
+    <base-input
+      name="numero_documento"
+      label="N° de Documento"
+      class="col-xs-12 col-sm-4"
+      required
+    >
+      <template #after>
+        <q-btn
+          v-if="values.tipo_documento_id === 1"
+          round
+          dense
+          icon="search"
+          color="primary"
+          :loading="reniecLoading"
+          @click="searchReniec"
+        >
+          <q-tooltip> Buscar en RENIEC </q-tooltip>
+        </q-btn>
+      </template>
+    </base-input>
     <base-input
       name="nombres"
       label="Nombres"
@@ -18,20 +46,7 @@
       class="col-xs-12 col-sm-4"
       required
     />
-    <base-select
-      :options="arr_tipo_documentos"
-      name="tipo_documento_id"
-      class="col-xs-12 col-sm-4"
-      label="Tipo de Documento"
-      :loading="false"
-      required
-    />
-    <base-input
-      name="numero_documento"
-      label="N° de Documento"
-      class="col-xs-12 col-sm-4"
-      required
-    />
+
     <div class="col-xs-12 col-sm-4">
       <base-date-picker
         required
@@ -85,6 +100,7 @@ import {
   usePacienteCreateMutation,
   useTipoDocumentoFetchAllQuery,
 } from '../composables';
+import { usePersonaReniecQuery } from '../composables/personaReniecQuery';
 import { PersonaRequest } from '../requests';
 
 const emit = defineEmits<{
@@ -140,9 +156,10 @@ const validationSchema = object().shape({
     .label('Historia Clinica'),
   sexo: string().required().label('Sexo'),
 });
-const { handleSubmit, setFieldValue, setErrors } = useForm<PersonaRequest>({
-  validationSchema,
-});
+const { handleSubmit, setFieldValue, setErrors, values } =
+  useForm<PersonaRequest>({
+    validationSchema,
+  });
 
 const { isLoading, mutate } = usePacienteCreateMutation();
 setFieldValue('tipo_persona_id', 2);
@@ -157,6 +174,19 @@ const onSubmit = handleSubmit(async (values) => {
     },
   });
 });
+
+const { fetch, reniec, isLoading: reniecLoading } = usePersonaReniecQuery();
+const searchReniec = async () => {
+  fetch(values.numero_documento);
+  if (reniec.value) {
+    setFieldValue('nombres', reniec.value.nombres);
+    setFieldValue('apellido_paterno', reniec.value.apellido_paterno);
+    setFieldValue('apellido_materno', reniec.value.apellido_materno);
+    setFieldValue('fecha_nacimiento', reniec.value.fecha_nacimiento); //17/10/1980
+    setFieldValue('direccion', reniec.value.direccion);
+    setFieldValue('sexo', reniec.value.sexo === '0' ? 'Masculino' : 'Femenino');
+  }
+};
 </script>
 
 <style scoped></style>
