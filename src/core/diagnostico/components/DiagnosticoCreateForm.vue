@@ -1,5 +1,5 @@
 <template>
-  <base-form @submit="onSubmit" @cancel="$emit('cancel')">
+  <base-form :loading="isLoading" @submit="onSubmit" @cancel="$emit('cancel')">
     <base-select
       :options="arr_financiamientos"
       name="financiamiento_id"
@@ -138,7 +138,7 @@ setFieldValue('paciente_id', props.pacienteId);
 const selectEnfermedad = ref<QSelectOption>();
 const { arr_seleccionados, remove, push } =
   useManageEnfermedadesArray('enfermedades');
-const { mutate } = useDiagnosticoCreateMutation();
+const { mutate, isLoading } = useDiagnosticoCreateMutation();
 
 const onSubmit = handleSubmit(async (values) => {
   mutate(values, {

@@ -1,5 +1,5 @@
 <template>
-  <base-form @submit="submit">
+  <base-form :loading="isLoading" @submit="submit">
     <base-input
       borderless
       :outlined="false"
@@ -84,7 +84,7 @@ const emit = defineEmits<{
   (e: 'cancel'): void;
 }>();
 
-const { mutateAsync } = useDiagnosticoFinalizarMutation();
+const { mutateAsync, isLoading } = useDiagnosticoFinalizarMutation();
 const submit = () => {
   Swal.fire({
     title: '¿Está seguro de finalizar este diagnostico?',

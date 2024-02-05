@@ -1,5 +1,5 @@
 <template>
-  <base-form @submit="onSubmit" @cancel="$emit('cancel')">
+  <base-form :loading="isLoading" @submit="onSubmit" @cancel="$emit('cancel')">
     <div class="col-xs-12 col-sm-4">
       <base-date-picker
         required
@@ -204,7 +204,7 @@ const {
   remove: removeComplicacion,
   push: pushComplicacion,
 } = useManageEnfermedadesArray('complicaciones');
-const { mutate } = useControlUpdateMutation();
+const { mutate, isLoading } = useControlUpdateMutation();
 
 const onSubmit = handleSubmit(async (values) => {
   mutate(

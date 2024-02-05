@@ -1,5 +1,5 @@
 <template>
-  <base-form @submit="onSubmit" @cancel="$emit('cancel')">
+  <base-form :loading="isLoading" @submit="onSubmit" @cancel="$emit('cancel')">
     <div class="col-xs-12 col-sm-4">
       <base-date-picker
         required
@@ -23,9 +23,11 @@
       class="col-xs-12 col-sm-4"
     />
     <div class="col-xs-12 col-sm-6">
-      <q-select
+      <base-select
         v-model="selectMedicamentos"
         :options="arr_medicamentos"
+        :outlined="false"
+        :emit-value="false"
         borderless
         dense
         name="medicamento"
@@ -41,7 +43,7 @@
             @click="()=>{push(selectMedicamentos!);selectMedicamentos=undefined}"
           />
         </template>
-      </q-select>
+      </base-select>
       <q-list>
         <q-item v-for="(field, idx) in arr_seleccionados" :key="field.value">
           <q-item-section>{{ field.label }}</q-item-section>
@@ -60,12 +62,14 @@
       </q-list>
     </div>
     <div class="col-xs-12 col-sm-6">
-      <q-select
+      <base-select
         v-model="selectComplicacion"
         :options="arr_complicaciones"
         borderless
+        :outlined="false"
+        :emit-value="false"
         dense
-        name="complicacion"
+        name="complicaciones"
         label="Complicaciones"
       >
         <template #after>
@@ -78,7 +82,7 @@
             @click="()=>{pushComplicacion(selectComplicacion!);selectComplicacion=undefined}"
           />
         </template>
-      </q-select>
+      </base-select>
       <q-list>
         <q-item
           v-for="(field, idx) in arr_complicaciones_seleccionadas"
@@ -209,7 +213,7 @@ const {
   remove: removeComplicacion,
   push: pushComplicacion,
 } = useManageEnfermedadesArray('complicaciones');
-const { mutate } = useControlCreateMutation();
+const { mutate, isLoading } = useControlCreateMutation();
 
 const onSubmit = handleSubmit(async (values) => {
   mutate(values, {
