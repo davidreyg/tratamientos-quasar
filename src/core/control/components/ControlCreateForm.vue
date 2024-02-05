@@ -99,6 +99,12 @@
         </q-item>
       </q-list>
     </div>
+    <base-input
+      type="textarea"
+      name="observaciones"
+      label="Observaciones"
+      class="col-xs-12 col-sm-6"
+    />
   </base-form>
 </template>
 
@@ -111,6 +117,7 @@ import { DateTime } from 'luxon';
 import { QSelectOption } from 'quasar';
 import BaseDatePicker from 'shared/components/base/BaseDatePicker.vue';
 import BaseForm from 'shared/components/base/BaseForm.vue';
+import BaseInput from 'shared/components/base/BaseInput.vue';
 import BaseSelect from 'shared/components/base/BaseSelect.vue';
 import { NotifyUtils } from 'shared/utils';
 import { useForm } from 'vee-validate';
@@ -177,6 +184,7 @@ const validationSchema = object().shape({
   diagnostico_id: string().trim().required().label('Diagnostico'),
   medico_id: string().trim().required().label('Medico'),
   fecha_inicio: string().required().label('Fecha Inicio'),
+  observaciones: string().nullable().label('Observaciones'),
   fecha_fin: string().required().label('Fecha Fin'),
   medicamentos: array().required().label('Medicamentos'),
   complicaciones: array().optional().label('Complicaciones'),

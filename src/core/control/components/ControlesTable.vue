@@ -18,15 +18,10 @@
     </template>
     <template #body-cell-actions="">
       <q-td class="text-right">
-        acciones?
-        <!-- <q-btn
-          flat
-          color="primary"
-          icon="fas fa-check"
-          round
-          padding="0"
-          @click="$emit('select', props.key)"
-        /> -->
+        <q-card-actions align="center">
+          <q-btn color="warning" icon="fas fa-pencil" round size="sm" />
+          <q-btn color="negative" icon="fas fa-trash-can" round size="sm" />
+        </q-card-actions>
       </q-td>
     </template>
     <template #body-cell-medicamentos="props">
@@ -45,16 +40,6 @@
             {{ complicacion }}
           </li>
         </ul>
-      </q-td>
-    </template>
-    <template #body-cell-estado="props">
-      <q-td class="text-center">
-        <q-badge
-          :color="props.value ? 'positive' : 'negative'"
-          rounded
-          class="q-mr-sm"
-          :label="props.value ? 'Activo' : 'Inactivo'"
-        />
       </q-td>
     </template>
   </q-table>
@@ -126,10 +111,19 @@ const columns: QTable['columns'] = [
   //   field: 'observaciones',
   // },
   {
-    name: 'estado',
+    name: 'medico',
     align: 'center',
-    label: 'Estado',
-    field: 'estado',
+    label: 'Medico',
+    field: (row) => {
+      // let xd = '';
+      return (
+        row.medico.data.nombres +
+        ' ' +
+        row.medico.data.apellido_paterno +
+        ' ' +
+        row.medico.data.apellido_materno
+      );
+    },
   },
   {
     name: 'actions',
