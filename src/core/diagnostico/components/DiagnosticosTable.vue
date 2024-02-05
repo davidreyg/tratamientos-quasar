@@ -55,11 +55,16 @@ defineEmits<{
 const { formatDate } = useLuxonFormat();
 const columns: QTable['columns'] = [
   {
+    name: 'establecimiento',
+    align: 'left',
+    label: 'Establecimiento',
+    field: (row) => row.establecimiento.data.nombre,
+  },
+  {
     name: 'enfermedades',
     align: 'left',
     label: 'Enfermedades',
     field: (row) => {
-      // let xd = '';
       return row.enfermedades.data.map(
         (value: { nombre: string }) => value.nombre
       );
@@ -86,7 +91,7 @@ const columns: QTable['columns'] = [
   },
   {
     name: 'actions',
-    align: 'right',
+    align: 'center',
     label: 'Acciones',
     field: 'actions',
   },

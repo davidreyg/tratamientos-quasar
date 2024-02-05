@@ -120,6 +120,12 @@ const columns: QTable['columns'] = [
     },
   },
   {
+    name: 'observaciones',
+    align: 'center',
+    label: 'Observaciones',
+    field: 'observaciones',
+  },
+  {
     name: 'fecha_inicio',
     align: 'center',
     label: 'Fecha Inicio',

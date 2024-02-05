@@ -1,4 +1,5 @@
 import { Enfermedad } from 'core/enfermedad';
+import { Establecimiento } from 'core/establecimiento';
 import { Financiamiento } from 'core/financiamiento';
 import { Persona } from 'core/persona';
 
@@ -20,5 +21,8 @@ export interface Diagnostico {
   };
   financiamiento: {
     data: Financiamiento;
+  };
+  establecimiento: {
+    data: Establecimiento;
   };
 }

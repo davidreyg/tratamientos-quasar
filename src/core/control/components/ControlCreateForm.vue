@@ -69,7 +69,7 @@
         :outlined="false"
         :emit-value="false"
         dense
-        name="complicaciones"
+        name="complicacion"
         label="Complicaciones"
       >
         <template #after>
