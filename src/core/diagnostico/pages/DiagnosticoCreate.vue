@@ -145,6 +145,7 @@
                 <diagnostico-edit-form
                   :diagnostico="diagnostico"
                   @cancel="onCancelDiagnosticoForm"
+                  @submit="onSubmitDiagnosticoCreateForm(persona.id)"
                 />
               </q-card-section>
             </q-card>
@@ -179,6 +180,7 @@
               <q-card-section v-if="!isControlesEmpty && !isControlFormVisible">
                 <controles-table
                   :controles="controles"
+                  :is-diagnostico-active="diagnostico.estado"
                   @add-control="
                     () => {
                       onCancelControlForm();
@@ -187,6 +189,7 @@
                   "
                   @edit-control="onEditControl"
                   @delete-control="onSubmitControlCreateForm(diagnostico.id)"
+                  @view-control="onViewControlModal"
                 />
               </q-card-section>
               <q-card-section v-else>
@@ -200,12 +203,18 @@
               </q-card-section>
             </q-card>
             <q-card v-else>
-              <q-card-section>
+              <q-card-section v-if="diagnostico.estado">
                 <control-edit-form
                   :control="control"
                   :diagnostico-id="diagnostico.id"
                   @cancel="onCancelControlForm"
                   @submit="onSubmitControlCreateForm"
+                />
+              </q-card-section>
+              <q-card-section v-else>
+                <control-view-form
+                  :control="control"
+                  @cancel="onCancelControlForm"
                 />
               </q-card-section>
             </q-card>
@@ -220,6 +229,7 @@
 import { useFetchControlByIdQuery } from 'core/control';
 import ControlCreateForm from 'core/control/components/ControlCreateForm.vue';
 import ControlEditForm from 'core/control/components/ControlEditForm.vue';
+import ControlViewForm from 'core/control/components/ControlViewForm.vue';
 import ControlesTable from 'core/control/components/ControlesTable.vue';
 import {
   usePersonaByNumeroDocumentoQuery,
@@ -355,6 +365,10 @@ const onSubmitControlCreateForm = async (diagnostico_id: string) => {
 };
 
 const onEditControl = async (id: string) => {
+  control.value = undefined;
+  await fetchControlById(id);
+};
+const onViewControlModal = async (id: string) => {
   control.value = undefined;
   await fetchControlById(id);
 };
