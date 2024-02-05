@@ -25,7 +25,7 @@
               icon="fas fa-folder-plus"
               label="Nuevo"
               no-caps
-              @click="$emit('addDiagnostico')"
+              @click="addDiagnostico"
             />
           </q-item-section>
         </q-item>
@@ -79,6 +79,7 @@
 <script setup lang="ts">
 import { useVModel } from '@vueuse/core';
 import { Persona } from 'core/persona';
+import { NotifyUtils } from 'shared/utils';
 import { Diagnostico } from '../models';
 import DiagnosticosTable from './DiagnosticosTable.vue';
 const props = defineProps<{
@@ -94,4 +95,12 @@ const emit = defineEmits([
   'addDiagnostico',
 ]);
 const open = useVModel(props, 'modelValue', emit);
+
+const addDiagnostico = () => {
+  if (props.diagnosticos.some((v) => v.estado === true)) {
+    NotifyUtils.error('Ya existe un diagnostico activo.');
+  } else {
+    emit('addDiagnostico');
+  }
+};
 </script>
