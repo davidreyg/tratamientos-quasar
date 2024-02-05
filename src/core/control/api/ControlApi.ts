@@ -10,6 +10,10 @@ export class ControlApi {
     await ControlApi._api.post(ControlApi._endpoint, data);
   }
 
+  static async update(data: ControlCreateRequest, control_id: string) {
+    await ControlApi._api.patch(`${ControlApi._endpoint}/${control_id}`, data);
+  }
+
   static async fetchControlesByDiagnostico(diagnostico_id: string) {
     return await ControlApi._api.get<Control[]>(ControlApi._endpoint, {
       search: `diagnostico_id:${diagnostico_id}`,
@@ -18,5 +22,8 @@ export class ControlApi {
 
   static async fetchControlById(id: string) {
     return await ControlApi._api.get<Control>(`${ControlApi._endpoint}/${id}`);
+  }
+  static async delete(id: string) {
+    return await ControlApi._api.delete(`${ControlApi._endpoint}/${id}`);
   }
 }

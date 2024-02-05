@@ -8,7 +8,7 @@ export interface Control {
   diagnostico_id: number;
   observaciones: string;
   medico_id: number;
-  fecha_incio: string | Date;
+  fecha_inicio: string | Date;
   fecha_fin: string | Date;
   medico: {
     data: Persona;

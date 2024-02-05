@@ -185,6 +185,8 @@
                       isControlFormVisible = true;
                     }
                   "
+                  @edit-control="onEditControl"
+                  @delete-control="onSubmitControlCreateForm(diagnostico.id)"
                 />
               </q-card-section>
               <q-card-section v-else>
@@ -198,13 +200,14 @@
               </q-card-section>
             </q-card>
             <q-card v-else>
-              {{ control }}
-              <!-- <q-card-section>
-                <diagnostico-edit-form
-                  :diagnostico="diagnostico"
-                  @cancel="onCancelDiagnosticoForm"
+              <q-card-section>
+                <control-edit-form
+                  :control="control"
+                  :diagnostico-id="diagnostico.id"
+                  @cancel="onCancelControlForm"
+                  @submit="onSubmitControlCreateForm"
                 />
-              </q-card-section> -->
+              </q-card-section>
             </q-card>
           </q-expansion-item>
         </div>
@@ -216,6 +219,7 @@
 <script setup lang="ts">
 import { useFetchControlByIdQuery } from 'core/control';
 import ControlCreateForm from 'core/control/components/ControlCreateForm.vue';
+import ControlEditForm from 'core/control/components/ControlEditForm.vue';
 import ControlesTable from 'core/control/components/ControlesTable.vue';
 import {
   usePersonaByNumeroDocumentoQuery,
@@ -339,10 +343,7 @@ const onCancelDiagnosticoForm = () => {
 };
 
 //Control
-const {
-  control,
-  // fetch: fetchSelectedControl,
-} = useFetchControlByIdQuery();
+const { control, fetch: fetchControlById } = useFetchControlByIdQuery();
 
 const onCancelControlForm = () => {
   control.value = undefined;
@@ -351,6 +352,11 @@ const onCancelControlForm = () => {
 const onSubmitControlCreateForm = async (diagnostico_id: string) => {
   onCancelControlForm();
   await fetchControles(diagnostico_id);
+};
+
+const onEditControl = async (id: string) => {
+  control.value = undefined;
+  await fetchControlById(id);
 };
 </script>
 

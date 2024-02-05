@@ -16,11 +16,23 @@
         Control {{ props.rowIndex + 1 }}
       </q-td>
     </template>
-    <template #body-cell-actions="">
+    <template #body-cell-actions="props">
       <q-td class="text-right">
         <q-card-actions align="center">
-          <q-btn color="warning" icon="fas fa-pencil" round size="sm" />
-          <q-btn color="negative" icon="fas fa-trash-can" round size="sm" />
+          <q-btn
+            color="warning"
+            icon="fas fa-pencil"
+            round
+            size="sm"
+            @click="$emit('editControl', props.key)"
+          />
+          <q-btn
+            color="negative"
+            icon="fas fa-trash-can"
+            round
+            size="sm"
+            @click="deleteControl(props.key)"
+          />
         </q-card-actions>
       </q-td>
     </template>
@@ -47,7 +59,9 @@
 
 <script setup lang="ts">
 import { QTable } from 'quasar';
-import { useLuxonFormat } from 'shared/utils';
+import { NotifyUtils, useLuxonFormat } from 'shared/utils';
+import Swal from 'sweetalert2';
+import { useControlDeleteMutation } from '../composables';
 import { Control } from '../models';
 defineProps({
   controles: {
@@ -55,9 +69,10 @@ defineProps({
     required: true,
   },
 });
-defineEmits<{
-  (e: 'select', id: string): void;
+const emit = defineEmits<{
   (e: 'addControl'): void;
+  (e: 'editControl', id: string): void;
+  (e: 'deleteControl', id: string): void;
 }>();
 const { formatDate } = useLuxonFormat();
 const columns: QTable['columns'] = [
@@ -132,4 +147,30 @@ const columns: QTable['columns'] = [
     field: 'actions',
   },
 ];
+const { mutateAsync } = useControlDeleteMutation();
+const deleteControl = (id: string) => {
+  Swal.fire({
+    title: '¿Está seguro de eliminar este registro?',
+    text: 'No podra deshacer los cambios!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Si',
+    cancelButtonText: 'No',
+    showLoaderOnConfirm: true,
+    preConfirm: async () => {
+      await mutateAsync(id, {
+        onSuccess: async () => {
+          NotifyUtils.success('Control eliminado correctamente.');
+          emit('deleteControl', id);
+        },
+        onError: () => {
+          Swal.hideLoading();
+        },
+      });
+    },
+    allowOutsideClick: () => !Swal.isLoading(),
+  });
+};
 </script>
