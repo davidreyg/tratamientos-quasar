@@ -11,10 +11,10 @@
       />
 
       <q-toolbar-title>
-        <q-avatar>
+        <!-- <q-avatar>
           <q-img src="/icons/favicon-128x128.png" />
-        </q-avatar>
-        Apiato Frontend
+        </q-avatar> -->
+        {{ establecimiento?.nombre }} - {{ establecimiento?.ris }}
       </q-toolbar-title>
 
       <q-btn round class="q-mr-sm">
@@ -33,14 +33,14 @@
 
                 <q-item-section>
                   <q-item-label>
-                    {{ `${user?.name}` }}
+                    {{ `${user?.nombre_completo}` }}
                   </q-item-label>
                   <q-item-label caption>
                     {{ roles![0].display_name }}
                   </q-item-label>
-                  <q-item-label caption>
+                  <!-- <q-item-label caption>
                     RIS: {{ establecimiento?.ris }}
-                  </q-item-label>
+                  </q-item-label> -->
                 </q-item-section>
               </q-item>
             </q-card-section>

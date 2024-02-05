@@ -18,20 +18,16 @@
         </q-expansion-item>
       </q-list>
     </q-scroll-area>
-    <q-img
-      class="absolute-top"
-      src="https://cdn.quasar.dev/img/material.png"
-      style="height: 150px"
-    >
+    <q-img class="absolute-top" src="/background.jpg" style="height: 150px">
       <div class="absolute-bottom bg-transparent">
         <q-avatar size="56px" class="q-mb-sm">
           <q-img src="/avatar/avatar-1.jpg" />
         </q-avatar>
         <div class="text-weight-bold">
-          {{ user?.name }}
+          {{ user?.nombre_completo }}
         </div>
+        <div>Cargo: {{ user?.cargo }}</div>
         <div>Establecimiento: {{ establecimiento?.nombre }}</div>
-        <div>RIS: {{ establecimiento?.ris }}</div>
       </div>
     </q-img>
   </q-drawer>

@@ -4,6 +4,8 @@ export interface User {
   object: string;
   id: string;
   name: string;
+  nombre_completo: string;
+  cargo: string;
   real_id: number;
   created_at: string;
   updated_at: string;
