@@ -34,10 +34,22 @@
     </div>
     <base-input
       borderless
+      autogrow
       :outlined="false"
       readonly
       type="textarea"
       name="observaciones"
+      label="Descripcion"
+      class="col-xs-12 col-sm-6"
+      :value="diagnostico.observaciones"
+    />
+    <base-input
+      borderless
+      autogrow
+      :outlined="false"
+      readonly
+      type="textarea"
+      name="motivo_finalizacion"
       label="Observaciones"
       class="col-xs-12 col-sm-6"
       :value="diagnostico.observaciones"
@@ -89,6 +101,9 @@ const submit = () => {
   Swal.fire({
     title: '¿Está seguro de finalizar este diagnostico?',
     text: 'No podra deshacer los cambios!',
+    input: 'textarea',
+    inputLabel: 'Motivo',
+    inputPlaceholder: 'Describa el motivo...',
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
@@ -96,16 +111,19 @@ const submit = () => {
     confirmButtonText: 'Si',
     cancelButtonText: 'No',
     showLoaderOnConfirm: true,
-    preConfirm: async () => {
-      await mutateAsync(props.diagnostico.id, {
-        onSuccess: async () => {
-          NotifyUtils.success('Diagnostico finalizaado correctamente.');
-          emit('submit');
-        },
-        onError: () => {
-          Swal.hideLoading();
-        },
-      });
+    preConfirm: async (data) => {
+      await mutateAsync(
+        { motivo: data, id: props.diagnostico.id },
+        {
+          onSuccess: async () => {
+            NotifyUtils.success('Diagnostico finalizaado correctamente.');
+            emit('submit');
+          },
+          onError: () => {
+            Swal.hideLoading();
+          },
+        }
+      );
     },
     allowOutsideClick: () => !Swal.isLoading(),
   });

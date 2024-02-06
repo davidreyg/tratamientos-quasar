@@ -157,7 +157,13 @@
             caption="Editar"
           >
             <q-card v-if="!control" class="my-card">
-              <q-card-section v-if="isControlesEmpty && !isControlFormVisible">
+              <q-card-section
+                v-if="
+                  isControlesEmpty &&
+                  !isControlFormVisible &&
+                  diagnostico.estado
+                "
+              >
                 <div class="col-12 row justify-center">
                   <div class="col-auto">
                     <q-icon name="fas fa-face-frown" size="xl" />

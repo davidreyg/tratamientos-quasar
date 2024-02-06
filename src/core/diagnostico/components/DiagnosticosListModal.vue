@@ -1,6 +1,6 @@
 <template>
   <q-dialog v-model="open">
-    <q-card style="width: 1200px; max-width: 80vw">
+    <q-card style="width: 1200px; max-width: 90vw">
       <q-card-section>
         <q-item>
           <q-item-section avatar>

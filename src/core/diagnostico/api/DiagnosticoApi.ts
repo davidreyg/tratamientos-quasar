@@ -25,9 +25,10 @@ export class DiagnosticoApi {
     );
   }
 
-  static async finalizarDiagnostico(id: string) {
+  static async finalizarDiagnostico(motivo_finalizacion: string, id: string) {
     return await DiagnosticoApi._api.patch(
-      `${DiagnosticoApi._endpoint}/${id}/finalizar`
+      `${DiagnosticoApi._endpoint}/${id}/finalizar`,
+      { motivo_finalizacion }
     );
   }
 }

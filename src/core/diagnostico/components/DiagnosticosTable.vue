@@ -81,7 +81,7 @@ const columns: QTable['columns'] = [
     name: 'observaciones',
     align: 'center',
     label: 'Observaciones',
-    field: 'observaciones',
+    field: 'motivo_finalizacion',
   },
   {
     name: 'estado',
