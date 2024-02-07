@@ -134,11 +134,6 @@ const validationSchema = object().shape({
   fecha_nacimiento: string().trim().required().label('Fecha de Nacimiento'),
   telefono: number()
     .typeError('Teléfono debe ser un numero')
-    .test(
-      'len',
-      'Teléfono debe tener 9 dígitos',
-      (val) => val?.toString().length === 9
-    )
     .integer()
     .positive()
     .required()
@@ -149,12 +144,7 @@ const validationSchema = object().shape({
     .positive()
     .required()
     .label('Edad'),
-  historia_clinica: number()
-    .typeError('Historia Clinica debe ser un numero')
-    .integer()
-    .positive()
-    .required()
-    .label('Historia Clinica'),
+  historia_clinica: string().required().label('Historia Clinica'),
   sexo: string().required().label('Sexo'),
 });
 const { handleSubmit, setFieldValue, setErrors, values, resetForm } =
@@ -163,7 +153,6 @@ const { handleSubmit, setFieldValue, setErrors, values, resetForm } =
   });
 
 const { isLoading, mutate } = usePacienteCreateMutation();
-setFieldValue('tipo_persona_id', 2);
 const onSubmit = handleSubmit(async (values) => {
   mutate(values, {
     onSuccess: () => {
@@ -183,7 +172,6 @@ const searchReniec = async () => {
     setFieldValue('nombres', reniec.value.nombres);
     setFieldValue('apellido_paterno', reniec.value.apellido_paterno);
     setFieldValue('apellido_materno', reniec.value.apellido_materno);
-    setFieldValue('fecha_nacimiento', reniec.value.fecha_nacimiento); //17/10/1980
     setFieldValue('direccion', reniec.value.direccion);
     setFieldValue('sexo', reniec.value.sexo === '1' ? 'Masculino' : 'Femenino');
     var formattedDate = reniec.value.fecha_nacimiento.split('/');
@@ -204,7 +192,9 @@ const { calcularEdad } = useLuxonFormat();
 watch(
   () => values.fecha_nacimiento,
   (fecha) => {
-    setFieldValue('edad', calcularEdad(fecha as string));
+    if (fecha) {
+      setFieldValue('edad', calcularEdad(fecha as string));
+    }
   }
 );
 </script>

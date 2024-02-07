@@ -71,6 +71,12 @@ const columns: QTable['columns'] = [
     },
   },
   {
+    name: 'Descripcion',
+    align: 'center',
+    label: 'Descripcion',
+    field: 'observaciones',
+  },
+  {
     name: 'fecha',
     align: 'center',
     label: 'Fecha',

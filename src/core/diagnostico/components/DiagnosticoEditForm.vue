@@ -52,7 +52,7 @@
       name="motivo_finalizacion"
       label="Observaciones"
       class="col-xs-12 col-sm-6"
-      :value="diagnostico.observaciones"
+      :value="diagnostico.motivo_finalizacion"
     />
     <template #actions>
       <q-card-actions class="col-12 justify-end q-pa-none q-pt-md">

@@ -6,6 +6,7 @@ import { Persona } from 'core/persona';
 export interface Diagnostico {
   id: string;
   observaciones: string;
+  motivo_finalizacion: string | undefined;
   estado: boolean;
   paciente_id: number;
   medico_id: number;

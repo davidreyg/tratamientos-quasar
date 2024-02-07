@@ -10,7 +10,7 @@ export interface PersonaRequest {
   sexo: string;
   direccion: string;
   telefono: number;
-  historia_clinica: number;
+  historia_clinica: string;
   tipo_documento_id: number;
   tipo_persona_id: number;
 }

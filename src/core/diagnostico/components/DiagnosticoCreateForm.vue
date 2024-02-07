@@ -52,7 +52,7 @@
     <base-input
       type="textarea"
       name="observaciones"
-      label="Observaciones"
+      label="Descripcion"
       class="col-xs-12 col-sm-6"
     />
   </base-form>

@@ -1,10 +1,5 @@
 <template>
-  <DatePicker
-    v-model.string="inputValue"
-    is-required
-    :popover="popover"
-    :masks="masks"
-  >
+  <DatePicker v-model.string="inputValue" :popover="popover" :masks="masks">
     <template #default="{ inputValue: x, inputEvents, togglePopover }">
       <q-input
         :model-value="x"
