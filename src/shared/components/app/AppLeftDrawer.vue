@@ -27,7 +27,7 @@
           {{ user?.nombre_completo }}
         </div>
         <div>Cargo: {{ user?.cargo }}</div>
-        <div>Establecimiento: {{ establecimiento?.nombre }}</div>
+        <!-- <div>Establecimiento: {{ establecimiento?.nombre }}</div> -->
       </div>
     </q-img>
   </q-drawer>
@@ -39,7 +39,7 @@ import { storeToRefs } from 'pinia';
 defineProps({
   leftDrawer: { required: true, type: Boolean },
 });
-const { user, establecimiento } = storeToRefs(useAuthStore());
+const { user } = storeToRefs(useAuthStore());
 </script>
 <style scoped>
 .scroll-area {

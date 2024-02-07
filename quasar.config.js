@@ -68,7 +68,7 @@ module.exports = configure(function (ctx) {
         REFRESH_TOKEN: 'refresh_token',
         PROFILE_COMPLETE: 'profile_complete',
         API_URL: ctx.dev
-          ? 'http://localhost:8000/api'
+          ? 'http://localhost:8001/api'
           : 'https://sgecdls.dirislimasur.gob.pe/api',
       },
       // rawDefine: {}
@@ -92,12 +92,12 @@ module.exports = configure(function (ctx) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
     devServer: {
-      https: false,
+      https: true,
       open: true, // opens browser window automatically
       proxy: {
         // Using the proxy instance
         '/api/v1/': {
-          target: 'http://localhost:8000/api/v1/',
+          target: 'http://localhost/api/v1/',
           secure: false,
           changeOrigin: true,
         },

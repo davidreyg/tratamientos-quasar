@@ -309,9 +309,9 @@ const onSubmit = handleSubmit(async (values) => {
     });
   } else {
     Swal.fire({
-      title: 'Error!',
+      title: 'Información!',
       text: 'No se encontro el paciente indicado!',
-      icon: 'warning',
+      icon: 'info',
     });
   }
 });

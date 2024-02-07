@@ -10,7 +10,7 @@
         @click="emit('toggleDrawer')"
       />
 
-      <q-toolbar-title>
+      <q-toolbar-title class="text-h6">
         <!-- <q-avatar>
           <q-img src="/icons/favicon-128x128.png" />
         </q-avatar> -->
