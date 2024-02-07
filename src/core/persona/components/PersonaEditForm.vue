@@ -128,11 +128,6 @@ const validationSchema = object().shape({
   fecha_nacimiento: string().trim().required().label('Fecha de Nacimiento'),
   telefono: number()
     .typeError('Teléfono debe ser un numero')
-    .test(
-      'len',
-      'Teléfono debe tener 9 dígitos',
-      (val) => val?.toString().length === 9
-    )
     .integer()
     .positive()
     .required()
@@ -143,12 +138,7 @@ const validationSchema = object().shape({
     .positive()
     .required()
     .label('Edad'),
-  historia_clinica: number()
-    .typeError('Historia Clinica debe ser un numero')
-    .integer()
-    .positive()
-    .required()
-    .label('Historia Clinica'),
+  historia_clinica: string().trim().required().label('Historia Clinica'),
   sexo: string().required().label('Sexo'),
 });
 const { handleSubmit, setErrors } = useForm<PersonaRequest>({

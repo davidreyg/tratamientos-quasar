@@ -13,7 +13,7 @@ export interface Persona {
   sexo: string;
   direccion: string;
   telefono: number;
-  historia_clinica: number;
+  historia_clinica: string;
   tipo_documento: string;
   tipo_persona: string;
   real_id: number;
