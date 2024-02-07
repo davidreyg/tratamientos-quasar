@@ -20,6 +20,7 @@
     "@supercharge/sttp": "^1.4.0",
     "@vueuse/core": "^10.6.1",
     "@vueuse/router": "^10.6.1",
+    "https": "^1.0.0",
     "lottie-web-vue": "^2.0.7",
     "luxon": "^3.4.4",
     "moment": "^2.29.4",

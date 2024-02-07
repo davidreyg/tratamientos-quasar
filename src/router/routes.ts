@@ -1,3 +1,4 @@
+import DiagnosticoCreate from 'core/diagnostico/pages/DiagnosticoCreate.vue';
 import MainLayout from 'shared/layouts/MainLayout.vue';
 import { auth, guest, profile } from 'shared/middlewares';
 import { RouteRecordRaw } from 'vue-router';
@@ -22,8 +23,7 @@ const routes: RouteRecordRaw[] = [
           {
             path: '',
             name: 'diagnosticos.index',
-            component: () =>
-              import('core/diagnostico/pages/DiagnosticoCreate.vue'),
+            component: DiagnosticoCreate,
           },
           // {
           //   path: 'editar-diagnostico',

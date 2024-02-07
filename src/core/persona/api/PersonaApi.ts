@@ -1,7 +1,7 @@
 import { sttpClient } from 'shared/api';
 import { Persona } from '../models';
+import { Reniec } from '../models/Reniec';
 import { PersonaRequest } from '../requests';
-
 export class PersonaApi {
   private static _api = sttpClient;
   private static _endpoint = '/pacientes';
@@ -11,6 +11,10 @@ export class PersonaApi {
       search: `numero_documento:${numero_documento}`,
       searchJoin: 'and',
     });
+  }
+
+  static fetchReniecByDNI(numero_documento: number) {
+    return PersonaApi._api.get<Reniec>(`/personas/reniec/${numero_documento}`);
   }
 
   static fetchMedicos() {

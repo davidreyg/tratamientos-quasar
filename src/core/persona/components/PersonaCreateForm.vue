@@ -1,5 +1,33 @@
 <template>
   <base-form :loading="isLoading" @submit="onSubmit" @cancel="$emit('cancel')">
+    <base-select
+      :options="arr_tipo_documentos"
+      name="tipo_documento_id"
+      class="col-xs-12 col-sm-4"
+      label="Tipo de Documento"
+      :loading="false"
+      required
+    />
+    <base-input
+      name="numero_documento"
+      label="N° de Documento"
+      class="col-xs-12 col-sm-4"
+      required
+    >
+      <template #after>
+        <q-btn
+          v-if="values.tipo_documento_id === 1"
+          round
+          dense
+          icon="search"
+          color="primary"
+          :loading="reniecLoading"
+          @click="searchReniec"
+        >
+          <q-tooltip> Buscar en RENIEC </q-tooltip>
+        </q-btn>
+      </template>
+    </base-input>
     <base-input
       name="nombres"
       label="Nombres"
@@ -18,20 +46,7 @@
       class="col-xs-12 col-sm-4"
       required
     />
-    <base-select
-      :options="arr_tipo_documentos"
-      name="tipo_documento_id"
-      class="col-xs-12 col-sm-4"
-      label="Tipo de Documento"
-      :loading="false"
-      required
-    />
-    <base-input
-      name="numero_documento"
-      label="N° de Documento"
-      class="col-xs-12 col-sm-4"
-      required
-    />
+
     <div class="col-xs-12 col-sm-4">
       <base-date-picker
         required
@@ -72,19 +87,21 @@
 </template>
 
 <script setup lang="ts">
+import { DateTime } from 'luxon';
 import BaseDatePicker from 'shared/components/base/BaseDatePicker.vue';
 import BaseForm from 'shared/components/base/BaseForm.vue';
 import BaseInput from 'shared/components/base/BaseInput.vue';
 import BaseRadio from 'shared/components/base/BaseRadio.vue';
 import BaseSelect from 'shared/components/base/BaseSelect.vue';
-import { NotifyUtils } from 'shared/utils';
+import { NotifyUtils, useLuxonFormat } from 'shared/utils';
 import { useForm } from 'vee-validate';
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import { number, object, string } from 'yup';
 import {
   usePacienteCreateMutation,
   useTipoDocumentoFetchAllQuery,
 } from '../composables';
+import { usePersonaReniecQuery } from '../composables/personaReniecQuery';
 import { PersonaRequest } from '../requests';
 
 const emit = defineEmits<{
@@ -140,9 +157,10 @@ const validationSchema = object().shape({
     .label('Historia Clinica'),
   sexo: string().required().label('Sexo'),
 });
-const { handleSubmit, setFieldValue, setErrors } = useForm<PersonaRequest>({
-  validationSchema,
-});
+const { handleSubmit, setFieldValue, setErrors, values, resetForm } =
+  useForm<PersonaRequest>({
+    validationSchema,
+  });
 
 const { isLoading, mutate } = usePacienteCreateMutation();
 setFieldValue('tipo_persona_id', 2);
@@ -157,6 +175,38 @@ const onSubmit = handleSubmit(async (values) => {
     },
   });
 });
+
+const { fetch, reniec, isLoading: reniecLoading } = usePersonaReniecQuery();
+const searchReniec = async () => {
+  await fetch(values.numero_documento);
+  if (reniec.value) {
+    setFieldValue('nombres', reniec.value.nombres);
+    setFieldValue('apellido_paterno', reniec.value.apellido_paterno);
+    setFieldValue('apellido_materno', reniec.value.apellido_materno);
+    setFieldValue('fecha_nacimiento', reniec.value.fecha_nacimiento); //17/10/1980
+    setFieldValue('direccion', reniec.value.direccion);
+    setFieldValue('sexo', reniec.value.sexo === '1' ? 'Masculino' : 'Femenino');
+    var formattedDate = reniec.value.fecha_nacimiento.split('/');
+    const n = DateTime.local(
+      Number(formattedDate[2]),
+      Number(formattedDate[1]),
+      Number(formattedDate[0])
+    );
+    if (n.isValid) {
+      setFieldValue('fecha_nacimiento', n.toISODate());
+    }
+  } else {
+    resetForm();
+  }
+};
+//Calcular edad a partir de la fecha de nacimiento
+const { calcularEdad } = useLuxonFormat();
+watch(
+  () => values.fecha_nacimiento,
+  (fecha) => {
+    setFieldValue('edad', calcularEdad(fecha as string));
+  }
+);
 </script>
 
 <style scoped></style>
