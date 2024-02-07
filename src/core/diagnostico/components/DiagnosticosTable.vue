@@ -5,36 +5,78 @@
     row-key="id"
     :loading="false"
   >
-    <template #body-cell-actions="props">
-      <q-td class="text-right">
-        <q-btn
-          flat
-          color="primary"
-          icon="fas fa-check"
-          round
-          padding="0"
-          @click="$emit('select', props.key)"
-        />
-      </q-td>
+    <template #header="props">
+      <q-tr :props="props">
+        <q-th auto-width />
+        <q-th v-for="col in props.cols" :key="col.name" :props="props">
+          {{ col.label }}
+        </q-th>
+      </q-tr>
     </template>
-    <template #body-cell-enfermedades="props">
-      <q-td class="text-left">
-        <ul>
-          <li v-for="(enfermedad, index) in props.value" :key="index">
-            {{ enfermedad }}
-          </li>
-        </ul>
-      </q-td>
-    </template>
-    <template #body-cell-estado="props">
-      <q-td class="text-center">
-        <q-badge
-          :color="props.value ? 'positive' : 'negative'"
-          rounded
-          class="q-mr-sm"
-          :label="props.value ? 'Activo' : 'Inactivo'"
-        />
-      </q-td>
+    <template #body="props">
+      <q-tr :props="props">
+        <q-td auto-width>
+          <q-btn
+            size="sm"
+            color="accent"
+            round
+            dense
+            :icon="props.expand ? 'remove' : 'add'"
+            @click="props.expand = !props.expand"
+          />
+        </q-td>
+        <q-td
+          v-for="col in props.cols"
+          :key="col.name"
+          :props="props"
+          auto-width
+        >
+          <q-btn
+            v-if="col.name === 'actions'"
+            flat
+            color="primary"
+            icon="fas fa-check"
+            round
+            padding="0"
+            @click="$emit('select', props.key)"
+          />
+          <q-badge
+            v-else-if="col.name === 'estado'"
+            :color="col.value ? 'positive' : 'negative'"
+            rounded
+            class="q-mr-sm"
+            :label="col.value ? 'Activo' : 'Inactivo'"
+          />
+          <ul v-else-if="col.name === 'enfermedades'">
+            <li v-for="(enfermedad, index) in col.value" :key="index">
+              {{ enfermedad }}
+            </li>
+          </ul>
+          <div v-else>{{ col.value }}</div>
+        </q-td>
+      </q-tr>
+      <q-tr v-show="props.expand" :props="props">
+        <q-td colspan="100%">
+          <div class="row">
+            <div class="col-xs-12 col-sm-6">
+              <q-list dense>
+                <q-item>
+                  <q-item-section>Establecimiento:</q-item-section>
+                  <q-item-section side>
+                    {{ props.row.establecimiento.data.nombre }}
+                  </q-item-section>
+                </q-item>
+                <q-item>
+                  <q-item-section>Observaciones:</q-item-section>
+                  <q-item-section side>
+                    {{ props.row.motivo_finalizacion }}
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </div>
+          </div>
+        </q-td>
+      </q-tr>
     </template>
   </q-table>
 </template>
@@ -55,10 +97,11 @@ defineEmits<{
 const { formatDate } = useLuxonFormat();
 const columns: QTable['columns'] = [
   {
-    name: 'establecimiento',
-    align: 'left',
-    label: 'Establecimiento',
-    field: (row) => row.establecimiento.data.nombre,
+    name: 'fecha',
+    align: 'center',
+    label: 'Fecha',
+    field: 'created_at',
+    format: (val: string) => formatDate(val),
   },
   {
     name: 'enfermedades',
@@ -75,19 +118,6 @@ const columns: QTable['columns'] = [
     align: 'center',
     label: 'Descripcion',
     field: 'observaciones',
-  },
-  {
-    name: 'fecha',
-    align: 'center',
-    label: 'Fecha',
-    field: 'created_at',
-    format: (val: string) => formatDate(val),
-  },
-  {
-    name: 'observaciones',
-    align: 'center',
-    label: 'Observaciones',
-    field: 'motivo_finalizacion',
   },
   {
     name: 'estado',
