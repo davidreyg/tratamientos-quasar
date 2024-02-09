@@ -18,7 +18,7 @@
     </div>
     <base-select
       :options="arr_medicos"
-      name="medico_id"
+      name="empleado_id"
       label="Medico"
       class="col-xs-12 col-sm-4"
     />
@@ -115,8 +115,8 @@
 <script setup lang="ts">
 import { useComplicacionFetchAllQuery } from 'core/complicacion';
 import { useManageEnfermedadesArray } from 'core/diagnostico';
+import { useEmpleadoFetchAllMedicosQuery } from 'core/empleado';
 import { useMedicamentoFetchAllQuery } from 'core/medicamento';
-import { useMedicoFetchAllQuery } from 'core/persona';
 import { DateTime } from 'luxon';
 import { QSelectOption } from 'quasar';
 import BaseDatePicker from 'shared/components/base/BaseDatePicker.vue';
@@ -146,7 +146,7 @@ const emit = defineEmits<{
   (e: 'cancel'): void;
 }>();
 
-const { data: medicos } = useMedicoFetchAllQuery();
+const { data: medicos } = useEmpleadoFetchAllMedicosQuery();
 const { data: medicamentos } = useMedicamentoFetchAllQuery();
 const { data: complicaciones } = useComplicacionFetchAllQuery();
 
@@ -186,7 +186,7 @@ const arr_complicaciones = computed(() => {
 });
 const validationSchema = object().shape({
   diagnostico_id: string().trim().required().label('Diagnostico'),
-  medico_id: string().trim().required().label('Medico'),
+  empleado_id: string().trim().required().label('Medico'),
   fecha_inicio: string().required().label('Fecha Inicio'),
   observaciones: string().nullable().label('Observaciones'),
   fecha_fin: string().required().label('Fecha Fin'),
@@ -232,7 +232,7 @@ watch(
   () => props.ultimoControl,
   (newValue) => {
     if (newValue) {
-      setFieldValue('medico_id', newValue.medico.data.id);
+      setFieldValue('empleado_id', newValue.medico.data.id);
       newValue.medicamentos.data.forEach((v) => {
         push({ label: v.nombre, value: v.id });
       });

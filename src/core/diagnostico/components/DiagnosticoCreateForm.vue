@@ -8,7 +8,7 @@
     />
     <base-select
       :options="arr_medicos"
-      name="medico_id"
+      name="empleado_id"
       label="Medico"
       class="col-xs-12 col-sm-6"
     />
@@ -59,9 +59,9 @@
 </template>
 
 <script setup lang="ts">
+import { useEmpleadoFetchAllMedicosQuery } from 'core/empleado';
 import { useEnfermedadFetchAllQuery } from 'core/enfermedad';
 import { useFinanciamientoFetchAllQuery } from 'core/financiamiento';
-import { useMedicoFetchAllQuery } from 'core/persona';
 import { QSelectOption } from 'quasar';
 import BaseForm from 'shared/components/base/BaseForm.vue';
 import BaseInput from 'shared/components/base/BaseInput.vue';
@@ -87,7 +87,7 @@ const emit = defineEmits<{
 }>();
 
 const { data: financiamientos } = useFinanciamientoFetchAllQuery();
-const { data: medicos } = useMedicoFetchAllQuery();
+const { data: medicos } = useEmpleadoFetchAllMedicosQuery();
 const { data: enfermedades } = useEnfermedadFetchAllQuery();
 const arr_financiamientos = computed(() => {
   if (financiamientos.value) {
@@ -126,7 +126,7 @@ const arr_enfermedades = computed(() => {
 const validationSchema = object().shape({
   financiamiento_id: string().trim().required().label('Financiamiento'),
   paciente_id: string().trim().required().label('Paciente'),
-  medico_id: string().trim().required().label('Medico'),
+  empleado_id: string().trim().required().label('Medico'),
   observaciones: string().trim().required().max(100).label('Observaciones'),
   enfermedades: array().required().label('Enfermedades'),
 });

@@ -7,7 +7,7 @@ export const enum QueryTypes {
   GOL_ALL = 'gol-all',
   ACADEMIC_ENTITY_ALL = 'academic-entity-all',
   TIPO_DOCUMENTO_ALL = 'tipo-documento-all',
-  PERSONA_ALL = 'personas',
+  EMPLEADOS_ALL = 'empleados',
   FINANCIAMIENTO_ALL = 'financiamiento',
   ENFERMEDAD_ALL = 'enfermedades',
   DIAGNOSTICO_ALL = 'diagnosticos',

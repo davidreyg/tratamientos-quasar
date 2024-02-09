@@ -5,12 +5,12 @@ import { FetchDiagnosticosByPacienteTask } from '../tasks';
 export function useFetchDiagnosticosByPacienteQuery() {
   const diagnosticos = ref<Diagnostico[]>();
   const isLoading = ref(false);
-  const fetch = async (persona_id: string) => {
+  const fetch = async (paciente_id: string) => {
     isLoading.value = true;
     diagnosticos.value = undefined;
     try {
       diagnosticos.value = await FetchDiagnosticosByPacienteTask.run(
-        persona_id
+        paciente_id
       );
       isLoading.value = false;
     } catch (error) {

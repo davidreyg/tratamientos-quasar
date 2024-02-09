@@ -41,18 +41,18 @@
           >
             <q-card class="my-card">
               <q-card-section v-if="!isLoading">
-                <persona-edit-form
-                  v-if="persona"
-                  :persona="persona"
-                  @cancel="onCancelPersonaForm"
+                <paciente-edit-form
+                  v-if="paciente"
+                  :paciente="paciente"
+                  @cancel="onCancelPacienteForm"
                 />
-                <persona-create-form
-                  v-else-if="!persona && isPacienteFormVisible"
-                  @cancel="onCancelPersonaForm"
-                  @submit="onSubmitPersonaCreateForm"
+                <paciente-create-form
+                  v-else-if="!paciente && isPacienteFormVisible"
+                  @cancel="onCancelPacienteForm"
+                  @submit="onSubmitPacienteCreateForm"
                 />
                 <div
-                  v-if="!persona && !isPacienteFormVisible"
+                  v-if="!paciente && !isPacienteFormVisible"
                   class="col-12 row justify-center"
                 >
                   <div class="col-auto">
@@ -75,14 +75,14 @@
             </q-card>
           </q-expansion-item>
           <q-expansion-item
-            v-if="persona"
+            v-if="paciente"
             icon="fas fa-folder-open"
             label="Diagnóstico"
             caption="Editar"
           >
             <diagnosticos-list-modal
               v-model="isModalOpen"
-              :persona="persona"
+              :paciente="paciente"
               :diagnosticos="diagnosticos || []"
               @select="onSelectedDiagnostico"
               @add-diagnostico="onAddDiagnostico"
@@ -134,7 +134,7 @@
               <q-card-section v-else>
                 <diagnostico-create-form
                   v-if="isDiagnosticoFormVisible"
-                  :paciente-id="persona.id"
+                  :paciente-id="paciente.id"
                   @cancel="isDiagnosticoFormVisible = false"
                   @submit="onSubmitDiagnosticoCreateForm"
                 />
@@ -145,7 +145,7 @@
                 <diagnostico-edit-form
                   :diagnostico="diagnostico"
                   @cancel="onCancelDiagnosticoForm"
-                  @submit="onSubmitDiagnosticoCreateForm(persona.id)"
+                  @submit="onSubmitDiagnosticoCreateForm(paciente.id)"
                 />
               </q-card-section>
             </q-card>
@@ -237,19 +237,17 @@ import ControlCreateForm from 'core/control/components/ControlCreateForm.vue';
 import ControlEditForm from 'core/control/components/ControlEditForm.vue';
 import ControlViewForm from 'core/control/components/ControlViewForm.vue';
 import ControlesTable from 'core/control/components/ControlesTable.vue';
-import {
-  usePersonaByNumeroDocumentoQuery,
-  useTipoDocumentoFetchAllQuery,
-} from 'core/persona';
-import PersonaCreateForm from 'core/persona/components/PersonaCreateForm.vue';
-import PersonaEditForm from 'core/persona/components/PersonaEditForm.vue';
+import { usePacienteByNumeroDocumentoQuery } from 'core/paciente';
+import PacienteCreateForm from 'core/paciente/components/PacienteCreateForm.vue';
+import PacienteEditForm from 'core/paciente/components/PacienteEditForm.vue';
+import { useTipoDocumentoFetchAllQuery } from 'core/tipo-documento';
 import BaseInput from 'shared/components/base/BaseInput.vue';
 import BasePage from 'shared/components/base/BasePage.vue';
 import BaseSelect from 'shared/components/base/BaseSelect.vue';
 import Swal from 'sweetalert2';
 import { useForm } from 'vee-validate';
 import { computed, ref } from 'vue';
-import { number, object } from 'yup';
+import { number, object, string } from 'yup';
 import DiagnosticoCreateForm from '../components/DiagnosticoCreateForm.vue';
 import DiagnosticoEditForm from '../components/DiagnosticoEditForm.vue';
 import DiagnosticosListModal from '../components/DiagnosticosListModal.vue';
@@ -276,7 +274,7 @@ const validationSchema = object().shape({
     .min(8)
     .required()
     .label('Número de Documento'),
-  tipo_documento_id: number().required().label('Tipo de Documento'),
+  tipo_documento_id: string().required().label('Tipo de Documento'),
 });
 const { handleSubmit, resetForm } = useForm<{ numero_documento: number }>({
   validationSchema,
@@ -285,17 +283,17 @@ const { handleSubmit, resetForm } = useForm<{ numero_documento: number }>({
 const {
   fetch,
   fetchDiagnosticos,
-  persona,
+  paciente,
   isLoading,
   diagnosticos,
   isDiagnosticosEmpty,
-} = usePersonaByNumeroDocumentoQuery();
+} = usePacienteByNumeroDocumentoQuery();
 
 const onSubmit = handleSubmit(async (values) => {
-  onCancelPersonaForm();
+  onCancelPacienteForm();
   await fetch(values.numero_documento);
 
-  if (persona.value) {
+  if (paciente.value) {
     Swal.fire({
       title: 'Exito!',
       text: 'Paciente encontrado correctamente!',
@@ -316,16 +314,16 @@ const onSubmit = handleSubmit(async (values) => {
   }
 });
 const isModalOpen = ref(false);
-const onCancelPersonaForm = () => {
+const onCancelPacienteForm = () => {
   diagnostico.value = undefined;
-  persona.value = undefined;
+  paciente.value = undefined;
   isPacienteFormVisible.value = false;
   isDiagnosticoFormVisible.value = false;
   onCancelDiagnosticoForm();
   resetForm();
 };
-const onSubmitPersonaCreateForm = async (numero_documento: number) => {
-  onCancelPersonaForm();
+const onSubmitPacienteCreateForm = async (numero_documento: number) => {
+  onCancelPacienteForm();
   await fetch(numero_documento);
 };
 

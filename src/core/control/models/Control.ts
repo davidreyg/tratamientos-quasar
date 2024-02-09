@@ -1,6 +1,6 @@
 import { Complicacion } from 'core/complicacion';
+import { Empleado } from 'core/empleado';
 import { Medicamento } from 'core/medicamento';
-import { Persona } from 'core/persona';
 
 export interface Control {
   id: string;
@@ -11,7 +11,7 @@ export interface Control {
   fecha_inicio: string | Date;
   fecha_fin: string | Date;
   medico: {
-    data: Persona;
+    data: Empleado;
   };
   medicamentos: {
     data: Medicamento[];

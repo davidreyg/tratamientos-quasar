@@ -35,11 +35,11 @@
           borderless
           readonly
           :model-value="
-            persona.nombres +
+            paciente.nombres +
             ' ' +
-            persona.apellido_paterno +
+            paciente.apellido_paterno +
             ' ' +
-            persona.apellido_materno
+            paciente.apellido_materno
           "
           label="Nombre Completo"
           class="col-6"
@@ -47,21 +47,21 @@
         <q-input
           borderless
           readonly
-          :model-value="persona.historia_clinica"
+          :model-value="paciente.historia_clinica"
           label="Historia Clinica"
           class="col-6"
         />
         <q-input
           borderless
           readonly
-          :model-value="persona.tipo_documento"
+          :model-value="paciente.tipo_documento"
           label="Tipo de Documento"
           class="col-6"
         />
         <q-input
           borderless
           readonly
-          :model-value="persona.numero_documento"
+          :model-value="paciente.numero_documento"
           label="Numero de Documento"
           class="col-6"
         />
@@ -78,14 +78,14 @@
 
 <script setup lang="ts">
 import { useVModel } from '@vueuse/core';
-import { Persona } from 'core/persona';
+import { Paciente } from 'core/paciente';
 import { NotifyUtils } from 'shared/utils';
 import { Diagnostico } from '../models';
 import DiagnosticosTable from './DiagnosticosTable.vue';
 const props = defineProps<{
   modelValue: boolean;
   diagnosticos: Diagnostico[];
-  persona: Persona;
+  paciente: Paciente;
 }>();
 
 const emit = defineEmits([

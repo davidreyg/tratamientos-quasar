@@ -1,7 +1,8 @@
+import { Empleado } from 'core/empleado';
 import { Enfermedad } from 'core/enfermedad';
 import { Establecimiento } from 'core/establecimiento';
 import { Financiamiento } from 'core/financiamiento';
-import { Persona } from 'core/persona';
+import { Paciente } from 'core/paciente';
 
 export interface Diagnostico {
   id: string;
@@ -15,10 +16,10 @@ export interface Diagnostico {
     data: Enfermedad[];
   };
   paciente: {
-    data: Persona;
+    data: Paciente;
   };
   medico: {
-    data: Persona;
+    data: Empleado;
   };
   financiamiento: {
     data: Financiamiento;
