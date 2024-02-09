@@ -74,7 +74,7 @@
             transition-hide="jump-up"
           >
             <q-card class="my-card" flat>
-              <q-list style="min-width: 100px" dense>
+              <q-list style="min-width: 100px">
                 <slot :key="props.key" name="actions">
                   <q-item clickable @click="$emit('edit', props.key)">
                     <q-item-section avatar>

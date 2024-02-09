@@ -1,4 +1,5 @@
 import DiagnosticoCreate from 'core/diagnostico/pages/DiagnosticoCreate.vue';
+import { tipoDocumentoRoutes } from 'core/tipo-documento';
 import MainLayout from 'shared/layouts/MainLayout.vue';
 import { auth, guest, profile } from 'shared/middlewares';
 import { RouteRecordRaw } from 'vue-router';
@@ -33,6 +34,7 @@ const routes: RouteRecordRaw[] = [
           // },
         ],
       },
+      ...tipoDocumentoRoutes(),
     ],
     beforeEnter: [auth, profile],
   },
