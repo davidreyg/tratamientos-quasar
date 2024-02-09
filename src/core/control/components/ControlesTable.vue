@@ -18,8 +18,8 @@
       </q-td>
     </template>
     <template #body-cell-actions="props">
-      <q-td class="text-right">
-        <q-card-actions align="center">
+      <q-td class="text-right" style="min-width: 150px">
+        <q-card-actions align="right" class="q-pa-none q-ma-none">
           <q-btn
             color="primary"
             icon="fas fa-eye"
