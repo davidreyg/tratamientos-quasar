@@ -1,15 +1,13 @@
 <template>
-  <div class="row">
-    <base-form
-      class="col-sm-6 col-xs-12 col-md-5"
-      :loading="isLoading"
-      @submit="onSubmit"
-      @cancel="$emit('cancel')"
-    >
-      <base-input name="nombre" label="Nombre" class="col-12" />
-      <base-input name="digitos" label="N° Digitos" class="col-12" />
-    </base-form>
-  </div>
+  <base-form
+    class="col-sm-6 col-xs-12 col-md-5"
+    :loading="isLoading"
+    @submit="onSubmit"
+    @cancel="$emit('cancel')"
+  >
+    <base-input name="nombre" label="Nombre" class="col-12" />
+    <base-input name="digitos" label="N° Digitos" class="col-12" />
+  </base-form>
 </template>
 
 <script setup lang="ts">

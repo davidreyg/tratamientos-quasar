@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="col-12 row q-col-gutter-lg">
-      <div v-for="x in 5" :key="x" class="col-12">
+      <div v-for="x in inputs || 5" :key="x" class="col-12">
         <q-skeleton type="QInput" />
       </div>
     </div>
@@ -12,3 +12,11 @@
     </q-card-actions>
   </div>
 </template>
+<script setup lang="ts">
+defineProps({
+  inputs: {
+    type: Number,
+    default: undefined,
+  },
+});
+</script>

@@ -3,16 +3,19 @@
     <div class="row justify-between q-mb-lg">
       <div class="col-8 text-h5 text-bold">{{ title }}</div>
       <!-- //FIXME: Slot not used... -->
-      <div v-if="withAdd" class="col-auto q-gutter-x-sm">
-        <q-btn
-          color="primary"
-          label="Nuevo"
-          icon-right="fas fa-file-circle-plus"
-          no-caps
-          outline
-          @click="$emit('add')"
-        />
-        <slot name="top-right"></slot>
+      <div class="col-auto">
+        <q-card-actions align="right">
+          <q-btn
+            v-if="withAdd"
+            color="primary"
+            label="Nuevo"
+            icon-right="fas fa-file-circle-plus"
+            no-caps
+            outline
+            @click="$emit('add')"
+          />
+          <slot name="top-right"> </slot>
+        </q-card-actions>
       </div>
     </div>
     <slot name="content">Contenido</slot>
