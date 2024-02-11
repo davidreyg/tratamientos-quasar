@@ -173,6 +173,7 @@ const validationSchema = object().shape({
   apellido_paterno: string().trim().required().label('Apellido Paterno'),
   apellido_materno: string().trim().required().label('Apellido Materno'),
   tipo_documento_id: string().required().label('Tipo de Documento'),
+  direccion: string().trim().required().label('Direccion'),
   numero_documento: number()
     .typeError('Debe ingresar un número')
     .required()
