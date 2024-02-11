@@ -17,4 +17,8 @@ export class EmpleadoApi {
   static async update(data: EmpleadoRequest, id: string): Promise<void> {
     await EmpleadoApi._api.patch(`${EmpleadoApi._endpoint}/${id}`, data);
   }
+
+  static async delete(id: number): Promise<void> {
+    await EmpleadoApi._api.delete(`${EmpleadoApi._endpoint}/${id}`);
+  }
 }

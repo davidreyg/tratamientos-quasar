@@ -30,6 +30,7 @@ export interface Query {
   search?: string;
   searchJoin?: string;
   include?: string;
+  fetchAll?: boolean;
 }
 export interface ApiatoResponse<T> {
   data: T;
