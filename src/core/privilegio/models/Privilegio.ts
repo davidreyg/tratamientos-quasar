@@ -8,4 +8,5 @@ export interface Privilegio {
   ruta?: string;
   icono: string;
   parent_id?: number;
+  checked?: boolean;
 }
