@@ -4,29 +4,31 @@
     :columns="columns"
     :data="roles"
     row-key="id"
-    :loading="isRolesLoading || isDeleteLoading"
-    @destroy-one="deleteOne"
+    :show-grid-toggle="false"
+    :loading="isRolesLoading"
   >
-    <!-- <template #actions-prepend="{ key }">
-      <q-btn
-        flat
-        round
-        color="blue-5"
-        icon="fas fa-eye"
-        :to="{
-          name: 'roles.privileges',
-          params: { id: key },
-        }"
-      />
-    </template> -->
+    <template #actions="{ key }">
+      <q-item
+        v-close-popup
+        clickable
+        @click="
+          $router.push({ name: 'roles.privilegios', params: { id: key } })
+        "
+      >
+        <q-item-section avatar>
+          <q-icon name="fas fa-clipboard-list" color="secondary" />
+        </q-item-section>
+        <q-item-section>Privilegios</q-item-section>
+      </q-item>
+      <q-separator />
+    </template>
   </base-table>
 </template>
 
 <script setup lang="ts">
 import { QTable } from 'quasar';
 import BaseTable from 'shared/components/base/BaseTable.vue';
-import { NotifyUtils } from 'shared/utils';
-import { useRoleDeleteMutation, useRoleListQuery } from '../composables';
+import { useRoleListQuery } from '../composables';
 
 const columns: QTable['columns'] = [
   {
@@ -48,18 +50,21 @@ const columns: QTable['columns'] = [
     field: 'actions',
   },
 ];
+defineEmits<{
+  destroy: [key: number];
+  editPrivileges: [key: number];
+}>();
+const { roles, isRolesLoading } = useRoleListQuery();
+// const { mutate, isLoading: isDeleteLoading } = useRoleDeleteMutation();
 
-const { roles, isRolesLoading, refetch: refetchRoles } = useRoleListQuery();
-const { mutate, isLoading: isDeleteLoading } = useRoleDeleteMutation();
-
-const deleteOne = (key: string) => {
-  mutate(key, {
-    onSuccess: () => {
-      NotifyUtils.success('Exito!');
-      refetchRoles.value();
-    },
-  });
-};
+// const deleteOne = (key: string) => {
+//   mutate(key, {
+//     onSuccess: () => {
+//       NotifyUtils.success('Exito!');
+//       refetchRoles.value();
+//     },
+//   });
+// };
 </script>
 
 <style scoped></style>

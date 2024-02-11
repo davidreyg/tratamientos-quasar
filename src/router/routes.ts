@@ -1,4 +1,5 @@
 import DiagnosticoCreate from 'core/diagnostico/pages/DiagnosticoCreate.vue';
+import { roleRoutes } from 'core/role/role.routes';
 import { tipoDocumentoRoutes } from 'core/tipo-documento';
 import MainLayout from 'shared/layouts/MainLayout.vue';
 import { auth, guest, profile } from 'shared/middlewares';
@@ -23,7 +24,7 @@ const routes: RouteRecordRaw[] = [
         children: [
           {
             path: '',
-            name: 'diagnosticos.index',
+            name: 'diagnosticos.registrar',
             component: DiagnosticoCreate,
           },
           // {
@@ -35,6 +36,7 @@ const routes: RouteRecordRaw[] = [
         ],
       },
       ...tipoDocumentoRoutes(),
+      ...roleRoutes(),
     ],
     beforeEnter: [auth, profile],
   },

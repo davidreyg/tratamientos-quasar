@@ -1,20 +1,26 @@
 import { Establecimiento } from 'core/establecimiento';
+import { Privilegio } from 'core/privilegio/';
 import { Role } from 'core/role';
 import { User } from 'core/user';
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User>();
   // const person = ref<Person>();
-  // const modulos = ref<Modulo[]>();
+  const privilegios = ref<Privilegio[]>([]);
   const roles = ref<Role[]>();
   const establecimiento = ref<Establecimiento>();
+
+  const privilegiosPadre = computed(() =>
+    privilegios.value.filter((privilegio) => privilegio.parent_id === null)
+  );
 
   function $reset() {
     user.value = undefined;
     establecimiento.value = undefined;
     roles.value = undefined;
+    privilegios.value = [];
     // person.value = undefined;
   }
 
@@ -22,9 +28,9 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = data;
   }
 
-  // function setModulos(data: Modulo[]) {
-  //   modulos.value = data;
-  // }
+  function setPrivilegios(data: Privilegio[]) {
+    privilegios.value = data;
+  }
 
   function setEstablecimiento(data: Establecimiento) {
     establecimiento.value = data;
@@ -40,15 +46,15 @@ export const useAuthStore = defineStore('auth', () => {
 
   return {
     user,
-    // modulos,
+    privilegios,
     roles,
     // person,
     establecimiento,
     $reset,
     setUser,
     setRoles,
-    // setModulos,
-    // setPerson,
+    setPrivilegios,
+    privilegiosPadre,
     setEstablecimiento,
   };
 });

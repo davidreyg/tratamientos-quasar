@@ -5,36 +5,23 @@
     <q-scroll-area class="scroll-area">
       <q-list padding>
         <q-expansion-item
+          v-for="privilegio in privilegiosPadre"
+          :key="privilegio.id"
           clickable
-          icon="fab fa-apple"
-          label="Gestión de Diagnosticos"
+          :icon="privilegio.icono"
+          :label="privilegio.nombre"
         >
-          <q-item :to="{ name: 'diagnosticos.index' }">
+          <q-item
+            v-for="item in privilegios.filter(
+              (p) => p.parent_id == privilegio.id
+            )"
+            :key="item.id"
+            :to="{ name: item.ruta }"
+          >
             <q-item-section avatar>
-              <q-icon name="fas fa-file-lines" />
+              <q-icon :name="item.icono" />
             </q-item-section>
-            <q-item-section>Registrar Diagnóstico</q-item-section>
-          </q-item>
-        </q-expansion-item>
-        <q-expansion-item
-          clickable
-          icon="fas fa-screwdriver-wrench"
-          label="Mantenimiento"
-        >
-          <q-item :to="{ name: 'tipo-documentos.index' }">
-            <q-item-section avatar>
-              <q-icon name="fas fa-address-card" />
-            </q-item-section>
-            <q-item-section>Tipo de Documento</q-item-section>
-          </q-item>
-        </q-expansion-item>
-        <q-expansion-item clickable icon="fas fa-chart-pie" label="Reportes">
-          <q-item>
-            ...en proceso
-            <!-- <q-item-section avatar>
-              <q-icon name="fab fa-500px" />
-            </q-item-section>
-            <q-item-section>Registrar Diagnóstico</q-item-section> -->
+            <q-item-section>{{ item.nombre }} </q-item-section>
           </q-item>
         </q-expansion-item>
       </q-list>
@@ -60,7 +47,7 @@ import { storeToRefs } from 'pinia';
 defineProps({
   leftDrawer: { required: true, type: Boolean },
 });
-const { user } = storeToRefs(useAuthStore());
+const { user, privilegiosPadre, privilegios } = storeToRefs(useAuthStore());
 </script>
 <style scoped>
 .scroll-area {

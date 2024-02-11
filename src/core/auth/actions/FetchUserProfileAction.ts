@@ -12,6 +12,7 @@ export class FetchUserProfileAction {
         user: user.user.data,
         roles: user.roles.data,
         establecimiento: user.establecimiento.data,
+        privilegios: user.privilegios.data,
       });
       APP_LOADING.value = false;
     } catch (error) {
