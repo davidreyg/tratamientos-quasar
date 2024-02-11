@@ -14,11 +14,17 @@ export class EmpleadoApi {
     await EmpleadoApi._api.post(`${EmpleadoApi._endpoint}`, data);
   }
 
-  static async update(data: EmpleadoRequest, id: string): Promise<void> {
+  static async update(data: EmpleadoRequest, id: number): Promise<void> {
     await EmpleadoApi._api.patch(`${EmpleadoApi._endpoint}/${id}`, data);
   }
 
   static async delete(id: number): Promise<void> {
     await EmpleadoApi._api.delete(`${EmpleadoApi._endpoint}/${id}`);
+  }
+
+  static async fetchById(id: number) {
+    return await EmpleadoApi._api.get<Empleado>(
+      `${EmpleadoApi._endpoint}/${id}`
+    );
   }
 }

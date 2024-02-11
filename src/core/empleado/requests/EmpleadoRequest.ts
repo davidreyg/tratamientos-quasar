@@ -13,4 +13,5 @@ export interface EmpleadoRequest {
   historia_clinica: string;
   tipo_documento_id: string;
   cargo_id: number;
+  establecimiento_id: number;
 }

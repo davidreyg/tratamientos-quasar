@@ -1,6 +1,7 @@
 <template>
   <base-form :loading="isLoading" @submit="onSubmit" @cancel="$emit('cancel')">
     <base-select
+      v-if="arr_tipo_documentos.length > 0"
       :options="arr_tipo_documentos"
       name="tipo_documento_id"
       class="col-xs-12 col-sm-4"
@@ -28,6 +29,22 @@
         </q-btn>
       </template>
     </base-input>
+    <base-select
+      :options="arr_establecimientos"
+      name="establecimiento_id"
+      class="col-xs-12 col-sm-4"
+      label="Establecimiento"
+      :loading="false"
+      required
+    />
+    <base-select
+      :options="arr_cargos"
+      name="cargo_id"
+      class="col-xs-12 col-sm-4"
+      label="Cargo"
+      :loading="false"
+      required
+    />
     <base-input
       name="nombres"
       label="Nombres"
@@ -67,12 +84,7 @@
       required
     />
     <base-input name="edad" label="Edad" class="col-xs-12 col-sm-4" required />
-    <base-input
-      name="historia_clinica"
-      label="Historia Clínica"
-      class="col-xs-12 col-sm-4"
-      required
-    />
+
     <base-radio
       required
       :options="[
@@ -87,6 +99,13 @@
 </template>
 
 <script setup lang="ts">
+import { useCargoFetchAllQuery } from 'core/cargo';
+import {
+  Empleado,
+  EmpleadoRequest,
+  useEmpleadoUpdateMutation,
+} from 'core/empleado';
+import { useEstablecimientoFetchAllQuery } from 'core/establecimiento';
 import { useTipoDocumentoFetchAllQuery } from 'core/tipo-documento';
 import { DateTime } from 'luxon';
 import BaseDatePicker from 'shared/components/base/BaseDatePicker.vue';
@@ -94,19 +113,21 @@ import BaseForm from 'shared/components/base/BaseForm.vue';
 import BaseInput from 'shared/components/base/BaseInput.vue';
 import BaseRadio from 'shared/components/base/BaseRadio.vue';
 import BaseSelect from 'shared/components/base/BaseSelect.vue';
-import { usePersonaReniecQuery } from 'shared/composables';
-import { NotifyUtils, useLuxonFormat } from 'shared/utils';
+import { usePersonaReniecQuery } from 'shared/index';
+import { useLuxonFormat } from 'shared/utils';
 import { useForm } from 'vee-validate';
-import { computed, watch } from 'vue';
+import { PropType, computed, watch } from 'vue';
 import { number, object, string } from 'yup';
-import { usePacienteCreateMutation } from '../composables';
-import { PacienteRequest } from '../requests';
-
 const emit = defineEmits<{
-  (e: 'submit', numero_documento: number): void;
-  (e: 'cancel'): void;
+  submit: [];
+  cancel: [];
 }>();
-
+const props = defineProps({
+  empleado: {
+    type: Object as PropType<Empleado>,
+    required: true,
+  },
+});
 const { data: tipo_documentos } = useTipoDocumentoFetchAllQuery();
 
 const arr_tipo_documentos = computed(() => {
@@ -114,7 +135,34 @@ const arr_tipo_documentos = computed(() => {
     return tipo_documentos.value.map((val) => {
       return {
         label: val.nombre,
-        value: val.id,
+        value: Number(val.id),
+      };
+    });
+  }
+  return [];
+});
+
+const { data: establecimientos } = useEstablecimientoFetchAllQuery();
+
+const arr_establecimientos = computed(() => {
+  if (establecimientos.value) {
+    return establecimientos.value.map((val) => {
+      return {
+        label: val.nombre,
+        value: Number(val.id),
+      };
+    });
+  }
+  return [];
+});
+const { data: cargos } = useCargoFetchAllQuery();
+
+const arr_cargos = computed(() => {
+  if (cargos.value) {
+    return cargos.value.map((val) => {
+      return {
+        label: val.nombre,
+        value: Number(val.id),
       };
     });
   }
@@ -130,7 +178,6 @@ const isDniSelected = computed(() => {
   }
   return false;
 });
-
 const validationSchema = object().shape({
   nombres: string().trim().required().label('Nombres'),
   apellido_paterno: string().trim().required().label('Apellido Paterno'),
@@ -153,26 +200,34 @@ const validationSchema = object().shape({
     .positive()
     .required()
     .label('Edad'),
-  historia_clinica: string().required().label('Historia Clinica'),
+  // historia_clinica: string().required().label('Historia Clinica'),
   sexo: string().required().label('Sexo'),
 });
-const { handleSubmit, setFieldValue, setErrors, values, resetForm } =
-  useForm<PacienteRequest>({
+
+const { handleSubmit, setErrors, values, setFieldValue, resetForm } =
+  useForm<EmpleadoRequest>({
     validationSchema,
+    initialValues: props.empleado,
   });
 
-const { isLoading, mutateAsync } = usePacienteCreateMutation();
-const onSubmit = handleSubmit(async (values) => {
-  await mutateAsync(values, {
-    onSuccess: () => {
-      NotifyUtils.success('Paciente registrado correctamente.');
-      emit('submit', values.numero_documento);
-    },
-    onError: (err) => {
-      setErrors(err.data.errors);
-    },
-  });
-});
+const { isLoading, mutate } = useEmpleadoUpdateMutation();
+
+const onSubmit = handleSubmit(
+  async (values) => {
+    mutate(
+      { data: values, id: props.empleado.id },
+      {
+        onSuccess: () => {
+          emit('submit');
+        },
+        onError: (err) => {
+          setErrors(err.data.errors);
+        },
+      }
+    );
+  },
+  (w) => console.log(w)
+);
 
 const { fetch, reniec, isLoading: reniecLoading } = usePersonaReniecQuery();
 const searchReniec = async () => {
@@ -207,5 +262,3 @@ watch(
   }
 );
 </script>
-
-<style scoped></style>

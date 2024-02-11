@@ -11,19 +11,19 @@ export const empleadoRoutes = (): RouteRecordRaw[] => [
         component: () => import('./pages/EmpleadoListPage.vue'),
         meta: { title: 'Empleados', action: 'new' },
       },
-      // {
-      //   path: 'crear',
-      //   name: 'empleados.create',
-      //   component: () => import('./pages/EmpleadoCreatePage.vue'),
-      //   meta: { title: 'Nuevo Empleado', action: 'back' },
-      // },
-      // {
-      //   path: ':id/privilegios',
-      //   name: 'empleados.privilegios',
-      //   component: () => import('./pages/EmpleadoPrivilegiosPage.vue'),
-      //   props: (route) => ({ id: Number(route.params.id) }),
-      //   meta: { title: 'Privilegios del Rol', action: 'back' },
-      // },
+      {
+        path: 'crear',
+        name: 'empleados.create',
+        component: () => import('./pages/EmpleadoCreatePage.vue'),
+        meta: { title: 'Nuevo Empleado', action: 'back' },
+      },
+      {
+        path: ':id/edit',
+        name: 'empleados.edit',
+        component: () => import('./pages/EmpleadoEditPage.vue'),
+        props: (route) => ({ id: Number(route.params.id) }),
+        meta: { title: 'Editar Empleado', action: 'back' },
+      },
     ],
   },
 ];
