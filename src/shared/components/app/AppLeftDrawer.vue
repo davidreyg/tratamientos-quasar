@@ -16,7 +16,8 @@
               (p) => p.parent_id == privilegio.id
             )"
             :key="item.id"
-            :to="{ name: item.ruta }"
+            :to="item.ruta"
+            exact
           >
             <q-item-section avatar>
               <q-icon :name="item.icono" />

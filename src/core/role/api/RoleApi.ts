@@ -16,6 +16,11 @@ export class RoleApi {
       `${RoleApi._endpoint}/${id}/privilegios`
     );
   }
+  static async syncRolePrivilegios(id: number, data: string[]) {
+    await RoleApi._api.post(`${RoleApi._endpoint}/${id}/privilegios`, {
+      privilegios_ids: data,
+    });
+  }
 
   static async store(data: CreateRoleRequest) {
     return await RoleApi._api.post(RoleApi._endpoint, data);
