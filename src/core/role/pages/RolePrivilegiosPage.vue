@@ -70,7 +70,7 @@ const props = defineProps({
 const { data, isSuccess, isFetching } = usePrivilegioFetchAllQuery();
 const { data: privilegiosDelRol } = useRoleFetchPrivilegiosQuery(
   props.id,
-  !!data.value
+  !!isFetching.value
 );
 const ticked = ref<string[]>([]);
 const xd = computed(() => {
