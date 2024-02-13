@@ -1,10 +1,18 @@
 import { sttpClient } from 'shared/api';
+import { Query } from 'shared/utils';
 import { Diagnostico } from '../models';
 import { DiagnosticoCreateRequest } from '../requests';
 
 export class DiagnosticoApi {
   private static _api = sttpClient;
   private static _endpoint = 'diagnosticos';
+
+  static fetchAll(query?: Query) {
+    return DiagnosticoApi._api.get<Diagnostico[]>(
+      `${DiagnosticoApi._endpoint}`,
+      query
+    );
+  }
 
   static async create(data: DiagnosticoCreateRequest) {
     await DiagnosticoApi._api.post(DiagnosticoApi._endpoint, data);
@@ -30,5 +38,9 @@ export class DiagnosticoApi {
       `${DiagnosticoApi._endpoint}/${id}/finalizar`,
       { motivo_finalizacion }
     );
+  }
+
+  static async delete(id: number) {
+    await DiagnosticoApi._api.delete(`${DiagnosticoApi._endpoint}/${id}`);
   }
 }

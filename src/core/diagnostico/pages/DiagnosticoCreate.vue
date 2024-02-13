@@ -1,234 +1,226 @@
 <template>
-  <base-page title="Registrar Atención" :loading="false">
-    <template #content>
-      <div class="row q-col-gutter-md">
-        <q-form
-          class="col-12 row q-col-gutter-lg items-start justify-center"
-          @submit="onSubmit"
-        >
-          <base-select
-            :options="arr_tipo_documentos"
-            name="tipo_documento_id"
-            class="col-xs-12 col-sm-4"
-            label="Tipo de Documento"
-            :loading="false"
-            required
-          />
-          <base-input
-            name="numero_documento"
-            label="N° de Documento"
-            class="col-xs-12 col-sm-4"
-            required
-          />
-          <q-card-actions class="col-auto justify-center">
-            <q-btn
-              color="primary"
-              outline
-              size="lg"
-              icon="search"
-              label="Buscar"
-              no-caps
-              type="submit"
-              :loading="isLoading"
-            />
-          </q-card-actions>
-        </q-form>
-        <div class="col-12">
-          <q-expansion-item
-            icon="fas fa-person"
-            label="Datos del Paciente"
-            caption="Editar / Crear"
-          >
-            <q-card class="my-card">
-              <q-card-section v-if="!isLoading">
-                <paciente-edit-form
-                  v-if="paciente"
-                  :paciente="paciente"
-                  @cancel="onCancelPacienteForm"
-                />
-                <paciente-create-form
-                  v-else-if="!paciente && isPacienteFormVisible"
-                  @cancel="onCancelPacienteForm"
-                  @submit="onSubmitPacienteCreateForm"
-                />
-                <div
-                  v-if="!paciente && !isPacienteFormVisible"
-                  class="col-12 row justify-center"
-                >
-                  <div class="col-auto">
-                    <q-icon name="fas fa-face-frown" size="xl" />
-                  </div>
-                  <div class="col-12 text-center text-h6">
-                    Lo sentimos. ¡No se encontró ningun paciente!
-                  </div>
-                  <q-btn
-                    class="q-mt-lg"
-                    color="primary"
-                    icon="fas fa-plus"
-                    no-caps
-                    label="Agregar nuevo paciente"
-                    outline
-                    @click="isPacienteFormVisible = !isPacienteFormVisible"
-                  />
-                </div>
-              </q-card-section>
-            </q-card>
-          </q-expansion-item>
-          <q-expansion-item
-            v-if="paciente"
-            icon="fas fa-folder-open"
-            label="Diagnóstico"
-            caption="Editar"
-          >
-            <diagnosticos-list-modal
-              v-model="isModalOpen"
+  <div class="row q-col-gutter-md">
+    <q-form
+      class="col-12 row q-col-gutter-lg items-start justify-center"
+      @submit="onSubmit"
+    >
+      <base-select
+        :options="arr_tipo_documentos"
+        name="tipo_documento_id"
+        class="col-xs-12 col-sm-4"
+        label="Tipo de Documento"
+        :loading="false"
+        required
+      />
+      <base-input
+        name="numero_documento"
+        label="N° de Documento"
+        class="col-xs-12 col-sm-4"
+        required
+      />
+      <q-card-actions class="col-auto justify-center">
+        <q-btn
+          color="primary"
+          outline
+          size="lg"
+          icon="search"
+          label="Buscar"
+          no-caps
+          type="submit"
+          :loading="isLoading"
+        />
+      </q-card-actions>
+    </q-form>
+    <div class="col-12">
+      <q-expansion-item
+        icon="fas fa-person"
+        label="Datos del Paciente"
+        caption="Editar / Crear"
+      >
+        <q-card class="my-card">
+          <q-card-section v-if="!isLoading">
+            <paciente-edit-form
+              v-if="paciente"
               :paciente="paciente"
-              :diagnosticos="diagnosticos || []"
-              @select="onSelectedDiagnostico"
-              @add-diagnostico="onAddDiagnostico"
+              @cancel="onCancelPacienteForm"
             />
-            <q-card v-if="!diagnostico" class="my-card">
-              <q-card-section
-                v-if="isDiagnosticosEmpty && !isDiagnosticoFormVisible"
-              >
-                <div class="col-12 row justify-center">
-                  <div class="col-auto">
-                    <q-icon name="fas fa-face-frown" size="xl" />
-                  </div>
-                  <div class="col-12 text-center text-h6">
-                    Lo sentimos. ¡No se encontró ningun diagnóstico!. Porfavor
-                    registre uno para empezar :)
-                  </div>
-                  <q-btn
-                    class="q-mt-lg"
-                    color="primary"
-                    icon="fas fa-plus"
-                    no-caps
-                    label="Agregar nuevo diagnostico"
-                    outline
-                    @click="
-                      isDiagnosticoFormVisible = !isDiagnosticoFormVisible
-                    "
-                  />
-                </div>
-              </q-card-section>
-              <div v-if="!isDiagnosticosEmpty && !isDiagnosticoFormVisible">
-                <div class="col-12 row justify-center">
-                  <div class="col-auto">
-                    <q-icon name="fas fa-face-grin-beam-sweat" size="xl" />
-                  </div>
-                  <div class="col-12 text-center text-h6">
-                    Por favor seleccione un diagnostico. :)
-                  </div>
-                  <q-btn
-                    class="q-mt-lg"
-                    color="primary"
-                    icon="fas fa-list-check"
-                    no-caps
-                    label="Visualizar Diagnosticos"
-                    outline
-                    @click="isModalOpen = !isModalOpen"
-                  />
-                </div>
+            <paciente-create-form
+              v-else-if="!paciente && isPacienteFormVisible"
+              @cancel="onCancelPacienteForm"
+              @submit="onSubmitPacienteCreateForm"
+            />
+            <div
+              v-if="!paciente && !isPacienteFormVisible"
+              class="col-12 row justify-center"
+            >
+              <div class="col-auto">
+                <q-icon name="fas fa-face-frown" size="xl" />
               </div>
-              <q-card-section v-else>
-                <diagnostico-create-form
-                  v-if="isDiagnosticoFormVisible"
-                  :paciente-id="paciente.id"
-                  @cancel="isDiagnosticoFormVisible = false"
-                  @submit="onSubmitDiagnosticoCreateForm"
-                />
-              </q-card-section>
-            </q-card>
-            <q-card v-else>
-              <q-card-section>
-                <diagnostico-edit-form
-                  :diagnostico="diagnostico"
-                  @cancel="onCancelDiagnosticoForm"
-                  @submit="onSubmitDiagnosticoCreateForm(paciente.id)"
-                />
-              </q-card-section>
-            </q-card>
-          </q-expansion-item>
-          <q-expansion-item
-            v-if="diagnostico"
-            icon="fas fa-list-ul"
-            label="Controles"
-            caption="Editar"
+              <div class="col-12 text-center text-h6">
+                Lo sentimos. ¡No se encontró ningun paciente!
+              </div>
+              <q-btn
+                class="q-mt-lg"
+                color="primary"
+                icon="fas fa-plus"
+                no-caps
+                label="Agregar nuevo paciente"
+                outline
+                @click="isPacienteFormVisible = !isPacienteFormVisible"
+              />
+            </div>
+          </q-card-section>
+        </q-card>
+      </q-expansion-item>
+      <q-expansion-item
+        v-if="paciente"
+        icon="fas fa-folder-open"
+        label="Diagnóstico"
+        caption="Editar"
+      >
+        <diagnosticos-list-modal
+          v-model="isModalOpen"
+          :paciente="paciente"
+          :diagnosticos="diagnosticos || []"
+          @select="onSelectedDiagnostico"
+          @add-diagnostico="onAddDiagnostico"
+        />
+        <q-card v-if="!diagnostico" class="my-card">
+          <q-card-section
+            v-if="isDiagnosticosEmpty && !isDiagnosticoFormVisible"
           >
-            <q-card v-if="!control" class="my-card">
-              <q-card-section
-                v-if="
-                  isControlesEmpty &&
-                  !isControlFormVisible &&
-                  diagnostico.estado
-                "
-              >
-                <div class="col-12 row justify-center">
-                  <div class="col-auto">
-                    <q-icon name="fas fa-face-frown" size="xl" />
-                  </div>
-                  <div class="col-12 text-center text-h6">
-                    Lo sentimos. ¡No se encontró ningun control!. Porfavor
-                    registre uno para empezar.
-                  </div>
-                  <q-btn
-                    class="q-mt-lg"
-                    color="primary"
-                    icon="fas fa-plus"
-                    no-caps
-                    label="Agregar nuevo control"
-                    outline
-                    @click="isControlFormVisible = !isControlFormVisible"
-                  />
-                </div>
-              </q-card-section>
-              <q-card-section v-if="!isControlesEmpty && !isControlFormVisible">
-                <controles-table
-                  :controles="controles"
-                  :is-diagnostico-active="diagnostico.estado"
-                  @add-control="
-                    () => {
-                      onCancelControlForm();
-                      isControlFormVisible = true;
-                    }
-                  "
-                  @edit-control="onEditControl"
-                  @delete-control="onSubmitControlCreateForm(diagnostico.id)"
-                  @view-control="onViewControlModal"
-                />
-              </q-card-section>
-              <q-card-section v-else>
-                <control-create-form
-                  v-if="isControlFormVisible"
-                  :ultimo-control="controles[controles.length - 1]"
-                  :diagnostico-id="diagnostico.id"
-                  @cancel="onCancelControlForm"
-                  @submit="onSubmitControlCreateForm"
-                />
-              </q-card-section>
-            </q-card>
-            <q-card v-else>
-              <q-card-section v-if="diagnostico.estado">
-                <control-edit-form
-                  :control="control"
-                  :diagnostico-id="diagnostico.id"
-                  @cancel="onCancelControlForm"
-                  @submit="onSubmitControlCreateForm"
-                />
-              </q-card-section>
-              <q-card-section v-else>
-                <control-view-form
-                  :control="control"
-                  @cancel="onCancelControlForm"
-                />
-              </q-card-section>
-            </q-card>
-          </q-expansion-item>
-        </div>
-      </div>
-    </template>
-  </base-page>
+            <div class="col-12 row justify-center">
+              <div class="col-auto">
+                <q-icon name="fas fa-face-frown" size="xl" />
+              </div>
+              <div class="col-12 text-center text-h6">
+                Lo sentimos. ¡No se encontró ningun diagnóstico!. Porfavor
+                registre uno para empezar :)
+              </div>
+              <q-btn
+                class="q-mt-lg"
+                color="primary"
+                icon="fas fa-plus"
+                no-caps
+                label="Agregar nuevo diagnostico"
+                outline
+                @click="isDiagnosticoFormVisible = !isDiagnosticoFormVisible"
+              />
+            </div>
+          </q-card-section>
+          <div v-if="!isDiagnosticosEmpty && !isDiagnosticoFormVisible">
+            <div class="col-12 row justify-center">
+              <div class="col-auto">
+                <q-icon name="fas fa-face-grin-beam-sweat" size="xl" />
+              </div>
+              <div class="col-12 text-center text-h6">
+                Por favor seleccione un diagnostico. :)
+              </div>
+              <q-btn
+                class="q-mt-lg"
+                color="primary"
+                icon="fas fa-list-check"
+                no-caps
+                label="Visualizar Diagnosticos"
+                outline
+                @click="isModalOpen = !isModalOpen"
+              />
+            </div>
+          </div>
+          <q-card-section v-else>
+            <diagnostico-create-form
+              v-if="isDiagnosticoFormVisible"
+              :paciente-id="paciente.id"
+              @cancel="isDiagnosticoFormVisible = false"
+              @submit="onSubmitDiagnosticoCreateForm"
+            />
+          </q-card-section>
+        </q-card>
+        <q-card v-else>
+          <q-card-section>
+            <diagnostico-edit-form
+              :diagnostico="diagnostico"
+              @cancel="onCancelDiagnosticoForm"
+              @submit="onSubmitDiagnosticoCreateForm(paciente.id)"
+            />
+          </q-card-section>
+        </q-card>
+      </q-expansion-item>
+      <q-expansion-item
+        v-if="diagnostico"
+        icon="fas fa-list-ul"
+        label="Controles"
+        caption="Editar"
+      >
+        <q-card v-if="!control" class="my-card">
+          <q-card-section
+            v-if="
+              isControlesEmpty && !isControlFormVisible && diagnostico.estado
+            "
+          >
+            <div class="col-12 row justify-center">
+              <div class="col-auto">
+                <q-icon name="fas fa-face-frown" size="xl" />
+              </div>
+              <div class="col-12 text-center text-h6">
+                Lo sentimos. ¡No se encontró ningun control!. Porfavor registre
+                uno para empezar.
+              </div>
+              <q-btn
+                class="q-mt-lg"
+                color="primary"
+                icon="fas fa-plus"
+                no-caps
+                label="Agregar nuevo control"
+                outline
+                @click="isControlFormVisible = !isControlFormVisible"
+              />
+            </div>
+          </q-card-section>
+          <q-card-section v-if="!isControlesEmpty && !isControlFormVisible">
+            <controles-table
+              :controles="controles"
+              :is-diagnostico-active="diagnostico.estado"
+              @add-control="
+                () => {
+                  onCancelControlForm();
+                  isControlFormVisible = true;
+                }
+              "
+              @edit-control="onEditControl"
+              @delete-control="onSubmitControlCreateForm(diagnostico.id)"
+              @view-control="onViewControlModal"
+            />
+          </q-card-section>
+          <q-card-section v-else>
+            <control-create-form
+              v-if="isControlFormVisible"
+              :ultimo-control="controles[controles.length - 1]"
+              :diagnostico-id="diagnostico.id"
+              @cancel="onCancelControlForm"
+              @submit="onSubmitControlCreateForm"
+            />
+          </q-card-section>
+        </q-card>
+        <q-card v-else>
+          <q-card-section v-if="diagnostico.estado">
+            <control-edit-form
+              :control="control"
+              :diagnostico-id="diagnostico.id"
+              @cancel="onCancelControlForm"
+              @submit="onSubmitControlCreateForm"
+            />
+          </q-card-section>
+          <q-card-section v-else>
+            <control-view-form
+              :control="control"
+              @cancel="onCancelControlForm"
+            />
+          </q-card-section>
+        </q-card>
+      </q-expansion-item>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -242,7 +234,6 @@ import PacienteCreateForm from 'core/paciente/components/PacienteCreateForm.vue'
 import PacienteEditForm from 'core/paciente/components/PacienteEditForm.vue';
 import { useTipoDocumentoFetchAllQuery } from 'core/tipo-documento';
 import BaseInput from 'shared/components/base/BaseInput.vue';
-import BasePage from 'shared/components/base/BasePage.vue';
 import BaseSelect from 'shared/components/base/BaseSelect.vue';
 import Swal from 'sweetalert2';
 import { useForm } from 'vee-validate';

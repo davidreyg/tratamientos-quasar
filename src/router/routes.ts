@@ -1,4 +1,4 @@
-import DiagnosticoCreate from 'core/diagnostico/pages/DiagnosticoCreate.vue';
+import { diagnosticoRoutes } from 'core/diagnostico';
 import { empleadoRoutes } from 'core/empleado';
 import { roleRoutes } from 'core/role';
 import { tipoDocumentoRoutes } from 'core/tipo-documento';
@@ -19,26 +19,27 @@ const routes: RouteRecordRaw[] = [
         name: 'profile',
         component: () => import('core/profile/pages/ProfilePage.vue'),
       },
-      {
-        path: 'diagnosticos',
-        name: 'diagnosticos',
-        children: [
-          {
-            path: '',
-            name: 'diagnosticos.registrar',
-            component: DiagnosticoCreate,
-          },
-          // {
-          //   path: 'editar-diagnostico',
-          //   name: 'diagnosticos.create',
-          //   component: () =>
-          //     import('core/diagnostico/pages/DiagnosticoEdit.vue'),
-          // },
-        ],
-      },
+      // {
+      //   path: 'diagnosticos',
+      //   name: 'diagnosticos',
+      //   children: [
+      //     {
+      //       path: '',
+      //       name: 'diagnosticos.registrar',
+      //       component: DiagnosticoCreate,
+      //     },
+      //     // {
+      //     //   path: 'editar-diagnostico',
+      //     //   name: 'diagnosticos.create',
+      //     //   component: () =>
+      //     //     import('core/diagnostico/pages/DiagnosticoEdit.vue'),
+      //     // },
+      //   ],
+      // },
       ...tipoDocumentoRoutes(),
       ...roleRoutes(),
       ...empleadoRoutes(),
+      ...diagnosticoRoutes(),
     ],
     beforeEnter: [auth, profile],
   },
