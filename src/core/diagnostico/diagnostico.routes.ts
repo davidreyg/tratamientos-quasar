@@ -1,9 +1,11 @@
+import { checkPrivilegio } from 'shared/middlewares';
 import { RouteRecordRaw } from 'vue-router';
 export const diagnosticoRoutes = (): RouteRecordRaw[] => [
   {
     path: '/diagnosticos',
     component: () => import('./DiagnosticoIndex.vue'),
     // name: 'diagnosticos',
+    beforeEnter: [checkPrivilegio],
     children: [
       {
         path: '',

@@ -1,8 +1,10 @@
+import { checkPrivilegio } from 'shared/middlewares';
 import { RouteRecordRaw } from 'vue-router';
 export const tipoDocumentoRoutes = (): RouteRecordRaw[] => [
   {
     path: '/tipo-documentos',
     component: () => import('./TipoDocumentoIndex.vue'),
+    beforeEnter: [checkPrivilegio],
     // name: 'tipo-documentos',
     children: [
       {

@@ -1,9 +1,11 @@
+import { checkPrivilegio } from 'shared/middlewares';
 import { RouteRecordRaw } from 'vue-router';
 export const roleRoutes = (): RouteRecordRaw[] => [
   {
     path: '/roles',
     component: () => import('./RoleIndex.vue'),
     // name: 'roles',
+    beforeEnter: [checkPrivilegio],
     children: [
       {
         path: '',

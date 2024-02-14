@@ -1,9 +1,11 @@
+import { checkPrivilegio } from 'shared/middlewares';
 import { RouteRecordRaw } from 'vue-router';
 export const empleadoRoutes = (): RouteRecordRaw[] => [
   {
     path: '/empleados',
     component: () => import('./EmpleadoIndex.vue'),
     // name: 'empleados',
+    beforeEnter: [checkPrivilegio],
     children: [
       {
         path: '',
