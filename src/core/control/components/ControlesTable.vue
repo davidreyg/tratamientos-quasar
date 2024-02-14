@@ -1,5 +1,5 @@
 <template>
-  <q-table :columns="columns" :rows="controles" row-key="id" :loading="false">
+  <q-table :columns="columns" :rows="controles" row-key="id" :loading="loading">
     <template #top-right>
       <q-btn
         v-if="isDiagnosticoActive"
@@ -25,7 +25,7 @@
             icon="fas fa-eye"
             round
             size="sm"
-            @click="$emit('viewControl', props.key)"
+            @click="$emit('viewControl', props.row)"
           />
           <q-btn
             v-if="isDiagnosticoActive"
@@ -33,7 +33,7 @@
             icon="fas fa-pencil"
             round
             size="sm"
-            @click="$emit('editControl', props.key)"
+            @click="$emit('editControl', props.row)"
           />
           <q-btn
             v-if="isDiagnosticoActive"
@@ -78,6 +78,11 @@ defineProps({
     type: Array<Control>,
     required: true,
   },
+  loading: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
   isDiagnosticoActive: {
     type: Boolean,
     required: true,
@@ -85,9 +90,9 @@ defineProps({
 });
 const emit = defineEmits<{
   (e: 'addControl'): void;
-  (e: 'editControl', id: string): void;
+  (e: 'editControl', id: Control): void;
   (e: 'deleteControl', id: string): void;
-  (e: 'viewControl', id: string): void;
+  (e: 'viewControl', id: Control): void;
 }>();
 const { formatDate } = useLuxonFormat();
 const columns: QTable['columns'] = [

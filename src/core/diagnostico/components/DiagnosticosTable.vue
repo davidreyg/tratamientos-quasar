@@ -37,8 +37,9 @@
             color="primary"
             icon="fas fa-check"
             round
+            :loading="isLoading && selectedID == props.key"
             padding="0"
-            @click="$emit('select', props.key)"
+            @click="fetchDiagnosticoById(props.key)"
           />
           <q-badge
             v-else-if="col.name === 'estado'"
@@ -84,17 +85,24 @@
 <script setup lang="ts">
 import { QTable } from 'quasar';
 import { useLuxonFormat } from 'shared/utils';
+import { ref } from 'vue';
+import { useFetchDiagnosticoByIdQuery } from '../composables';
 import { Diagnostico } from '../models';
+import { useDiagnosticoFormStore } from '../stores';
 defineProps({
   diagnosticos: {
     type: Array<Diagnostico>,
     required: true,
   },
 });
-defineEmits<{
+const emit = defineEmits<{
   (e: 'select', id: string): void;
 }>();
 const { formatDate } = useLuxonFormat();
+const { fetch, isLoading, diagnostico, controles } =
+  useFetchDiagnosticoByIdQuery();
+const { setDiagnosticoSeleccionado, setControlesDelDiagnostico } =
+  useDiagnosticoFormStore();
 const columns: QTable['columns'] = [
   {
     name: 'fecha',
@@ -132,4 +140,16 @@ const columns: QTable['columns'] = [
     field: 'actions',
   },
 ];
+const selectedID = ref('');
+const fetchDiagnosticoById = async (id: string) => {
+  selectedID.value = id;
+  await fetch(id);
+  if (diagnostico.value) {
+    setDiagnosticoSeleccionado(diagnostico.value);
+    setControlesDelDiagnostico(controles.value);
+    emit('select', id);
+  } else {
+    alert('no deberias entrar qui');
+  }
+};
 </script>
