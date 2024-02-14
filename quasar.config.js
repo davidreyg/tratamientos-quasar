@@ -107,7 +107,14 @@ module.exports = configure(function (ctx) {
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#framework
     framework: {
       cssAddon: true,
-      config: {},
+      config: {
+        loadingBar: {
+          skipHijack: true,
+          color: 'secondary',
+          size: '10px',
+          position: 'top',
+        },
+      },
 
       iconSet: 'material-icons', // Quasar icon set
       lang: 'es', // Quasar language pack
@@ -120,7 +127,7 @@ module.exports = configure(function (ctx) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ['LocalStorage', 'Dialog'],
+      plugins: ['LocalStorage', 'Dialog', 'LoadingBar'],
     },
 
     // animations: 'all', // --- includes all animations

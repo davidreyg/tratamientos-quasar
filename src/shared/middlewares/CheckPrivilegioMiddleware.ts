@@ -12,7 +12,7 @@ export const checkPrivilegio = async function authMiddleware(
     .map((p) => p.ruta)
     .filter((p) => p !== undefined)
     .filter((p) => p !== null);
-  console.log(pri, to);
+  // console.log(pri, to);
   if (
     pri.some((v) =>
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
