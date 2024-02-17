@@ -1,5 +1,6 @@
 import { checkPrivilegio } from 'shared/middlewares';
 import { RouteRecordRaw } from 'vue-router';
+import DiagnosticoCreate from './pages/DiagnosticoCreate.vue';
 export const diagnosticoRoutes = (): RouteRecordRaw[] => [
   {
     path: '/diagnosticos',
@@ -16,7 +17,7 @@ export const diagnosticoRoutes = (): RouteRecordRaw[] => [
       {
         path: 'formulario',
         name: 'diagnosticos.registrar',
-        component: () => import('./pages/DiagnosticoCreate.vue'),
+        component: DiagnosticoCreate,
         meta: { title: 'Registrar Atención', action: '' },
       },
     ],
