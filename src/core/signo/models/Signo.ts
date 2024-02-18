@@ -8,4 +8,6 @@ export interface Signo {
   unidad: string;
   minimo: number;
   maximo: number;
+  is_required: boolean;
+  estado: boolean;
 }
