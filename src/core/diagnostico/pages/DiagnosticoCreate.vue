@@ -37,7 +37,11 @@
         label="Datos del Paciente"
         caption="Editar / Crear"
       >
-        <datos-paciente-tab />
+        <datos-paciente-tab
+          :paciente="paciente"
+          @cancel="$reset"
+          @submit="fetchPaciente(values.numero_documento)"
+        />
       </q-expansion-item>
       <q-expansion-item
         v-if="paciente"
@@ -100,7 +104,7 @@ const validationSchema = object().shape({
     .label('Número de Documento'),
   tipo_documento_id: string().required().label('Tipo de Documento'),
 });
-const { handleSubmit } = useForm<{ numero_documento: number }>({
+const { handleSubmit, values } = useForm<{ numero_documento: number }>({
   validationSchema,
 });
 

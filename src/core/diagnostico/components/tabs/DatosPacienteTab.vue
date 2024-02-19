@@ -36,22 +36,30 @@
 </template>
 
 <script setup lang="ts">
-import { useDiagnosticoFormStore } from 'core/diagnostico';
+import { Paciente } from 'core/paciente';
 import PacienteCreateForm from 'core/paciente/components/PacienteCreateForm.vue';
 import PacienteEditForm from 'core/paciente/components/PacienteEditForm.vue';
-import { storeToRefs } from 'pinia';
-import { ref } from 'vue';
-const { paciente } = storeToRefs(useDiagnosticoFormStore());
-const { $reset, fetchPaciente } = useDiagnosticoFormStore();
+import { PropType, ref } from 'vue';
+
+defineProps({
+  paciente: {
+    type: Object as PropType<Paciente>,
+    required: false,
+    default: undefined,
+  },
+});
+const emit = defineEmits<{
+  (e: 'submit'): void;
+  (e: 'cancel'): void;
+}>();
 const isPacienteFormVisible = ref(false);
 const onCancelPacienteForm = () => {
   isPacienteFormVisible.value = false;
-  $reset();
+  emit('cancel');
 };
 
-const onSubmitPacienteCreateForm = async (numero_documento: number) => {
-  // $reset();
+const onSubmitPacienteCreateForm = async () => {
   onCancelPacienteForm();
-  await fetchPaciente(numero_documento);
+  emit('submit');
 };
 </script>
