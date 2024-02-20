@@ -4,7 +4,7 @@
     :data="data.data"
     :loading="isFetching"
     :server-pagination="data.meta.pagination"
-    @edit="(id:string)=> $router.push({name:'empleados.edit',params:{id}})"
+    @edit="(id:string)=> $router.push({name:'users.edit',params:{id}})"
     @destroy-one="destroyOne"
     @request="handleRequest"
   />

@@ -1,7 +1,7 @@
 import { sttpClient } from 'shared/api';
 import { Query } from 'shared/utils';
 import { User } from '../models';
-import { UserRequest } from '../requests';
+import { UserRequest, UserUpdateRequest } from '../requests';
 
 export class UserApi {
   private static _api = sttpClient;
@@ -23,7 +23,7 @@ export class UserApi {
     return await UserApi._api.delete(`${UserApi._endpoint}/${id}`);
   }
 
-  static async update(data: UserRequest, id: number) {
+  static async update(data: UserUpdateRequest, id: number) {
     return await UserApi._api.patch(`${UserApi._endpoint}/${id}`, data);
   }
 }

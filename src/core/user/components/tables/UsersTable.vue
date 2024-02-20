@@ -61,10 +61,10 @@ const columns: QTable['columns'] = [
     sortable: true,
   },
   {
-    name: 'name',
+    name: 'cargo',
     align: 'center',
-    label: 'Usuario',
-    field: 'name',
+    label: 'Cargo',
+    field: 'cargo',
     sortable: true,
   },
   {

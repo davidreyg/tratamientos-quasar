@@ -13,19 +13,19 @@ export const userRoutes = (): RouteRecordRaw[] => [
         component: () => import('./pages/UserListPage.vue'),
         meta: { title: 'Usuarios', action: 'new' },
       },
-      // {
-      //   path: 'crear',
-      //   name: 'users.create',
-      //   component: () => import('./pages/UserCreatePage.vue'),
-      //   meta: { title: 'Nuevo Usuario', action: 'back' },
-      // },
-      // {
-      //   path: ':id/editar',
-      //   name: 'users.edit',
-      //   component: () => import('./pages/UserEditPage.vue'),
-      //   props: (route) => ({ id: Number(route.params.id) }),
-      //   meta: { title: 'Editar Usuario', action: 'back' },
-      // },
+      {
+        path: 'crear',
+        name: 'users.create',
+        component: () => import('./pages/UserCreatePage.vue'),
+        meta: { title: 'Nuevo Usuario', action: 'back' },
+      },
+      {
+        path: ':id/editar',
+        name: 'users.edit',
+        component: () => import('./pages/UserEditPage.vue'),
+        props: (route) => ({ id: Number(route.params.id) }),
+        meta: { title: 'Editar Usuario', action: 'back' },
+      },
     ],
   },
 ];

@@ -1,13 +1,13 @@
 import { ApiatoError } from 'shared/utils';
 import { useMutation } from 'vue-query';
 import { UserApi } from '../api';
-import { UserRequest } from '../requests';
+import { UserUpdateRequest } from '../requests';
 
 export function useUserUpdateMutation() {
   return useMutation<
     unknown,
-    ApiatoError<UserRequest>,
-    { data: UserRequest; id: number },
+    ApiatoError<UserUpdateRequest>,
+    { data: UserUpdateRequest; id: number },
     unknown
   >(({ data, id }) => UserApi.update(data, id));
 }

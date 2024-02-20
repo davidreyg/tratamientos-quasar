@@ -11,6 +11,7 @@ export interface User {
   updated_at: string;
   readable_created_at: string;
   readable_updated_at: string;
+  role_ids: number[];
   roles: {
     data: Role[];
   };
