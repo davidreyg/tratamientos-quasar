@@ -1,4 +1,4 @@
-import { checkPrivilegio } from 'shared/middlewares';
+import { checkPrivilegio } from 'shared/middlewares/CheckPrivilegioMiddleware';
 import { RouteRecordRaw } from 'vue-router';
 import DiagnosticoCreate from './pages/DiagnosticoCreate.vue';
 export const diagnosticoRoutes = (): RouteRecordRaw[] => [

@@ -33,7 +33,7 @@ const Router = createRouter({
   history: createHistory(process.env.VUE_ROUTER_BASE),
 });
 
-Router.beforeResolve((to, from, next) => {
+Router.beforeEach((to, from, next) => {
   // If this isn't an initial page load.
   if (to.name) {
     // Start the route progress bar.

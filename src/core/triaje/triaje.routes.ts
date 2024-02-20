@@ -1,4 +1,4 @@
-import { checkPrivilegio } from 'shared/middlewares';
+import { checkPrivilegio } from 'shared/middlewares/CheckPrivilegioMiddleware';
 import { RouteRecordRaw } from 'vue-router';
 export const triajeRoutes = (): RouteRecordRaw[] => [
   {
