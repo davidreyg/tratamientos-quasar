@@ -2,9 +2,11 @@ import { diagnosticoRoutes } from 'core/diagnostico';
 import { empleadoRoutes } from 'core/empleado';
 import { roleRoutes } from 'core/role';
 import { tipoDocumentoRoutes } from 'core/tipo-documento';
+import { triajeRoutes } from 'core/triaje';
 import MainLayout from 'shared/layouts/MainLayout.vue';
 import { auth, guest, profile } from 'shared/middlewares';
 import { RouteRecordRaw } from 'vue-router';
+
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
@@ -40,6 +42,7 @@ const routes: RouteRecordRaw[] = [
       ...roleRoutes(),
       ...empleadoRoutes(),
       ...diagnosticoRoutes(),
+      ...triajeRoutes(),
     ],
     beforeEnter: [auth, profile],
   },

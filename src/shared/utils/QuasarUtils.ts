@@ -16,3 +16,13 @@ export type OnRequestParameter = {
   filter?: string | any;
   getCellValue: (col: any, row: any) => any;
 };
+
+export type Field = {
+  label: string;
+  name: string;
+  type: 'string' | 'array' | 'number';
+  suffix?: string;
+  // as: 'input',
+  // rules: any;
+  fields?: Field[];
+};

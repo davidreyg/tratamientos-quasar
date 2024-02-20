@@ -1,0 +1,118 @@
+<template>
+  <form-dinamico
+    v-if="fields.length > 0 && validationSchema"
+    :fields="fields"
+    :validation-schema="validationSchema"
+    :initial-values="initialValues"
+  />
+</template>
+
+<script setup lang="ts">
+import { useSignoFetchAllQuery } from 'core/signo';
+import { Field, Query } from 'shared/utils';
+import { ref, watch } from 'vue';
+import * as yup from 'yup';
+import FormDinamico from './FormDinamico.vue';
+
+defineEmits<{
+  (e: 'submit'): void;
+}>();
+defineProps({
+  pacienteId: {
+    type: Number,
+    required: true,
+  },
+});
+const query = ref<Query>({ search: 'estado:1' });
+const { data: signos } = useSignoFetchAllQuery(query);
+const fields = ref<Field[]>([]);
+const validationSchema = ref<yup.AnyObjectSchema>();
+const initialValues = ref();
+watch(
+  () => signos.value,
+  (newValue) => {
+    if (newValue) {
+      //CONSTRUIR LOS FIELDS
+      const fields_signos_vitales: Field[] = newValue.map((signo) => {
+        return {
+          label: signo.nombre,
+          name: signo.nombre,
+          type: 'number',
+          suffix: signo.unidad,
+        };
+      });
+      fields.value = [
+        {
+          name: 'fecha_registro',
+          label: 'Fecha Registro',
+          type: 'string',
+          // fields: fields_signos_vitales,
+        },
+        {
+          name: 'signos',
+          label: 'Signos',
+          type: 'array',
+          fields: fields_signos_vitales,
+        },
+      ];
+
+      // CONSTRUIR EL VALIDATIONSCHEMA
+      const schema_signos = yup.array().of(
+        yup.lazy((value) => {
+          const signo = newValue.find((v) => v.id == value.id);
+          let reglas = {};
+          if (signo) {
+            reglas = {
+              id: yup
+                .mixed()
+                .when([], {
+                  is: () => signo.is_required,
+                  then: (schema) => schema.required(),
+                  otherwise: (schema) => schema.optional(),
+                })
+                .label('Id del signo'),
+              valor: yup
+                .number()
+                .positive()
+                .when([], {
+                  is: () => signo.is_required,
+                  then: (schema) => schema.required(),
+                  otherwise: (schema) => schema.optional(),
+                })
+                .transform((_, value) => (value === '' ? undefined : _))
+                .typeError('Debe ingresar un numero')
+                .label(signo.nombre),
+            };
+          }
+          return yup.object().shape(reglas);
+        })
+      );
+
+      const base = yup
+        .object()
+        .shape({
+          fecha_registro: yup.date().required().label('Fecha Registro'),
+        })
+        .required();
+
+      validationSchema.value = base.concat(
+        yup.object().shape({ signos: schema_signos })
+      );
+
+      //CONSTRUIR LOS VALORES INICALES
+      const initialValuesSignos = newValue.map((signo) => {
+        return {
+          id: signo.id,
+          valor: undefined,
+        };
+      });
+
+      initialValues.value = {
+        fecha_registro: '1998',
+        signos: initialValuesSignos,
+      };
+    }
+  },
+  { immediate: true }
+);
+</script>

@@ -1,30 +1,5 @@
 <template>
   <base-form :loading="isLoading" @submit="onSubmit" @cancel="$emit('cancel')">
-    <div class="col-12">
-      <q-btn
-        color="negative"
-        label="Registrar Triaje"
-        @click="isModalOpen = true"
-      />
-      <q-list>
-        <q-item v-for="(field, idx) in arr_triaje" :key="field.key">
-          <q-item-section>
-            {{ field.value.nombre }}: {{ field.value.valor }}
-          </q-item-section>
-          <q-item-section side>
-            <q-btn
-              round
-              flat
-              size="lg"
-              padding="0"
-              color="negative"
-              icon="cancel"
-              @click="removeTriaje(idx)"
-            />
-          </q-item-section>
-        </q-item>
-      </q-list>
-    </div>
     <div class="col-xs-12 col-sm-4">
       <base-date-picker
         required
@@ -135,11 +110,6 @@
       class="col-xs-12 col-sm-6"
     />
   </base-form>
-  <triaje-create-modal
-    v-if="isModalOpen"
-    v-model="isModalOpen"
-    @submit="onSignosSubmit"
-  />
 </template>
 
 <script setup lang="ts">
@@ -154,13 +124,12 @@ import BaseForm from 'shared/components/base/BaseForm.vue';
 import BaseInput from 'shared/components/base/BaseInput.vue';
 import BaseSelect from 'shared/components/base/BaseSelect.vue';
 import { NotifyUtils } from 'shared/utils';
-import { useFieldArray, useForm } from 'vee-validate';
+import { useForm } from 'vee-validate';
 import { PropType, computed, ref, watch } from 'vue';
 import { array, number, object, string } from 'yup';
 import { useControlCreateMutation } from '../composables';
 import { Control } from '../models';
-import { ControlCreateRequest, SignoItemRequest } from '../requests';
-import TriajeCreateModal from './TriajeCreateModal.vue';
+import { ControlCreateRequest } from '../requests';
 const props = defineProps({
   diagnosticoId: {
     type: String,
@@ -180,7 +149,6 @@ const emit = defineEmits<{
 const { data: medicos } = useEmpleadoFetchAllMedicosQuery();
 const { data: medicamentos } = useMedicamentoFetchAllQuery();
 const { data: complicaciones } = useComplicacionFetchAllQuery();
-const isModalOpen = ref(false);
 const arr_medicos = computed(() => {
   if (medicos.value) {
     return medicos.value.map((val) => {
@@ -254,13 +222,6 @@ const {
   push: pushComplicacion,
 } = useManageEnfermedadesArray('complicaciones');
 
-const {
-  remove: removeTriaje,
-  push: pushTriaje,
-  fields: arr_triaje,
-  replace: replaceTriaje,
-} = useFieldArray<SignoItemRequest>('triaje');
-
 const { mutate, isLoading } = useControlCreateMutation();
 
 const onSubmit = handleSubmit(
@@ -293,9 +254,4 @@ watch(
   },
   { immediate: true }
 );
-
-const onSignosSubmit = (items: SignoItemRequest[]) => {
-  replaceTriaje([]);
-  items.forEach((item) => pushTriaje(item));
-};
 </script>
