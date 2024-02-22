@@ -13,6 +13,7 @@
         :data="triajesDelPaciente"
         :loading="isTriajesLoading"
         @destroy-one="fetchTriajesDelPaciente(paciente.id)"
+        @edit="onEdit"
       />
     </q-tab-panel>
 
@@ -22,10 +23,16 @@
         @cancel="panel = 'list'"
         @submit="onTriajeSubmit"
       />
-      <!-- <triaje-create-formv2 :paciente-id="2" /> -->
     </q-tab-panel>
 
-    <q-tab-panel name="edit"> editar </q-tab-panel>
+    <q-tab-panel name="edit">
+      <triaje-edit-form
+        v-if="editId"
+        :triaje-id="editId"
+        @cancel="panel = 'list'"
+        @submit="onTriajeSubmit"
+      />
+    </q-tab-panel>
   </q-tab-panels>
 </template>
 
@@ -34,6 +41,7 @@ import { useDiagnosticoFormStore } from 'core/diagnostico';
 import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
 import TriajeCreateForm from '../forms/TriajeCreateForm.vue';
+import TriajeEditForm from '../forms/TriajeEditForm.vue';
 import TriajesTable from '../tables/TriajesTable.vue';
 const { paciente, triajesDelPaciente, isTriajesLoading } = storeToRefs(
   useDiagnosticoFormStore()
@@ -41,11 +49,16 @@ const { paciente, triajesDelPaciente, isTriajesLoading } = storeToRefs(
 const { fetchTriajesDelPaciente } = useDiagnosticoFormStore();
 
 const panel = ref('list');
-
+const editId = ref<number>();
 const onTriajeSubmit = async () => {
   if (paciente.value) {
     await fetchTriajesDelPaciente(paciente.value.id);
     panel.value = 'list';
   }
+};
+
+const onEdit = async (key: number) => {
+  panel.value = 'edit';
+  editId.value = Number(key);
 };
 </script>

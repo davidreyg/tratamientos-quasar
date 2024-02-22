@@ -41,6 +41,7 @@ export const useDiagnosticoFormStore = defineStore('diagnostico-form', () => {
   async function fetchPaciente(numero_documento: number) {
     isPacienteLoading.value = true;
     try {
+      paciente.value = undefined;
       paciente.value = await PacienteFetchByNumeroDocumentoTask.run(
         numero_documento
       );
