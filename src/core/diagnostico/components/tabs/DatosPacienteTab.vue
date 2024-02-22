@@ -49,7 +49,7 @@ defineProps({
   },
 });
 const emit = defineEmits<{
-  (e: 'submit'): void;
+  (e: 'submit', numero_documento: number): void;
   (e: 'cancel'): void;
 }>();
 const isPacienteFormVisible = ref(false);
@@ -58,8 +58,8 @@ const onCancelPacienteForm = () => {
   emit('cancel');
 };
 
-const onSubmitPacienteCreateForm = async () => {
+const onSubmitPacienteCreateForm = async (numero_documento: number) => {
   onCancelPacienteForm();
-  emit('submit');
+  emit('submit', numero_documento);
 };
 </script>

@@ -1,11 +1,12 @@
 <template>
-  <base-form @submit="onSubmit">
+  <base-form :loading="isLoading" @submit="onSubmit" @cancel="onCancel">
     <base-input
       v-for="(field, idx) in fields.filter((field) => field.type !== 'array')"
       :key="idx"
       :name="field.name"
       :label="field.label"
       :suffix="field.suffix"
+      :type="(field.type as any)"
       :stack-label="true"
       class="col-xs-12 col-sm-4"
     />
@@ -17,7 +18,7 @@
       <base-input
         v-for="(item, idxx) in field.fields"
         :key="idxx"
-        :name="`signos[${idxx}].valor`"
+        :name="`pivot[${idxx}].valor`"
         :label="item.label"
         :suffix="item.suffix"
         :stack-label="true"
@@ -28,12 +29,15 @@
 </template>
 
 <script setup lang="ts">
+import { useTriajeCreateMutation } from 'core/triaje/composables';
+import { TriajeCreateRequest } from 'core/triaje/requests';
 import BaseForm from 'shared/components/base/BaseForm.vue';
 import BaseInput from 'shared/components/base/BaseInput.vue';
-import { Field } from 'shared/utils';
+import { Field, NotifyUtils } from 'shared/utils';
 import { useForm } from 'vee-validate';
-defineEmits<{
+const emit = defineEmits<{
   (e: 'submit'): void;
+  (e: 'cancel'): void;
 }>();
 const props = defineProps({
   fields: {
@@ -50,17 +54,27 @@ const props = defineProps({
     required: true,
   },
 });
-const { handleSubmit, values } = useForm({
+const { handleSubmit, setErrors, resetForm } = useForm<TriajeCreateRequest>({
   validationSchema: props.validationSchema,
   initialValues: props.initialValues,
 });
+const { mutateAsync, reset, isLoading } = useTriajeCreateMutation();
+const onSubmit = handleSubmit(async (values) => {
+  await mutateAsync(values, {
+    onSuccess: () => {
+      NotifyUtils.success();
+      emit('submit');
+    },
+    onError: (err) => {
+      reset.value();
+      setErrors(err.data.errors);
+    },
+  });
+});
 
-const onSubmit = handleSubmit(
-  async (values) => {
-    console.log(values);
-  },
-  (values) => {
-    console.log(values);
-  }
-);
+const onCancel = () => {
+  resetForm();
+
+  emit('cancel');
+};
 </script>

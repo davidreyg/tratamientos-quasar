@@ -20,7 +20,7 @@ export type OnRequestParameter = {
 export type Field = {
   label: string;
   name: string;
-  type: 'string' | 'array' | 'number';
+  type: 'string' | 'array' | 'number' | 'date';
   suffix?: string;
   // as: 'input',
   // rules: any;

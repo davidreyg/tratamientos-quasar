@@ -1,5 +1,6 @@
 import { Control } from 'core/control';
 import { Paciente, PacienteFetchByNumeroDocumentoTask } from 'core/paciente';
+import { Triaje, TriajeApi } from 'core/triaje';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { Diagnostico } from '../models';
@@ -8,10 +9,12 @@ import { FetchDiagnosticosByPacienteTask } from '../tasks';
 export const useDiagnosticoFormStore = defineStore('diagnostico-form', () => {
   const paciente = ref<Paciente>();
   const diagnosticosDelPaciente = ref<Diagnostico[]>([]);
+  const triajesDelPaciente = ref<Triaje[]>([]);
   const diagnosticoSeleccionado = ref<Diagnostico>();
   const controlesDelDiagnostico = ref<Control[]>([]);
   const controlSeleccionado = ref<Control>();
   const isPacienteLoading = ref(false);
+  const isTriajesLoading = ref(false);
 
   function $reset() {
     paciente.value = undefined;
@@ -19,6 +22,7 @@ export const useDiagnosticoFormStore = defineStore('diagnostico-form', () => {
     diagnosticosDelPaciente.value = [];
     controlSeleccionado.value = undefined;
     controlesDelDiagnostico.value = [];
+    triajesDelPaciente.value = [];
   }
 
   function setPaciente(data: Paciente) {
@@ -52,11 +56,24 @@ export const useDiagnosticoFormStore = defineStore('diagnostico-form', () => {
   }
 
   async function fetchDiagnosticosDelPaciente(id: string) {
-    // isPacienteLoading.value = true;
+    isTriajesLoading.value = true;
     try {
       diagnosticosDelPaciente.value = await FetchDiagnosticosByPacienteTask.run(
         id
       );
+      isTriajesLoading.value = false;
+    } catch (error) {
+      isTriajesLoading.value = false;
+      throw error;
+    }
+  }
+
+  async function fetchTriajesDelPaciente(paciente_id: string) {
+    // isPacienteLoading.value = true;
+    try {
+      triajesDelPaciente.value = (
+        await TriajeApi.fetchAll({ search: `paciente_id:${paciente_id}` })
+      ).data().data;
       // isPacienteLoading.value = false;
     } catch (error) {
       // isPacienteLoading.value = false;
@@ -85,11 +102,13 @@ export const useDiagnosticoFormStore = defineStore('diagnostico-form', () => {
     isPacienteLoading,
     controlesDelDiagnostico,
     controlSeleccionado,
+    triajesDelPaciente,
+    isTriajesLoading,
     $reset,
     setPaciente,
     fetchPaciente,
     fetchDiagnosticosDelPaciente,
-    // fetchDiagnosticoById,
+    fetchTriajesDelPaciente,
     setDiagnosticoSeleccionado,
     setControlSeleccionado,
     setControlesDelDiagnostico,

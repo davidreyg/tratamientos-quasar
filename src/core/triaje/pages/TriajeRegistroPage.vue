@@ -40,7 +40,7 @@
         <datos-paciente-tab
           :paciente="paciente"
           @cancel="$reset"
-          @submit="fetchPaciente(values.numero_documento)"
+          @submit="(numero_documento) => fetchPaciente(numero_documento)"
         />
       </q-expansion-item>
       <q-expansion-item
@@ -49,6 +49,7 @@
         label="Triaje"
         caption="Editar / Crear"
       >
+        <!-- {{ query }} -->
         <triaje-tab />
       </q-expansion-item>
     </div>
@@ -56,6 +57,7 @@
 </template>
 
 <script setup lang="ts">
+import { useDiagnosticoFormStore } from 'core/diagnostico';
 import DatosPacienteTab from 'core/diagnostico/components/tabs/DatosPacienteTab.vue';
 import { useTipoDocumentoFetchAllQuery } from 'core/tipo-documento';
 import { storeToRefs } from 'pinia';
@@ -67,9 +69,9 @@ import { computed, watch } from 'vue';
 import { onBeforeRouteLeave } from 'vue-router';
 import { number, object, string } from 'yup';
 import TriajeTab from '../components/tabs/TriajeTab.vue';
-import { useTriajeFormStore } from '../stores';
-const { fetchPaciente, $reset } = useTriajeFormStore();
-const { paciente, isPacienteLoading } = storeToRefs(useTriajeFormStore());
+const { fetchPaciente, $reset, fetchTriajesDelPaciente } =
+  useDiagnosticoFormStore();
+const { paciente, isPacienteLoading } = storeToRefs(useDiagnosticoFormStore());
 
 const { data: tipo_documentos } = useTipoDocumentoFetchAllQuery();
 
@@ -84,6 +86,15 @@ const arr_tipo_documentos = computed(() => {
   }
   return [];
 });
+// const query = ref<Query>({
+//   search: '',
+// });
+// const enabled = ref<boolean>(true);
+// const { data: triajes, refetch: refetchTriajes } = useTriajeFetchAllQuery(
+//   query,
+//   enabled
+// );
+
 const validationSchema = object().shape({
   numero_documento: number()
     .typeError('Debe ingresar un número')
@@ -92,7 +103,7 @@ const validationSchema = object().shape({
     .label('Número de Documento'),
   tipo_documento_id: string().required().label('Tipo de Documento'),
 });
-const { handleSubmit, values } = useForm<{ numero_documento: number }>({
+const { handleSubmit } = useForm<{ numero_documento: number }>({
   validationSchema,
 });
 
@@ -128,9 +139,14 @@ onBeforeRouteLeave(() => {
 
 watch(
   () => paciente.value,
-  (newValue) => {
+  async (newValue) => {
     if (newValue) {
       console.log('hay paciente, debeiramos buscar su triaje');
+      await fetchTriajesDelPaciente(newValue.id);
+      // query.value.search = `fecha_registro:${DateTime.now().toISODate()};paciente_id:${
+      // newValue.id
+      // }&searchJoin=and`;
+      // refetchTriajes.value();
     }
   }
 );

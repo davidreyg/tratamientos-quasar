@@ -4,11 +4,14 @@
     :fields="fields"
     :validation-schema="validationSchema"
     :initial-values="initialValues"
+    @cancel="$emit('cancel')"
+    @submit="$emit('submit')"
   />
 </template>
 
 <script setup lang="ts">
 import { useSignoFetchAllQuery } from 'core/signo';
+import { DateTime } from 'luxon';
 import { Field, Query } from 'shared/utils';
 import { ref, watch } from 'vue';
 import * as yup from 'yup';
@@ -16,8 +19,9 @@ import FormDinamico from './FormDinamico.vue';
 
 defineEmits<{
   (e: 'submit'): void;
+  (e: 'cancel'): void;
 }>();
-defineProps({
+const props = defineProps({
   pacienteId: {
     type: Number,
     required: true,
@@ -45,11 +49,11 @@ watch(
         {
           name: 'fecha_registro',
           label: 'Fecha Registro',
-          type: 'string',
+          type: 'date',
           // fields: fields_signos_vitales,
         },
         {
-          name: 'signos',
+          name: 'pivot',
           label: 'Signos',
           type: 'array',
           fields: fields_signos_vitales,
@@ -59,11 +63,12 @@ watch(
       // CONSTRUIR EL VALIDATIONSCHEMA
       const schema_signos = yup.array().of(
         yup.lazy((value) => {
-          const signo = newValue.find((v) => v.id == value.id);
+          // console.log(value);
+          const signo = newValue.find((v) => v.id == value.signo_id);
           let reglas = {};
           if (signo) {
             reglas = {
-              id: yup
+              signo_id: yup
                 .mixed()
                 .when([], {
                   is: () => signo.is_required,
@@ -96,20 +101,21 @@ watch(
         .required();
 
       validationSchema.value = base.concat(
-        yup.object().shape({ signos: schema_signos })
+        yup.object().shape({ pivot: schema_signos })
       );
 
       //CONSTRUIR LOS VALORES INICALES
       const initialValuesSignos = newValue.map((signo) => {
         return {
-          id: signo.id,
+          signo_id: signo.id,
           valor: undefined,
         };
       });
 
       initialValues.value = {
-        fecha_registro: '1998',
-        signos: initialValuesSignos,
+        fecha_registro: DateTime.now().toISODate(),
+        paciente_id: props.pacienteId,
+        pivot: initialValuesSignos,
       };
     }
   },
