@@ -6,4 +6,5 @@ export interface ControlCreateRequest {
   empleado_id: number;
   medicamentos: string[];
   complicaciones: string[] | undefined;
+  triaje_id: number;
 }

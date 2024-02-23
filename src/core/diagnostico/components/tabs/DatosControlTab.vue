@@ -24,7 +24,7 @@
           no-caps
           label="Agregar nuevo control"
           outline
-          @click="panel = 'new'"
+          @click="onAddControl"
         />
       </div>
       <div v-else>
@@ -32,12 +32,7 @@
           :loading="isLoading"
           :controles="controlesDelDiagnostico"
           :is-diagnostico-active="diagnosticoSeleccionado.estado"
-          @add-control="
-            () => {
-              onCancelControlForm();
-              panel = 'new';
-            }
-          "
+          @add-control="onAddControl"
           @delete-control="
             onSubmitControlCreateForm(diagnosticoSeleccionado.id)
           "
@@ -49,6 +44,8 @@
 
     <q-tab-panel name="new">
       <control-create-form
+        v-if="triajeSeleccionado"
+        :triaje-id="Number(triajeSeleccionado.id)"
         :ultimo-control="
           controlesDelDiagnostico[controlesDelDiagnostico.length - 1]
         "
@@ -83,34 +80,66 @@ import ControlViewForm from 'core/control/components/ControlViewForm.vue';
 import ControlesTable from 'core/control/components/ControlesTable.vue';
 import { useDiagnosticoFormStore } from 'core/diagnostico';
 import { storeToRefs } from 'pinia';
-import { ref } from 'vue';
+import { NotifyUtils } from 'shared/utils';
+import { ref, watch } from 'vue';
 
 const {
   controlesDelDiagnostico,
   diagnosticoSeleccionado,
   controlSeleccionado,
+  triajeSeleccionado,
 } = storeToRefs(useDiagnosticoFormStore());
-const { setControlesDelDiagnostico } = useDiagnosticoFormStore();
+const {
+  setControlesDelDiagnostico,
+  clearTriajeSeleccionado,
+  setTriajeSeleccionado,
+} = useDiagnosticoFormStore();
 const { isLoading, controles, fetch } = useFetchControlesByDiagnosticoQuery();
 const panel = ref('list');
 
 const onSubmitControlCreateForm = async (diagnostico_id: string) => {
   onCancelControlForm();
+
   await fetch(diagnostico_id);
   setControlesDelDiagnostico(controles.value);
 };
 
 const onCancelControlForm = () => {
   controlSeleccionado.value = undefined;
+  clearTriajeSeleccionado();
   panel.value = 'list';
 };
 
 const onEditControl = async (control: Control) => {
   controlSeleccionado.value = control;
+  setTriajeSeleccionado(control.triaje.data);
   panel.value = 'edit';
 };
 const onViewControl = async (control: Control) => {
   controlSeleccionado.value = control;
+  setTriajeSeleccionado(control.triaje.data);
   panel.value = 'view';
 };
+
+const onAddControl = () => {
+  // onCancelControlForm();
+  controlSeleccionado.value = undefined;
+  if (triajeSeleccionado.value) {
+    panel.value = 'new';
+  } else {
+    NotifyUtils.warn('Debe completar el triaje primero :)');
+  }
+};
+
+watch(
+  () => triajeSeleccionado.value,
+  (newValue) => {
+    if (newValue) {
+      // panel.value = 'view';
+    } else {
+      panel.value = 'list';
+      // resetForm();
+    }
+  }
+);
 </script>

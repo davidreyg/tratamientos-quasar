@@ -135,6 +135,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  triajeId: {
+    type: Number,
+    required: true,
+  },
   ultimoControl: {
     type: Object as PropType<Control>,
     required: false,
@@ -186,6 +190,7 @@ const arr_complicaciones = computed(() => {
 const validationSchema = object().shape({
   diagnostico_id: string().trim().required().label('Diagnostico'),
   empleado_id: string().trim().required().label('Medico'),
+  triaje_id: number().required().label('Triaje'),
   fecha_inicio: string().required().label('Fecha Inicio'),
   observaciones: string().nullable().label('Observaciones'),
   fecha_fin: string().required().label('Fecha Fin'),
@@ -211,6 +216,7 @@ const { handleSubmit, setFieldValue } = useForm<ControlCreateRequest>({
 });
 
 setFieldValue('diagnostico_id', props.diagnosticoId);
+setFieldValue('triaje_id', props.triajeId);
 const selectMedicamentos = ref<QSelectOption>();
 const selectComplicacion = ref<QSelectOption>();
 const { arr_seleccionados, remove, push } =

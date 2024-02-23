@@ -26,6 +26,11 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+  fechaRegistro: {
+    type: String,
+    required: false,
+    default: undefined,
+  },
 });
 const query = ref<Query>({ search: 'estado:1' });
 const { data: signos } = useSignoFetchAllQuery(query);
@@ -113,7 +118,7 @@ watch(
       });
 
       initialValues.value = {
-        fecha_registro: DateTime.now().toISODate(),
+        fecha_registro: props.fechaRegistro ?? DateTime.now().toISODate(),
         paciente_id: props.pacienteId,
         pivot: initialValuesSignos,
       };
