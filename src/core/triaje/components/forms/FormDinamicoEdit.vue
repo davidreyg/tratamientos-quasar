@@ -68,6 +68,7 @@ const onSubmit = handleSubmit(async (values) => {
     { data: values, id: props.triajeId },
     {
       onSuccess: () => {
+        resetForm();
         NotifyUtils.success();
         emit('submit');
       },

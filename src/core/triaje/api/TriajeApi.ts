@@ -1,4 +1,5 @@
 import { sttpClient } from 'shared/api';
+import { Query } from 'shared/utils';
 import { Triaje } from '../models';
 import { TriajeCreateRequest } from '../requests';
 
@@ -6,7 +7,7 @@ export class TriajeApi {
   private static _api = sttpClient;
   private static _endpoint = '/triajes';
 
-  static async fetchAll(query?: object) {
+  static async fetchAll(query?: Query) {
     return await TriajeApi._api.get<Triaje[]>(TriajeApi._endpoint, query);
   }
 

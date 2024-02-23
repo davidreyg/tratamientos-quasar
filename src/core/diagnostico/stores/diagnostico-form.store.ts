@@ -13,6 +13,7 @@ export const useDiagnosticoFormStore = defineStore('diagnostico-form', () => {
   const diagnosticoSeleccionado = ref<Diagnostico>();
   const controlesDelDiagnostico = ref<Control[]>([]);
   const controlSeleccionado = ref<Control>();
+  const triajeSeleccionado = ref<Triaje>();
   const isPacienteLoading = ref(false);
   const isTriajesLoading = ref(false);
 
@@ -23,6 +24,7 @@ export const useDiagnosticoFormStore = defineStore('diagnostico-form', () => {
     controlSeleccionado.value = undefined;
     controlesDelDiagnostico.value = [];
     triajesDelPaciente.value = [];
+    triajeSeleccionado.value = undefined;
   }
 
   function setPaciente(data: Paciente) {
@@ -30,6 +32,12 @@ export const useDiagnosticoFormStore = defineStore('diagnostico-form', () => {
   }
   function setDiagnosticoSeleccionado(data: Diagnostico) {
     diagnosticoSeleccionado.value = data;
+  }
+  function setTriajeSeleccionado(data: Triaje) {
+    triajeSeleccionado.value = data;
+  }
+  function clearTriajeSeleccionado() {
+    triajeSeleccionado.value = undefined;
   }
   function setControlSeleccionado(data: Control) {
     controlSeleccionado.value = data;
@@ -105,6 +113,7 @@ export const useDiagnosticoFormStore = defineStore('diagnostico-form', () => {
     controlSeleccionado,
     triajesDelPaciente,
     isTriajesLoading,
+    triajeSeleccionado,
     $reset,
     setPaciente,
     fetchPaciente,
@@ -113,5 +122,7 @@ export const useDiagnosticoFormStore = defineStore('diagnostico-form', () => {
     setDiagnosticoSeleccionado,
     setControlSeleccionado,
     setControlesDelDiagnostico,
+    setTriajeSeleccionado,
+    clearTriajeSeleccionado,
   };
 });

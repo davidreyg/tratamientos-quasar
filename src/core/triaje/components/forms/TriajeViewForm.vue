@@ -1,49 +1,36 @@
 <template>
   <div class="row">
-    <q-card v-if="isFetching" class="col-12 q-pa-lg">
-      <skeleton-form class="col-12" :inputs="5" />
-    </q-card>
-    <form-dinamico-edit
-      v-if="fields.length > 0 && validationSchema && !isFetching"
+    <form-dinamico-view
+      v-if="fields.length > 0 && validationSchema"
       :fields="fields"
       :validation-schema="validationSchema"
       :initial-values="initialValues"
-      :triaje-id="triajeId"
       @cancel="$emit('cancel')"
-      @submit="$emit('submit')"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { useTriajeFetchByIdQuery } from 'core/triaje/composables';
-import SkeletonForm from 'shared/components/skeletons/SkeletonForm.vue';
+import { Triaje } from 'core/triaje/models';
 import { Field } from 'shared/utils';
-import { ref, watch } from 'vue';
+import { PropType, ref, watch } from 'vue';
 import * as yup from 'yup';
-import FormDinamicoEdit from './FormDinamicoEdit.vue';
+import FormDinamicoView from './FormDinamicoView.vue';
 
 defineEmits<{
-  (e: 'submit'): void;
   (e: 'cancel'): void;
 }>();
 const props = defineProps({
-  triajeId: {
-    type: Number,
+  triaje: {
+    type: Object as PropType<Triaje>,
     required: true,
   },
 });
-// const query = ref<Query>({ search: 'estado:1' });
-// const { data: signos } = useSignoFetchAllQuery(query);
-const { data: triaje, isFetching } = useTriajeFetchByIdQuery(
-  props.triajeId,
-  true
-);
 const fields = ref<Field[]>([]);
 const validationSchema = ref<yup.AnyObjectSchema>();
 const initialValues = ref();
 watch(
-  () => triaje.value,
+  () => props.triaje,
   (newValue) => {
     if (newValue) {
       //CONSTRUIR LOS FIELDS
@@ -117,14 +104,6 @@ watch(
       validationSchema.value = base.concat(
         yup.object().shape({ pivot: schema_signos })
       );
-
-      //CONSTRUIR LOS VALORES INICALES
-      // const initialValuesSignos = newValue.signos.data.map((signo) => {
-      //   return {
-      //     signo_id: signo.id,
-      //     valor: undefined,
-      //   };
-      // });
 
       initialValues.value = {
         fecha_registro: newValue.fecha_registro,

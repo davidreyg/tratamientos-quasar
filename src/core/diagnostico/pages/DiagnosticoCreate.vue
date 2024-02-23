@@ -45,6 +45,14 @@
       </q-expansion-item>
       <q-expansion-item
         v-if="paciente"
+        icon="fas fa-stethoscope"
+        label="Triaje"
+        caption="Editar / Crear"
+      >
+        <datos-triaje-tab :paciente="paciente" />
+      </q-expansion-item>
+      <q-expansion-item
+        v-if="paciente"
         icon="fas fa-folder-open"
         label="Diagnóstico"
         caption="Editar"
@@ -76,6 +84,7 @@ import { number, object, string } from 'yup';
 import DatosControlTab from '../components/tabs/DatosControlTab.vue';
 import DatosDiagnosticoTab from '../components/tabs/DatosDiagnosticoTab.vue';
 import DatosPacienteTab from '../components/tabs/DatosPacienteTab.vue';
+import DatosTriajeTab from '../components/tabs/DatosTriajeTab.vue';
 import { useDiagnosticoFormStore } from '../stores';
 
 const { fetchPaciente, $reset } = useDiagnosticoFormStore();
