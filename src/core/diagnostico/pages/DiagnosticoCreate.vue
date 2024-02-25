@@ -36,8 +36,10 @@
         icon="fas fa-person"
         label="Datos del Paciente"
         caption="Editar / Crear"
+        class="bg-purple-2"
       >
         <datos-paciente-tab
+          class="bg-purple-1"
           :paciente="paciente"
           @cancel="$reset"
           @submit="fetchPaciente(values.numero_documento)"
@@ -48,24 +50,27 @@
         icon="fas fa-stethoscope"
         label="Triaje"
         caption="Editar / Crear"
+        class="bg-pink-2"
       >
-        <datos-triaje-tab :paciente="paciente" />
+        <datos-triaje-tab :paciente="paciente" class="bg-pink-1" />
       </q-expansion-item>
       <q-expansion-item
         v-if="paciente"
         icon="fas fa-folder-open"
         label="Diagnóstico"
         caption="Editar"
+        class="bg-blue-2"
       >
-        <datos-diagnostico-tab />
+        <datos-diagnostico-tab class="bg-blue-1" />
       </q-expansion-item>
       <q-expansion-item
         v-if="diagnosticoSeleccionado"
         icon="fas fa-list-ul"
         label="Controles"
         caption="Editar"
+        class="bg-green-2"
       >
-        <datos-control-tab />
+        <datos-control-tab class="bg-green-1" />
       </q-expansion-item>
     </div>
   </div>

@@ -111,14 +111,20 @@ const onCancelControlForm = () => {
 };
 
 const onEditControl = async (control: Control) => {
-  controlSeleccionado.value = control;
-  setTriajeSeleccionado(control.triaje.data);
-  panel.value = 'edit';
+  onCancelControlForm();
+  setTimeout(() => {
+    controlSeleccionado.value = control;
+    setTriajeSeleccionado(control.triaje.data);
+    panel.value = 'edit';
+  }, 10);
 };
 const onViewControl = async (control: Control) => {
-  controlSeleccionado.value = control;
-  setTriajeSeleccionado(control.triaje.data);
-  panel.value = 'view';
+  onCancelControlForm();
+  setTimeout(() => {
+    controlSeleccionado.value = control;
+    setTriajeSeleccionado(control.triaje.data);
+    panel.value = 'view';
+  }, 10);
 };
 
 const onAddControl = () => {

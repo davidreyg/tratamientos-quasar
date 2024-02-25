@@ -120,7 +120,7 @@ const onSubmit = handleSubmit(
 
 const onCancel = () => {
   clearTriajeSeleccionado();
-  // panel.value = 'list';
+  panel.value = 'list';
   resetForm();
 };
 

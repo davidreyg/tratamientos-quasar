@@ -63,20 +63,28 @@ const { formatDate } = useLuxonFormat();
 const columns: QTable['columns'] = [
   {
     name: 'fecha',
-    align: 'center',
+    align: 'left',
     label: 'Fecha',
     field: 'created_at',
     format: (val: string) => formatDate(val),
   },
   {
-    name: 'enfermedades',
-    align: 'left',
-    label: 'Enfermedades',
-    field: (row) => {
-      return row.enfermedades.data.map(
-        (value: { nombre: string }) => value.nombre
-      );
-    },
+    name: 'paciente',
+    align: 'center',
+    label: 'Paciente',
+    field: (row) =>
+      row.paciente.data.nombres +
+      ' ' +
+      row.paciente.data.apellido_paterno +
+      ' ' +
+      row.paciente.data.apellido_materno,
+    // format: (val: string) => formatDate(val),
+  },
+  {
+    name: 'dni',
+    align: 'center',
+    label: 'N° Documento',
+    field: (row) => row.paciente.data.numero_documento,
   },
   {
     name: 'Descripcion',
@@ -84,15 +92,10 @@ const columns: QTable['columns'] = [
     label: 'Descripcion',
     field: 'observaciones',
   },
-  {
-    name: 'estado',
-    align: 'center',
-    label: 'Estado',
-    field: 'estado',
-  },
+
   {
     name: 'actions',
-    align: 'center',
+    align: 'right',
     label: 'Acciones',
     field: 'actions',
   },

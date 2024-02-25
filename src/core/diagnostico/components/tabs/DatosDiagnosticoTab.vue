@@ -1,5 +1,5 @@
 <template>
-  <q-tab-panels v-if="paciente" v-model="panel" animated class="">
+  <q-tab-panels v-if="paciente" v-model="panel" animated v-bind="$attrs">
     <q-tab-panel name="list">
       <div
         v-if="diagnosticosDelPaciente.length === 0"
