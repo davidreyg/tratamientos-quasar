@@ -32,6 +32,7 @@
         :paciente-id="Number(paciente.id)"
         :fecha-registro="(values.fecha_registro as string)"
         @cancel="onCancel"
+        @submit="onCancel"
       />
     </q-tab-panel>
     <q-tab-panel name="view">
