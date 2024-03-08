@@ -19,4 +19,6 @@ export const enum QueryTypes {
   SIGNO_ALL = 'signos',
   TRIAJE_ALL = 'triajes',
   USERS = 'users',
+  PAQUETE_ALL = 'paquetes',
+  EXAMEN_ALL = 'examens',
 }
