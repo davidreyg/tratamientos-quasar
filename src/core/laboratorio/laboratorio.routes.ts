@@ -14,9 +14,9 @@ export const laboratorioRoutes = (): RouteRecordRaw[] => [
       //   meta: { title: 'laboratorio', action: '' },
       // },
       {
-        path: 'generar-orden',
+        path: 'registrar-orden',
         name: 'laboratorio.orden',
-        component: () => import('./pages/GenerarOrdenPage.vue'),
+        component: () => import('./pages/RegistrarOrdenPage.vue'),
         meta: { title: 'Registrar Orden de Laboratorio', action: '' },
       },
     ],

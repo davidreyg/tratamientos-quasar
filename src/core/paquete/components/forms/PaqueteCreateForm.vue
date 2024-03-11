@@ -10,7 +10,6 @@
       <div class="col-12"><q-separator spaced /> Examenes</div>
       <div class="col-12 row q-col-gutter-sm"><examen-card-list /></div>
     </base-form>
-    <pre>{{ values }}</pre>
   </div>
 </template>
 
@@ -31,7 +30,7 @@ const validationSchema = object().shape({
   examen_ids: array().of(number().required()).required().label('Examenes'),
 });
 
-const { handleSubmit, setErrors, values } = useForm<PaqueteRequest>({
+const { handleSubmit, setErrors } = useForm<PaqueteRequest>({
   validationSchema,
   initialValues: {
     examen_ids: [],

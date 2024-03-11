@@ -3,4 +3,5 @@
 export interface Paquete {
   id: number;
   nombre: string;
+  examen_ids: number[];
 }

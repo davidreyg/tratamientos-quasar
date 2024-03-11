@@ -6,11 +6,11 @@
   >
     <q-card>
       <q-card-section>
-        <div class="text-h6">{{ categoria.nombre }}</div>
-        <!-- <div class="text-subtitle2">by John Doe</div> -->
-      </q-card-section>
-      <q-card-section>
+        <div class="q-mb-sm text-overline">
+          {{ categoria.nombre }}
+        </div>
         <base-check-box-group
+          dense
           name="examen_ids"
           label="Examen"
           :options="examensByCategoria(categoria.id)"

@@ -24,6 +24,9 @@
     <template #after>
       <slot name="after"></slot>
     </template>
+    <template #after-options>
+      <slot name="after-options"></slot>
+    </template>
   </q-select>
 </template>
 <script setup lang="ts">

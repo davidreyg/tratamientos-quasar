@@ -46,6 +46,7 @@
         />
       </q-expansion-item>
       <q-expansion-item
+        v-if="paciente"
         icon="fas fa-vials"
         label="Datos de la Orden de Lab."
         caption="Editar / Crear"

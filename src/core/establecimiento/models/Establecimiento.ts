@@ -8,4 +8,5 @@ export interface Establecimiento {
   telefono: number;
   ris: string;
   real_id: number;
+  has_lab: boolean;
 }
