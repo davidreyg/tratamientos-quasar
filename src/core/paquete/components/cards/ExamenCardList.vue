@@ -10,6 +10,8 @@
           {{ categoria.nombre }}
         </div>
         <base-check-box-group
+          size="xs"
+          style="font-size: small"
           dense
           name="examen_ids"
           label="Examen"

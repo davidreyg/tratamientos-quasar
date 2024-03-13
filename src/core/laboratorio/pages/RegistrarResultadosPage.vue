@@ -51,11 +51,15 @@
         label="Datos de la Orden de Lab."
         caption="Editar / Crear"
       >
-        <q-card>
-          <q-card-section>
-            <orden-create-form :paciente-id="Number(paciente.id)" />
-          </q-card-section>
-        </q-card>
+        <datos-orden-tab :paciente="paciente" @cancel="$reset" />
+      </q-expansion-item>
+      <q-expansion-item
+        v-if="ordenSeleccionada"
+        icon="fas fa-file-signature"
+        label="Registrar resultados."
+        caption="Editar / Crear"
+      >
+        registrar resultados
       </q-expansion-item>
     </div>
   </div>
@@ -72,10 +76,12 @@ import { useForm } from 'vee-validate';
 import { computed } from 'vue';
 import { onBeforeRouteLeave } from 'vue-router';
 import { number, object, string } from 'yup';
-import OrdenCreateForm from '../components/forms/OrdenCreateForm.vue';
+import DatosOrdenTab from '../components/tabs/DatosOrdenTab.vue';
 import { useLaboratorioFormStore } from '../stores';
 const { fetchPaciente, $reset } = useLaboratorioFormStore();
-const { paciente, isPacienteLoading } = storeToRefs(useLaboratorioFormStore());
+const { paciente, isPacienteLoading, ordenSeleccionada } = storeToRefs(
+  useLaboratorioFormStore()
+);
 
 const { data: tipo_documentos } = useTipoDocumentoFetchAllQuery();
 
@@ -120,15 +126,16 @@ const onSubmit = handleSubmit(async (values) => {
     });
   }
 });
+
 onBeforeRouteLeave(() => {
-  // const answer = window.confirm(
-  //   'Esta seguro de salir? Tiene cambios sin guardar!'
-  // );
-  // // cancel the navigation and stay on the same page
-  // if (!answer) {
-  //   return false;
-  // } else {
-  $reset();
-  // }
+  const answer = window.confirm(
+    'Esta seguro de salir? Tiene cambios sin guardar!'
+  );
+  // cancel the navigation and stay on the same page
+  if (!answer) {
+    return false;
+  } else {
+    $reset();
+  }
 });
 </script>

@@ -9,6 +9,9 @@ export class OrdenApi {
   static fetchAll(query?: Query) {
     return OrdenApi._api.get<Orden[]>(`${OrdenApi._endpoint}`, query);
   }
+  static fetchById(id: number) {
+    return OrdenApi._api.get<Orden>(`${OrdenApi._endpoint}/${id}`);
+  }
 
   static async create(data: OrdenCreateRequest) {
     await OrdenApi._api.post(OrdenApi._endpoint, data);

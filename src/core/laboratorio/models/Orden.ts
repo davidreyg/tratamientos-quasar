@@ -6,4 +6,5 @@ export interface Orden {
   EG: string;
   codigo_atencion: string;
   fecha_registro: string;
+  establecimiento_id: number;
 }

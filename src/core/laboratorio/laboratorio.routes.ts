@@ -19,6 +19,12 @@ export const laboratorioRoutes = (): RouteRecordRaw[] => [
         component: () => import('./pages/RegistrarOrdenPage.vue'),
         meta: { title: 'Registrar Orden de Laboratorio', action: '' },
       },
+      {
+        path: 'registrar-resultados',
+        name: 'laboratorio.resultados',
+        component: () => import('./pages/RegistrarResultadosPage.vue'),
+        meta: { title: 'Registrar Resultados', action: '' },
+      },
     ],
   },
 ];

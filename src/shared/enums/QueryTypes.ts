@@ -21,4 +21,5 @@ export const enum QueryTypes {
   USERS = 'users',
   PAQUETE_ALL = 'paquetes',
   EXAMEN_ALL = 'examens',
+  ORDEN_ALL = 'ordens',
 }
