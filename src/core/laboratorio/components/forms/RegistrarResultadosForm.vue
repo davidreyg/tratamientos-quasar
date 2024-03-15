@@ -102,9 +102,10 @@ watch(
             resultado: yup
               .number()
               .positive()
-              .when('is_canceled', {
-                is: false,
-                then: (schema) => schema.nullable(),
+              .when(['is_enabled', 'is_canceled'], {
+                is: (isEnabled: boolean, isCanceled: boolean) =>
+                  isEnabled && !isCanceled,
+                then: (schema) => schema.required(),
                 otherwise: (schema) => schema.nullable(),
               })
               .transform((_, value) => (value === '' ? undefined : _))
@@ -113,16 +114,18 @@ watch(
             fecha_resultado: yup.string().required().label('Fecha'),
             unidad_id: yup
               .number()
-              .when('is_canceled', {
-                is: false,
-                then: (schema) => schema.nullable(),
+              .when(['is_enabled', 'is_canceled'], {
+                is: (isEnabled: boolean, isCanceled: boolean) =>
+                  isEnabled && !isCanceled,
+                then: (schema) => schema.required(),
                 otherwise: (schema) => schema.nullable(),
               })
               .label('Unidad'),
             is_canceled: yup.boolean().required().label('Cancelado?'),
+            is_enabled: yup.boolean().required().label('Hablitad?'),
             motivo: yup
               .string()
-              .when('is_canceled', {
+              .when(['is_enabled', 'is_canceled'], {
                 is: true,
                 then: (schema) => schema.required(),
                 otherwise: (schema) => schema.nullable(),
@@ -148,6 +151,7 @@ watch(
           fecha_resultado: pivot.fecha_resultado ?? DateTime.now().toISODate(),
           unidad_id: pivot.unidad_id,
           is_canceled: pivot.is_canceled,
+          is_enabled: true,
           motivo: pivot.motivo,
           unidads: examen
             ? examen.unidads.data.map((v) => ({

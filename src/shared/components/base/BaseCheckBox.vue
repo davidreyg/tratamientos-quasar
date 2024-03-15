@@ -7,10 +7,12 @@
     :hide-bottom-space="!errorMessage"
   >
     <q-checkbox
+      v-bind="$attrs"
       v-model="value"
       :label="label"
       @update:model-value="(e) => handleChange(e)"
     />
+    <slot></slot>
     <template #error>
       {{ errorMessage }}
     </template>

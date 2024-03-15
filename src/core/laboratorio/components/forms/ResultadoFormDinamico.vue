@@ -1,5 +1,6 @@
 <template>
   <q-form @submit.prevent="onSubmit">
+    <pre>{{ values }}</pre>
     <div
       v-for="(_, index) in fields"
       :key="index"
@@ -47,6 +48,13 @@
         class="col-2"
       />
       <q-card-actions class="col-3 self-center">
+        <base-check-box :name="`pivot[${index}].is_enabled`" label="" dense>
+          <q-tooltip>
+            {{
+              values.pivot[index].is_enabled ? 'Deshabilitar.' : 'Habilitar.'
+            }}
+          </q-tooltip>
+        </base-check-box>
         <q-btn
           :icon="values.pivot[index].is_canceled ? 'fas fa-pen' : 'fas fa-ban'"
           :color="values.pivot[index].is_canceled ? 'warning' : 'negative'"
@@ -89,6 +97,7 @@
 import { Examen } from 'core/examen';
 import { useOrdenUpdateExamensMutation } from 'core/laboratorio/composables';
 import { OrdenResultadosRequest } from 'core/laboratorio/requests';
+import BaseCheckBox from 'shared/components/base/BaseCheckBox.vue';
 import BaseInput from 'shared/components/base/BaseInput.vue';
 import BaseSelect from 'shared/components/base/BaseSelect.vue';
 import { Field, NotifyUtils } from 'shared/utils';
@@ -141,22 +150,25 @@ const { handleSubmit, setFieldValue, values } = useForm({
 });
 
 const { mutateAsync, reset, isLoading } = useOrdenUpdateExamensMutation();
-const onSubmit = handleSubmit(async (values, { setErrors }) => {
-  await mutateAsync(
-    { id: props.ordenId, data: values as OrdenResultadosRequest },
-    {
-      onSuccess: () => {
-        NotifyUtils.success('Resultados actualizados correctamente');
-        emit('submit');
-        reset.value();
-      },
-      onError: (err) => {
-        reset.value();
-        setErrors(err.data.errors);
-      },
-    }
-  );
-});
+const onSubmit = handleSubmit(
+  async (values, { setErrors }) => {
+    await mutateAsync(
+      { id: props.ordenId, data: values as OrdenResultadosRequest },
+      {
+        onSuccess: () => {
+          NotifyUtils.success('Resultados actualizados correctamente');
+          emit('submit');
+          reset.value();
+        },
+        onError: (err) => {
+          reset.value();
+          setErrors(err.data.errors);
+        },
+      }
+    );
+  },
+  (e) => console.log(e)
+);
 
 const calcularHintUnidad = (index: number) => {
   let str = undefined;
@@ -199,6 +211,18 @@ props.fields.forEach((_, index) => {
           setFieldValue(minimo, piv.minimo);
           setFieldValue(maximo, piv.maximo);
         }
+      }
+    },
+    { deep: true, immediate: true }
+  );
+  watch(
+    () => values.pivot[index].is_canceled,
+    (newValue) => {
+      const minimo = 'pivot[' + index + '].minimo';
+      const maximo = 'pivot[' + index + '].maximo';
+      if (newValue) {
+        setFieldValue(minimo, undefined);
+        setFieldValue(maximo, undefined);
       }
     },
     { deep: true, immediate: true }
