@@ -7,4 +7,13 @@ export interface Orden {
   codigo_atencion: string;
   fecha_registro: string;
   establecimiento_id: number;
+  pivot: {
+    orden_id: number;
+    examen_id: number;
+    resultado: number;
+    unidad_id: number;
+    fecha_resultado: string;
+    is_canceled: boolean;
+    motivo: string;
+  }[];
 }

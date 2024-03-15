@@ -59,7 +59,11 @@
         label="Registrar resultados."
         caption="Editar / Crear"
       >
-        registrar resultados
+        <registrar-resultados-form
+          :orden="ordenSeleccionada"
+          @cancel="onOrdenCancel"
+          @submit="onOrdenCancel"
+        />
       </q-expansion-item>
     </div>
   </div>
@@ -76,6 +80,7 @@ import { useForm } from 'vee-validate';
 import { computed } from 'vue';
 import { onBeforeRouteLeave } from 'vue-router';
 import { number, object, string } from 'yup';
+import RegistrarResultadosForm from '../components/forms/RegistrarResultadosForm.vue';
 import DatosOrdenTab from '../components/tabs/DatosOrdenTab.vue';
 import { useLaboratorioFormStore } from '../stores';
 const { fetchPaciente, $reset } = useLaboratorioFormStore();
@@ -110,6 +115,7 @@ const { handleSubmit } = useForm<{ numero_documento: number }>({
 
 const onSubmit = handleSubmit(async (values) => {
   // await fetch(values.numero_documento);
+  $reset();
   await fetchPaciente(values.numero_documento);
 
   if (paciente.value) {
@@ -126,6 +132,10 @@ const onSubmit = handleSubmit(async (values) => {
     });
   }
 });
+
+const onOrdenCancel = () => {
+  ordenSeleccionada.value = undefined;
+};
 
 onBeforeRouteLeave(() => {
   const answer = window.confirm(

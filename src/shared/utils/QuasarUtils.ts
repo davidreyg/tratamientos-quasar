@@ -20,8 +20,9 @@ export type OnRequestParameter = {
 export type Field = {
   label: string;
   name: string;
-  type: 'string' | 'array' | 'number' | 'date';
+  type: 'string' | 'array' | 'number' | 'date' | 'select';
   suffix?: string;
+  options?: QSelectOptions[];
   // as: 'input',
   // rules: any;
   fields?: Field[];

@@ -105,6 +105,10 @@ const props = defineProps({
     required: true,
   },
 });
+const emit = defineEmits<{
+  (e: 'submit'): void;
+  // (e: 'cancel'): void;
+}>();
 
 const { data: paquetes } = usePaqueteFetchAllQuery();
 const arr_paquetes = computed(() => {
@@ -180,7 +184,7 @@ const onSubmit = handleSubmit(async (values, { setErrors, resetForm }) => {
     onSuccess: () => {
       NotifyUtils.success('Orden registrada correctamente.');
       resetForm();
-      // emit('submit');
+      emit('submit');
     },
     onError: (err) => {
       reset.value();

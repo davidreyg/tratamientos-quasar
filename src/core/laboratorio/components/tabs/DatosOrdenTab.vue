@@ -31,6 +31,7 @@
               round
               flat
               size="sm"
+              :loading="isOrdenLoading && selectedID === id"
               @click="buscarOrdenPorId(id)"
             >
               <q-tooltip>Registrar resultados.</q-tooltip>
@@ -42,6 +43,8 @@
               round
               flat
               size="sm"
+              :loading="isRegistrarLoading && selectedID === id"
+              @click="updateEstado(id, 1)"
             >
               <q-tooltip>Confirmar registro.</q-tooltip>
             </q-btn>
@@ -63,12 +66,15 @@
 </template>
 
 <script setup lang="ts">
-import { useOrdenFetchAllQuery } from 'core/laboratorio/composables';
+import {
+  useOrdenFetchAllQuery,
+  useOrdenUpdateEstadoMutation,
+} from 'core/laboratorio/composables';
 import { useLaboratorioFormStore } from 'core/laboratorio/stores';
 import { Paciente } from 'core/paciente';
 import { storeToRefs } from 'pinia';
-import { Query } from 'shared/utils';
-import { PropType, ref } from 'vue';
+import { NotifyUtils, Query } from 'shared/utils';
+import { PropType, ref, watch } from 'vue';
 import OrdenCreateForm from '../forms/OrdenCreateForm.vue';
 import OrdenDatosForm from '../forms/OrdenDatosForm.vue';
 import OrdenTable from '../tables/OrdenTable.vue';
@@ -79,7 +85,9 @@ const props = defineProps({
   },
 });
 
-const { ordenSeleccionada } = storeToRefs(useLaboratorioFormStore());
+const { ordenSeleccionada, isOrdenLoading } = storeToRefs(
+  useLaboratorioFormStore()
+);
 const { fetchOrdenById } = useLaboratorioFormStore();
 
 const query = ref<Query>({
@@ -87,18 +95,46 @@ const query = ref<Query>({
   searchJoin: 'and',
   limit: 0,
 });
-const { data } = useOrdenFetchAllQuery(query);
+const { data, refetch } = useOrdenFetchAllQuery(query);
 const panel = ref('list');
+const selectedID = ref<number>();
 
 const buscarOrdenPorId = async (id: number) => {
+  selectedID.value = id;
   await fetchOrdenById(id);
   if (ordenSeleccionada.value) {
     panel.value = 'view';
   }
 };
+const { mutateAsync, isLoading: isRegistrarLoading } =
+  useOrdenUpdateEstadoMutation();
+const updateEstado = async (id: number, estado: number) => {
+  selectedID.value = id;
+  await mutateAsync(
+    { id, data: { estado } },
+    {
+      onSuccess: () => {
+        NotifyUtils.success('La orden se REGISTRO correctamente.');
+        refetch.value();
+        panel.value = 'list';
+      },
+      onError: (err) => {
+        console.log(err);
+        // setErrors(err.data.errors);
+      },
+    }
+  );
+};
 
 const onOrdenCancel = () => {
   ordenSeleccionada.value = undefined;
-  panel.value = 'list';
+  // panel.value = 'list';
 };
+
+watch(
+  () => ordenSeleccionada.value,
+  (newValue) => {
+    if (!newValue) panel.value = 'list';
+  }
+);
 </script>
