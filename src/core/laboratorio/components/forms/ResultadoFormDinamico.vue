@@ -1,6 +1,5 @@
 <template>
   <q-form @submit.prevent="onSubmit">
-    <pre>{{ values }}</pre>
     <div
       v-for="(_, index) in fields"
       :key="index"
@@ -22,6 +21,7 @@
         label="Motivo"
         class="col-4"
         required
+        :disable="!values.pivot[index].is_enabled"
       />
       <base-input
         v-if="!values.pivot[index].is_canceled"
@@ -30,6 +30,7 @@
         label="Resultado"
         class="col-2"
         required
+        :disable="!values.pivot[index].is_enabled"
       />
       <base-select
         v-if="!values.pivot[index].is_canceled"
@@ -39,6 +40,7 @@
         :hint="calcularHintUnidad(index)"
         class="col-2"
         required
+        :disable="!values.pivot[index].is_enabled"
       />
       <base-input
         label="Fecha"
@@ -46,6 +48,7 @@
         :name="`pivot[${index}].fecha_resultado`"
         required
         class="col-2"
+        :disable="!values.pivot[index].is_enabled"
       />
       <q-card-actions class="col-3 self-center">
         <base-check-box :name="`pivot[${index}].is_enabled`" label="" dense>
@@ -58,6 +61,7 @@
         <q-btn
           :icon="values.pivot[index].is_canceled ? 'fas fa-pen' : 'fas fa-ban'"
           :color="values.pivot[index].is_canceled ? 'warning' : 'negative'"
+          :disable="!values.pivot[index].is_enabled"
           round
           flat
           size="sm"
@@ -200,16 +204,18 @@ props.fields.forEach((_, index) => {
   watch(
     () => values.pivot[index].unidad_id,
     (newValue) => {
-      const examen = props.examens.find(
-        (v) => v.id == values.pivot[index].examen_id
-      );
-      if (!!examen && !!newValue) {
-        const piv = examen.pivot.find((v) => v.unidad_id === newValue);
-        const minimo = 'pivot[' + index + '].minimo';
-        const maximo = 'pivot[' + index + '].maximo';
-        if (piv) {
-          setFieldValue(minimo, piv.minimo);
-          setFieldValue(maximo, piv.maximo);
+      if (newValue) {
+        const examen = props.examens.find(
+          (v) => v.id == values.pivot[index].examen_id
+        );
+        if (!!examen && !!newValue) {
+          const piv = examen.pivot.find((v) => v.unidad_id === newValue);
+          const minimo = 'pivot[' + index + '].minimo';
+          const maximo = 'pivot[' + index + '].maximo';
+          if (piv) {
+            setFieldValue(minimo, piv.minimo);
+            setFieldValue(maximo, piv.maximo);
+          }
         }
       }
     },
@@ -223,6 +229,24 @@ props.fields.forEach((_, index) => {
       if (newValue) {
         setFieldValue(minimo, undefined);
         setFieldValue(maximo, undefined);
+      }
+    },
+    { deep: true, immediate: true }
+  );
+  watch(
+    () => values.pivot[index].is_enabled,
+    (newValue) => {
+      const minimo = 'pivot[' + index + '].minimo';
+      const maximo = 'pivot[' + index + '].maximo';
+      const resultado = 'pivot[' + index + '].resultado';
+      const unidad_id = 'pivot[' + index + '].unidad_id';
+      const motivo = 'pivot[' + index + '].motivo';
+      if (!newValue) {
+        setFieldValue(minimo, undefined);
+        setFieldValue(maximo, undefined);
+        setFieldValue(resultado, null);
+        setFieldValue(unidad_id, null);
+        setFieldValue(motivo, null);
       }
     },
     { deep: true, immediate: true }

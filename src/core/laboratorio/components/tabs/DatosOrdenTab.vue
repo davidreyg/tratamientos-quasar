@@ -34,7 +34,7 @@
               :loading="isOrdenLoading && selectedID === id"
               @click="buscarOrdenPorId(id)"
             >
-              <q-tooltip>Registrar resultados.</q-tooltip>
+              <q-tooltip>Editar resultados.</q-tooltip>
             </q-btn>
             <q-btn
               v-if="estado === 0"
