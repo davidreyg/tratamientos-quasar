@@ -9,7 +9,7 @@
         label="Examen"
         :name="`pivot[${index}].examen_id`"
         :options="arr_examens"
-        class="col-3"
+        class="col-4"
         required
         borderless
         readonly
@@ -50,7 +50,7 @@
         class="col-2"
         :disable="!values.pivot[index].is_enabled"
       />
-      <q-card-actions class="col-3 self-center">
+      <q-card-actions class="col-2 self-center justify-center">
         <base-check-box :name="`pivot[${index}].is_enabled`" label="" dense>
           <q-tooltip>
             {{

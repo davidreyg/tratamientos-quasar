@@ -13,16 +13,22 @@
     :rows-per-page-options="[6, 10, 20, 50, 0]"
     @request="handleRequest"
   >
-    <template #body-cell-is_active="props">
-      <q-td :props="(props as ItemProps)">
-        <slot name="cell_is_active" :props="(props as ItemProps)">
-          <div>
-            <q-badge color="purple" :label="props.value" />
-          </div>
-          <div class="my-table-details">
-            {{ props.row.details }}
-          </div>
+    <template
+      v-for="(column, index) in columns
+        ?.filter((c) => c.name !== 'actions')
+        .filter((c) => c.name !== 'index')"
+      #[`body-cell-${column.name}`]="props"
+      :key="index"
+    >
+      <q-td :props="props" :class="props.col.__thClass">
+        <slot :name="`body-cell-${column.name}`" :props="props">
+          {{ props.value }}
         </slot>
+      </q-td>
+    </template>
+    <template #body-cell-index="props">
+      <q-td :props="props" :class="props.col__thClass" auto-width>
+        {{ props.rowIndex + 1 }}
       </q-td>
     </template>
     <template #top>
@@ -65,39 +71,23 @@
       </div>
     </template>
     <template #body-cell-actions="props">
-      <q-td class="text-right">
-        <q-btn round flat color="primary" icon="fas fa-ellipsis">
-          <q-menu
-            self="top start"
-            fit
-            transition-show="flip-right"
-            transition-hide="jump-up"
-          >
-            <q-card class="my-card" flat>
-              <q-list style="min-width: 100px">
-                <slot :key="props.key" name="actions">
-                  <q-item clickable @click="$emit('edit', props.key)">
-                    <q-item-section avatar>
-                      <q-icon name="fas fa-pen-to-square" />
-                    </q-item-section>
-                    <q-item-section>Editar</q-item-section>
-                  </q-item>
-                  <q-separator />
-                  <q-item
-                    v-close-popup
-                    clickable
-                    @click="$emit('destroyOne', props.key)"
-                  >
-                    <q-item-section avatar>
-                      <q-icon name="fas fa-trash-can" />
-                    </q-item-section>
-                    <q-item-section>Eliminar</q-item-section>
-                  </q-item>
-                </slot>
-              </q-list>
-            </q-card>
-          </q-menu>
-        </q-btn>
+      <q-td :class="props.col.__thClass">
+        <slot name="customActions" :props="props">
+          <q-btn round flat color="primary" icon="fas fa-ellipsis">
+            <q-menu
+              self="top start"
+              fit
+              transition-show="flip-right"
+              transition-hide="jump-up"
+            >
+              <q-card class="my-card" flat>
+                <q-list style="min-width: 100px">
+                  <slot :key="props.key" name="actions"> acciones </slot>
+                </q-list>
+              </q-card>
+            </q-menu>
+          </q-btn>
+        </slot>
       </q-td>
     </template>
     <template #item="props">
@@ -163,7 +153,7 @@ const componentProps = defineProps({
   showGridToggle: {
     type: Boolean,
     required: false,
-    default: true,
+    default: false,
   },
   grid: {
     type: Boolean,
@@ -176,8 +166,6 @@ const componentProps = defineProps({
   },
 });
 const emit = defineEmits<{
-  destroyOne: [key: string];
-  edit: [key: string];
   request: [req: OnRequestParameter];
 }>();
 

@@ -1,6 +1,6 @@
 <template>
-  <q-table :rows="ordens" :columns="columns" row-key="id">
-    <template #body-cell-estado="props">
+  <base-table :data="ordens" :columns="columns" row-key="id">
+    <template #body-cell-estado="{ props }">
       <q-td :props="props">
         <q-badge
           :color="props.row.estado_detalle.color"
@@ -8,23 +8,16 @@
         />
       </q-td>
     </template>
-    <template #body-cell-actions="props">
-      <q-td :props="props" class="text-right">
-        <q-card-actions align="right" class="q-pa-none q-ma-none">
-          <slot
-            :id="Number(props.key)"
-            :estado="props.row.estado"
-            name="actions"
-          ></slot>
-        </q-card-actions>
-      </q-td>
+    <template #customActions="{ props }">
+      <slot name="custom-actions" :props="props"></slot>
     </template>
-  </q-table>
+  </base-table>
 </template>
 
 <script setup lang="ts">
 import { Orden } from 'core/laboratorio/models';
 import { QTable } from 'quasar';
+import BaseTable from 'shared/components/base/BaseTable.vue';
 import { useLuxonFormat } from 'shared/utils';
 const { formatDate } = useLuxonFormat();
 defineProps({
@@ -34,6 +27,11 @@ defineProps({
   },
 });
 const columns: QTable['columns'] = [
+  {
+    name: 'index',
+    label: '#',
+    field: 'index',
+  },
   {
     name: 'fecha_registro',
     align: 'left',
@@ -48,6 +46,24 @@ const columns: QTable['columns'] = [
     field: 'medico',
   },
   {
+    name: 'diagnostico',
+    align: 'center',
+    label: 'Diagnostico',
+    field: 'diagnostico',
+  },
+  {
+    name: 'paciente',
+    align: 'center',
+    label: 'Paciente',
+    field: (row) => row.paciente.data.nombre_completo,
+  },
+  {
+    name: 'documento',
+    align: 'center',
+    label: 'N° Documento',
+    field: (row) => row.paciente.data.numero_documento,
+  },
+  {
     name: 'codigo_atencion',
     align: 'center',
     label: 'Codigo Atención',
@@ -58,6 +74,7 @@ const columns: QTable['columns'] = [
     align: 'center',
     label: 'Estado',
     field: 'estado',
+    sortable: true,
   },
   {
     name: 'actions',

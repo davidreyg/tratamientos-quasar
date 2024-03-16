@@ -1,3 +1,6 @@
+import { Establecimiento } from 'core/establecimiento';
+import { Paciente } from 'core/paciente';
+
 export interface Orden {
   id: number;
   diagnostico: string;
@@ -6,7 +9,11 @@ export interface Orden {
   EG: string;
   codigo_atencion: string;
   fecha_registro: string;
+  medico: string;
   establecimiento_id: number;
+  establecimiento_otro?: string;
+  establecimiento: { data: Establecimiento } | null;
+  paciente: { data: Paciente };
   pivot: {
     orden_id: number;
     examen_id: number;

@@ -1,151 +1,139 @@
 <template>
   <div class="row q-col-gutter-md">
-    <q-form
-      class="col-12 row q-col-gutter-lg items-start justify-center"
-      @submit="onSubmit"
-    >
-      <base-select
-        :options="arr_tipo_documentos"
-        name="tipo_documento_id"
-        class="col-xs-12 col-sm-4"
-        label="Tipo de Documento"
-        :loading="false"
-        required
-      />
-      <base-input
-        name="numero_documento"
-        label="N° de Documento"
-        class="col-xs-12 col-sm-4"
-        required
-      />
-      <q-card-actions class="col-auto justify-center">
-        <q-btn
-          color="primary"
-          outline
-          size="lg"
-          icon="search"
-          label="Buscar"
-          no-caps
-          type="submit"
-          :loading="isPacienteLoading"
-        />
-      </q-card-actions>
-    </q-form>
     <div class="col-12">
-      <q-expansion-item
-        icon="fas fa-person"
-        label="Datos del Paciente"
-        caption="Editar / Crear"
-        class="bg-purple-2"
-      >
-        <datos-paciente-tab
-          class="bg-purple-1"
-          :paciente="paciente"
-          @cancel="$reset"
-          @submit="(documento) => fetchPaciente(documento)"
-        />
-      </q-expansion-item>
-      <q-expansion-item
-        v-if="paciente"
-        icon="fas fa-vials"
-        label="Datos de la Orden de Lab."
-        caption="Editar / Crear"
-      >
-        <datos-orden-tab :paciente="paciente" @cancel="$reset" />
-      </q-expansion-item>
-      <q-expansion-item
-        v-if="ordenSeleccionada"
-        icon="fas fa-file-signature"
-        label="Registrar resultados."
-        caption="Editar / Crear"
-      >
-        <registrar-resultados-form
-          :orden="ordenSeleccionada"
-          @cancel="onOrdenCancel"
-          @submit="onOrdenCancel"
-        />
-      </q-expansion-item>
+      <q-tab-panels v-model="panel" animated>
+        <q-tab-panel name="list">
+          <orden-table v-if="data" :ordens="data.data">
+            <template #custom-actions="{ props }">
+              <q-btn
+                color="primary"
+                icon="fas fa-file-signature"
+                round
+                flat
+                size="sm"
+                :loading="isOrdenLoading && selectedID === Number(props.key)"
+                @click="buscarOrdenPorId(Number(props.key))"
+              >
+                <q-tooltip>Editar resultados.</q-tooltip>
+              </q-btn>
+              <q-btn
+                v-if="props.row.estado === 0"
+                color="positive"
+                icon="fas fa-check-double"
+                round
+                flat
+                size="sm"
+                :loading="
+                  isRegistrarLoading && selectedID === Number(props.key)
+                "
+                @click="updateEstado(Number(props.key), 1)"
+              >
+                <q-tooltip>Confirmar registro.</q-tooltip>
+              </q-btn>
+            </template>
+          </orden-table>
+        </q-tab-panel>
+        <q-tab-panel name="edit-examens">
+          <q-expansion-item
+            v-if="ordenSeleccionada"
+            icon="fas fa-file-signature"
+            label="Datos de la orden."
+          >
+            <q-card class="my-card">
+              <q-card-section>
+                <orden-datos-form :orden="ordenSeleccionada" />
+              </q-card-section>
+            </q-card>
+          </q-expansion-item>
+          <q-expansion-item
+            v-if="ordenSeleccionada"
+            icon="fas fa-vials"
+            label="Registrar resultados."
+            caption="Editar / Crear"
+            default-opened
+          >
+            <q-card class="my-card">
+              <q-card-section>
+                <registrar-resultados-form
+                  :orden="ordenSeleccionada"
+                  @cancel="onOrdenCancel"
+                  @submit="onOrdenCancel"
+                />
+              </q-card-section>
+            </q-card>
+          </q-expansion-item>
+        </q-tab-panel>
+      </q-tab-panels>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import DatosPacienteTab from 'core/diagnostico/components/tabs/DatosPacienteTab.vue';
-import { useTipoDocumentoFetchAllQuery } from 'core/tipo-documento';
 import { storeToRefs } from 'pinia';
-import BaseInput from 'shared/components/base/BaseInput.vue';
-import BaseSelect from 'shared/components/base/BaseSelect.vue';
-import Swal from 'sweetalert2';
-import { useForm } from 'vee-validate';
-import { computed } from 'vue';
+import { NotifyUtils, Query } from 'shared/utils';
+import { ref, watch } from 'vue';
 import { onBeforeRouteLeave } from 'vue-router';
-import { number, object, string } from 'yup';
+import OrdenDatosForm from '../components/forms/OrdenDatosForm.vue';
 import RegistrarResultadosForm from '../components/forms/RegistrarResultadosForm.vue';
-import DatosOrdenTab from '../components/tabs/DatosOrdenTab.vue';
+import OrdenTable from '../components/tables/OrdenTable.vue';
+import {
+  useOrdenFetchAllQuery,
+  useOrdenUpdateEstadoMutation,
+} from '../composables';
 import { useLaboratorioFormStore } from '../stores';
-const { fetchPaciente, $reset } = useLaboratorioFormStore();
-const { paciente, isPacienteLoading, ordenSeleccionada } = storeToRefs(
+const { $reset, fetchOrdenById } = useLaboratorioFormStore();
+const { ordenSeleccionada, isOrdenLoading } = storeToRefs(
   useLaboratorioFormStore()
 );
+const query = ref<Query>({
+  search: 'estado:0,1',
+  searchJoin: 'and',
+  limit: 0,
+});
+const selectedID = ref<number>();
+const { data, refetch } = useOrdenFetchAllQuery(query);
 
-const { data: tipo_documentos } = useTipoDocumentoFetchAllQuery();
+const panel = ref('list');
 
-const arr_tipo_documentos = computed(() => {
-  if (tipo_documentos.value) {
-    return tipo_documentos.value.map((val) => {
-      return {
-        label: val.nombre,
-        value: val.id,
-      };
-    });
+const buscarOrdenPorId = async (id: number) => {
+  selectedID.value = id;
+  await fetchOrdenById(id);
+  if (ordenSeleccionada.value) {
+    panel.value = 'edit-examens';
   }
-  return [];
-});
-const validationSchema = object().shape({
-  numero_documento: number()
-    .typeError('Debe ingresar un número')
-    .min(8)
-    .required()
-    .label('Número de Documento'),
-  tipo_documento_id: string().required().label('Tipo de Documento'),
-});
-const { handleSubmit } = useForm<{ numero_documento: number }>({
-  validationSchema,
-});
-
-const onSubmit = handleSubmit(async (values) => {
-  // await fetch(values.numero_documento);
-  $reset();
-  await fetchPaciente(values.numero_documento);
-
-  if (paciente.value) {
-    Swal.fire({
-      title: 'Exito!',
-      text: 'Paciente encontrado correctamente!',
-      icon: 'success',
-    });
-  } else {
-    Swal.fire({
-      title: 'Información!',
-      text: 'No se encontro el paciente indicado!',
-      icon: 'info',
-    });
-  }
-});
+};
+const { mutateAsync, isLoading: isRegistrarLoading } =
+  useOrdenUpdateEstadoMutation();
+const updateEstado = async (id: number, estado: number) => {
+  selectedID.value = id;
+  await mutateAsync(
+    { id, data: { estado } },
+    {
+      onSuccess: () => {
+        NotifyUtils.success('La orden se REGISTRO correctamente.');
+        refetch.value();
+        panel.value = 'list';
+      },
+      onError: (err) => {
+        console.log(err);
+        // setErrors(err.data.errors);
+      },
+    }
+  );
+};
 
 const onOrdenCancel = () => {
   ordenSeleccionada.value = undefined;
 };
 
 onBeforeRouteLeave(() => {
-  const answer = window.confirm(
-    'Esta seguro de salir? Tiene cambios sin guardar!'
-  );
-  // cancel the navigation and stay on the same page
-  if (!answer) {
-    return false;
-  } else {
-    $reset();
-  }
+  $reset();
 });
+
+watch(
+  () => ordenSeleccionada.value,
+  (newValue) => {
+    if (!newValue) panel.value = 'list';
+  }
+);
 </script>

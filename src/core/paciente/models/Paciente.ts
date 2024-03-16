@@ -5,6 +5,7 @@ import { Diagnostico } from 'core/diagnostico';
 export interface Paciente {
   id: string;
   nombres: string;
+  nombre_completo: string;
   apellido_paterno: string;
   apellido_materno: string;
   numero_documento: number;

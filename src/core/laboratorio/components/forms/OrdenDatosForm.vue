@@ -1,36 +1,7 @@
 <template>
-  <base-form>
-    <base-input
-      name="medico"
-      label="Medico"
-      class="col-xs-12 col-sm-6"
-      required
-      readonly
-      borderless
-      :outlined="false"
-    />
-    <base-select
-      v-if="orden.establecimiento_id"
-      :options="arr_establecimientos"
-      name="establecimiento_id"
-      class="col-xs-12 col-sm-6"
-      label="Establecimiento Institucional"
-      :loading="false"
-      required
-      readonly
-      borderless
-      :outlined="false"
-    />
-    <base-input
-      v-else
-      name="establecimiento_otro"
-      label="Otro establecimiento"
-      class="col-xs-12 col-sm-6"
-      required
-      readonly
-      borderless
-      :outlined="false"
-    />
+  <q-form class="row">
+    <div class="col-12 text-bold text-italic">Datos Generales:</div>
+
     <base-input
       name="diagnostico"
       label="Diagnostico"
@@ -39,6 +10,7 @@
       readonly
       borderless
       :outlined="false"
+      :value="orden.diagnostico"
     />
     <base-input
       name="CI10"
@@ -48,6 +20,7 @@
       readonly
       borderless
       :outlined="false"
+      :value="orden.CI10"
     />
     <base-input
       name="CPN"
@@ -57,6 +30,7 @@
       readonly
       borderless
       :outlined="false"
+      :value="orden.CPN"
     />
     <base-input
       name="EG"
@@ -66,6 +40,7 @@
       readonly
       borderless
       :outlined="false"
+      :value="orden.EG"
     />
     <base-input
       name="codigo_atencion"
@@ -75,6 +50,7 @@
       readonly
       borderless
       :outlined="false"
+      :value="orden.codigo_atencion"
     />
     <base-input
       name="fecha_registro"
@@ -85,74 +61,79 @@
       readonly
       borderless
       :outlined="false"
+      :value="orden.fecha_registro"
     />
-    <template #actions>
-      <q-card-actions class="col-12 justify-end q-pa-none q-pt-md">
-        <q-btn
-          label="Cancelar"
-          color="primary"
-          no-caps
-          outline
-          @click="$emit('cancel')"
-        />
-      </q-card-actions>
-    </template>
-  </base-form>
+    <div class="col-12 text-bold text-italic">
+      Datos del Establecimiento de Origen:
+    </div>
+    <base-input
+      name="establecimiento_tipo"
+      class="col-xs-12 col-sm-4"
+      label="Tipo de Establecimiento"
+      required
+      readonly
+      borderless
+      :outlined="false"
+      :value="orden.establecimiento ? 'Jurisdiccion' : 'Externo'"
+    />
+    <base-input
+      name="establecimiento_id"
+      class="col-xs-12 col-sm-8"
+      label="Establecimiento Origen"
+      required
+      readonly
+      borderless
+      :outlined="false"
+      :value="
+        orden.establecimiento
+          ? orden.establecimiento.data.nombre
+          : orden.establecimiento_otro
+      "
+    />
+
+    <div class="col-12 text-bold text-italic">Datos del Medico:</div>
+    <base-input
+      name="medico"
+      label="Nombre"
+      class="col-xs-12 col-sm-6"
+      required
+      readonly
+      borderless
+      :outlined="false"
+      :value="orden.medico"
+    />
+    <div class="col-12 text-bold text-italic">Datos del paciente:</div>
+    <base-input
+      name="paciente"
+      label="Nombre"
+      class="col-xs-12 col-sm-4"
+      required
+      readonly
+      borderless
+      :outlined="false"
+      :value="orden.paciente.data.nombre_completo"
+    />
+    <base-input
+      name="documento"
+      label="N° de Documento"
+      class="col-xs-12 col-sm-4"
+      required
+      readonly
+      borderless
+      :outlined="false"
+      :value="orden.paciente.data.numero_documento"
+    />
+  </q-form>
 </template>
 
 <script setup lang="ts">
-import { useEstablecimientoFetchAllQuery } from 'core/establecimiento';
 import { Orden } from 'core/laboratorio/models';
-import { OrdenCreateRequest } from 'core/laboratorio/requests';
-import BaseForm from 'shared/components/base/BaseForm.vue';
 import BaseInput from 'shared/components/base/BaseInput.vue';
-import BaseSelect from 'shared/components/base/BaseSelect.vue';
-import { useForm } from 'vee-validate';
-import { PropType, computed } from 'vue';
-import { array, number, object, string } from 'yup';
-const props = defineProps({
+import { PropType } from 'vue';
+defineProps({
   orden: {
     type: Object as PropType<Orden>,
     required: true,
   },
-});
-defineEmits<{
-  (e: 'cancel'): void;
-}>();
-const { data: establecimientos } = useEstablecimientoFetchAllQuery();
-
-const arr_establecimientos = computed(() => {
-  if (establecimientos.value) {
-    return establecimientos.value.map((val) => {
-      return {
-        label: val.nombre,
-        value: Number(val.id),
-      };
-    });
-  }
-  return [];
-});
-
-const validationSchema = object().shape({
-  diagnostico: string().trim().min(2).required().label('Diagnostico'),
-  CI10: string().trim().min(2).required().label('CI10'),
-  CPN: string().trim().min(2).required().label('CPN'),
-  EG: string().trim().min(2).required().label('EG'),
-  codigo_atencion: string()
-    .trim()
-    .min(2)
-    .required()
-    .label('Codigo de Atencion'),
-  fecha_registro: string().trim().required().label('Fecha de Registro'),
-  medico: string().trim().required().label('Médico'),
-  examen_ids: array().of(number().required()).required().label('Examenes'),
-  paquete_ids: array().of(number().required()).required().label('Paquetes'),
-  establecimiento_id: number().label('Establecimiento Institucional'),
-  establecimiento_otro: string().label('Otro Establecimiento'),
-});
-
-const {} = useForm<OrdenCreateRequest>({
-  validationSchema,
-  initialValues: props.orden,
 });
 </script>

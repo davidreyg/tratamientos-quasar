@@ -1,18 +1,14 @@
 <template>
-  <q-card class="my-card">
-    <q-card-section>
-      <resultado-form-dinamico
-        v-if="fields.length > 0 && validationSchema && examens"
-        :fields="fields"
-        :validation-schema="validationSchema"
-        :initial-values="initialValues"
-        :orden-id="Number(orden.id)"
-        :examens="examens"
-        @cancel="$emit('cancel')"
-        @submit="$emit('submit')"
-      />
-    </q-card-section>
-  </q-card>
+  <resultado-form-dinamico
+    v-if="fields.length > 0 && validationSchema && examens"
+    :fields="fields"
+    :validation-schema="validationSchema"
+    :initial-values="initialValues"
+    :orden-id="Number(orden.id)"
+    :examens="examens"
+    @cancel="$emit('cancel')"
+    @submit="$emit('submit')"
+  />
 </template>
 
 <script setup lang="ts">

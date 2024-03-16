@@ -1,5 +1,5 @@
 <template>
-  <q-tab-panels v-if="paciente" v-model="panel" animated>
+  <q-tab-panels v-model="panel" animated>
     <q-tab-panel name="list">
       <div
         v-if="data && data.data.length === 0"
@@ -53,7 +53,7 @@
       </div>
     </q-tab-panel>
     <q-tab-panel name="new">
-      <orden-create-form :paciente-id="Number(paciente.id)" />
+      <orden-create-form v-if="paciente" :paciente-id="Number(paciente.id)" />
     </q-tab-panel>
     <q-tab-panel name="view">
       <orden-datos-form
@@ -71,27 +71,20 @@ import {
   useOrdenUpdateEstadoMutation,
 } from 'core/laboratorio/composables';
 import { useLaboratorioFormStore } from 'core/laboratorio/stores';
-import { Paciente } from 'core/paciente';
 import { storeToRefs } from 'pinia';
 import { NotifyUtils, Query } from 'shared/utils';
-import { PropType, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import OrdenCreateForm from '../forms/OrdenCreateForm.vue';
 import OrdenDatosForm from '../forms/OrdenDatosForm.vue';
 import OrdenTable from '../tables/OrdenTable.vue';
-const props = defineProps({
-  paciente: {
-    type: Object as PropType<Paciente>,
-    required: true,
-  },
-});
 
-const { ordenSeleccionada, isOrdenLoading } = storeToRefs(
+const { ordenSeleccionada, isOrdenLoading, paciente } = storeToRefs(
   useLaboratorioFormStore()
 );
 const { fetchOrdenById } = useLaboratorioFormStore();
 
 const query = ref<Query>({
-  search: `paciente_id:${props.paciente.id};estado:0,1`,
+  search: 'estado:0,1',
   searchJoin: 'and',
   limit: 0,
 });
