@@ -75,6 +75,14 @@
         </q-btn>
       </q-card-actions>
     </div>
+    <div v-if="withObservaciones" class="row q-mt-md">
+      <base-input
+        label="Observaciones"
+        type="textarea"
+        name="observaciones"
+        class="col-12"
+      />
+    </div>
     <div class="row">
       <q-card-actions class="col-12 justify-end q-pa-none q-pt-md">
         <q-btn
@@ -132,6 +140,10 @@ const props = defineProps({
   },
   validationSchema: {
     type: Object,
+    required: true,
+  },
+  withObservaciones: {
+    type: Boolean,
     required: true,
   },
 });

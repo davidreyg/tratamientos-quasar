@@ -26,7 +26,7 @@
                 :loading="
                   isRegistrarLoading && selectedID === Number(props.key)
                 "
-                @click="updateEstado(Number(props.key), 1)"
+                @click="registrarOrden(Number(props.key))"
               >
                 <q-tooltip>Confirmar registro.</q-tooltip>
               </q-btn>
@@ -78,7 +78,7 @@ import RegistrarResultadosForm from '../components/forms/RegistrarResultadosForm
 import OrdenTable from '../components/tables/OrdenTable.vue';
 import {
   useOrdenFetchAllQuery,
-  useOrdenUpdateEstadoMutation,
+  useOrdenRegistrarMutation,
 } from '../composables';
 import { useLaboratorioFormStore } from '../stores';
 const { $reset, fetchOrdenById } = useLaboratorioFormStore();
@@ -103,23 +103,20 @@ const buscarOrdenPorId = async (id: number) => {
   }
 };
 const { mutateAsync, isLoading: isRegistrarLoading } =
-  useOrdenUpdateEstadoMutation();
-const updateEstado = async (id: number, estado: number) => {
+  useOrdenRegistrarMutation();
+const registrarOrden = async (id: number) => {
   selectedID.value = id;
-  await mutateAsync(
-    { id, data: { estado } },
-    {
-      onSuccess: () => {
-        NotifyUtils.success('La orden se REGISTRO correctamente.');
-        refetch.value();
-        panel.value = 'list';
-      },
-      onError: (err) => {
-        console.log(err);
-        // setErrors(err.data.errors);
-      },
-    }
-  );
+  await mutateAsync(id, {
+    onSuccess: () => {
+      NotifyUtils.success('La orden se REGISTRO correctamente.');
+      refetch.value();
+      panel.value = 'list';
+    },
+    onError: (err) => {
+      console.log(err);
+      // setErrors(err.data.errors);
+    },
+  });
 };
 
 const onOrdenCancel = () => {

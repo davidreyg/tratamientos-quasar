@@ -2,11 +2,11 @@ import { ApiatoError } from 'shared/utils';
 import { useMutation } from 'vue-query';
 import { OrdenApi } from '../api';
 
-export function useOrdenUpdateEstadoMutation() {
+export function useOrdenRegistrarMutation() {
   return useMutation<
     unknown,
     ApiatoError<{ estado: boolean }>,
-    { id: number; data: { estado: number } },
+    number,
     unknown
-  >(({ id, data }) => OrdenApi.updateEstado(id, data));
+  >((id) => OrdenApi.registrar(id));
 }

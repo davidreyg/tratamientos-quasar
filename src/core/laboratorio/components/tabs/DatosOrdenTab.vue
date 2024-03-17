@@ -68,7 +68,7 @@
 <script setup lang="ts">
 import {
   useOrdenFetchAllQuery,
-  useOrdenUpdateEstadoMutation,
+  useOrdenRegistrarMutation,
 } from 'core/laboratorio/composables';
 import { useLaboratorioFormStore } from 'core/laboratorio/stores';
 import { storeToRefs } from 'pinia';
@@ -100,7 +100,7 @@ const buscarOrdenPorId = async (id: number) => {
   }
 };
 const { mutateAsync, isLoading: isRegistrarLoading } =
-  useOrdenUpdateEstadoMutation();
+  useOrdenRegistrarMutation();
 const updateEstado = async (id: number, estado: number) => {
   selectedID.value = id;
   await mutateAsync(
