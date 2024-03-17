@@ -18,7 +18,7 @@
               </q-btn>
               <q-btn
                 v-if="props.row.estado === 0"
-                color="positive"
+                color="info"
                 icon="fas fa-check-double"
                 round
                 flat

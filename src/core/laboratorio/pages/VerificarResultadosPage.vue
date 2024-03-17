@@ -6,6 +6,7 @@
           <orden-table v-if="data" :ordens="data.data">
             <template #custom-actions="{ props }">
               <q-btn
+                v-if="props.row.estado !== 2"
                 color="primary"
                 icon="fas fa-file-signature"
                 round
@@ -17,19 +18,20 @@
                 <q-tooltip>Editar resultados.</q-tooltip>
               </q-btn>
               <q-btn
-                v-if="props.row.estado === 0"
+                v-if="props.row.estado === 1"
                 color="positive"
-                icon="fas fa-check-double"
+                icon="fas fa-thumbs-up"
                 round
                 flat
                 size="sm"
                 :loading="
-                  isRegistrarLoading && selectedID === Number(props.key)
+                  isVerificarLoading && selectedID === Number(props.key)
                 "
-                @click="registrarOrden(Number(props.key))"
+                @click="verificarOrden(Number(props.key))"
               >
-                <q-tooltip>Confirmar registro.</q-tooltip>
+                <q-tooltip>Verificar orden.</q-tooltip>
               </q-btn>
+              <div v-else></div>
             </template>
           </orden-table>
         </q-tab-panel>
@@ -79,7 +81,7 @@ import RegistrarResultadosForm from '../components/forms/RegistrarResultadosForm
 import OrdenTable from '../components/tables/OrdenTable.vue';
 import {
   useOrdenFetchAllQuery,
-  useOrdenRegistrarMutation,
+  useOrdenVerificarMutation,
 } from '../composables';
 import { useLaboratorioFormStore } from '../stores';
 const { $reset, fetchOrdenById } = useLaboratorioFormStore();
@@ -87,7 +89,7 @@ const { ordenSeleccionada, isOrdenLoading } = storeToRefs(
   useLaboratorioFormStore()
 );
 const query = ref<Query>({
-  search: 'estado:1',
+  search: 'estado:1,2',
   searchJoin: 'and',
   limit: 0,
 });
@@ -103,13 +105,13 @@ const buscarOrdenPorId = async (id: number) => {
     panel.value = 'edit-examens';
   }
 };
-const { mutateAsync, isLoading: isRegistrarLoading } =
-  useOrdenRegistrarMutation();
-const registrarOrden = async (id: number) => {
+const { mutateAsync, isLoading: isVerificarLoading } =
+  useOrdenVerificarMutation();
+const verificarOrden = async (id: number) => {
   selectedID.value = id;
   await mutateAsync(id, {
     onSuccess: () => {
-      NotifyUtils.success('La orden se REGISTRO correctamente.');
+      NotifyUtils.success('La orden se VERIFICO correctamente.');
       refetch.value();
       panel.value = 'list';
     },

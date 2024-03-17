@@ -24,4 +24,8 @@ export class OrdenApi {
   static async registrar(id: number) {
     await OrdenApi._api.patch(`${OrdenApi._endpoint}/${id}/registrar`);
   }
+
+  static async verificar(id: number) {
+    await OrdenApi._api.patch(`${OrdenApi._endpoint}/${id}/verificar`);
+  }
 }
