@@ -56,6 +56,7 @@
               <q-card-section>
                 <registrar-resultados-form
                   :orden="ordenSeleccionada"
+                  with-observaciones
                   @cancel="onOrdenCancel"
                   @submit="onOrdenCancel"
                 />
@@ -86,7 +87,7 @@ const { ordenSeleccionada, isOrdenLoading } = storeToRefs(
   useLaboratorioFormStore()
 );
 const query = ref<Query>({
-  search: 'estado:0',
+  search: 'estado:1',
   searchJoin: 'and',
   limit: 0,
 });

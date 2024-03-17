@@ -21,9 +21,15 @@ export const laboratorioRoutes = (): RouteRecordRaw[] => [
       },
       {
         path: 'registrar-resultados',
-        name: 'laboratorio.resultados',
+        name: 'laboratorio.registrar',
         component: () => import('./pages/RegistrarResultadosPage.vue'),
         meta: { title: 'Registrar Resultados', action: '' },
+      },
+      {
+        path: 'verificar-resultados',
+        name: 'laboratorio.verificar',
+        component: () => import('./pages/VerificarResultadosPage.vue'),
+        meta: { title: 'Verificar Resultados', action: '' },
       },
     ],
   },

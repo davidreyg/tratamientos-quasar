@@ -55,7 +55,7 @@
           <q-card-section>
             <orden-create-form
               :paciente-id="Number(paciente.id)"
-              @submit="$router.push({ name: 'laboratorio.resultados' })"
+              @submit="$router.push({ name: 'laboratorio.registrar' })"
             />
           </q-card-section>
         </q-card>
