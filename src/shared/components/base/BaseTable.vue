@@ -32,43 +32,45 @@
       </q-td>
     </template>
     <template #top>
-      <div class="col-12 q-mb-md">
-        <div class="row justify-between q-col-gutter-sm">
-          <div class="col-md-auto col-sm-auto col-xs-12">
-            <q-input
-              v-model="refFilter"
-              borderless
-              dense
-              outlined
-              debounce="300"
-              placeholder="Buscar..."
-            >
-              <template #append>
-                <q-icon name="fas fa-magnifying-glass" />
-              </template>
-            </q-input>
-          </div>
-          <div class="col-md-6 col-sm-auto col-xs-12">
-            <q-btn
-              v-if="showGridToggle"
-              flat
-              padding="0"
-              class="q-mr-md"
-              :icon="refGrid ? 'fas fa-table' : 'fas fa-grip'"
-              size="lg"
-              color="primary"
-              @click="refGrid = !refGrid"
-            />
-            <q-btn
-              v-if="refSelected.length > 0"
-              color="negative"
-              icon="far fa-trash-can"
-              label="Eliminar"
-              no-caps
-            />
+      <slot name="top">
+        <div class="col-12 q-mb-md">
+          <div class="row justify-between q-col-gutter-sm">
+            <div class="col-md-auto col-sm-auto col-xs-12">
+              <q-input
+                v-model="refFilter"
+                borderless
+                dense
+                outlined
+                debounce="300"
+                placeholder="Buscar..."
+              >
+                <template #append>
+                  <q-icon name="fas fa-magnifying-glass" />
+                </template>
+              </q-input>
+            </div>
+            <div class="col-md-6 col-sm-auto col-xs-12">
+              <q-btn
+                v-if="showGridToggle"
+                flat
+                padding="0"
+                class="q-mr-md"
+                :icon="refGrid ? 'fas fa-table' : 'fas fa-grip'"
+                size="lg"
+                color="primary"
+                @click="refGrid = !refGrid"
+              />
+              <q-btn
+                v-if="refSelected.length > 0"
+                color="negative"
+                icon="far fa-trash-can"
+                label="Eliminar"
+                no-caps
+              />
+            </div>
           </div>
         </div>
-      </div>
+      </slot>
     </template>
     <template #body-cell-actions="props">
       <q-td :class="props.col.__thClass">

@@ -112,10 +112,6 @@ const registrarOrden = async (id: number) => {
       refetch.value();
       panel.value = 'list';
     },
-    onError: (err) => {
-      console.log(err);
-      // setErrors(err.data.errors);
-    },
   });
 };
 

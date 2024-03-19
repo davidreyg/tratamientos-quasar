@@ -1,5 +1,13 @@
 <template>
-  <base-table :data="ordens" :columns="columns" row-key="id">
+  <base-table
+    :data="ordens"
+    :columns="columns"
+    :loading="loading"
+    row-key="id"
+    :server-pagination="serverPagination"
+    @request="(req) => $emit('request', req)"
+  >
+    <template #top><slot name="top"></slot></template>
     <template #body-cell-estado="{ props }">
       <q-td :props="props">
         <q-badge
@@ -18,14 +26,32 @@
 import { Orden } from 'core/laboratorio/models';
 import { QTable } from 'quasar';
 import BaseTable from 'shared/components/base/BaseTable.vue';
-import { useLuxonFormat } from 'shared/utils';
+import {
+  OnRequestParameter,
+  ServerPagination,
+  useLuxonFormat,
+} from 'shared/utils';
+import { PropType } from 'vue';
 const { formatDate } = useLuxonFormat();
 defineProps({
   ordens: {
     type: Array<Orden>,
     required: true,
   },
+  loading: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+  serverPagination: {
+    type: Object as PropType<ServerPagination>,
+    default: undefined,
+  },
 });
+
+defineEmits<{
+  request: [req: OnRequestParameter];
+}>();
 const columns: QTable['columns'] = [
   {
     name: 'index',
@@ -52,7 +78,7 @@ const columns: QTable['columns'] = [
     field: 'diagnostico',
   },
   {
-    name: 'paciente',
+    name: 'nombre_completo',
     align: 'center',
     label: 'Paciente',
     field: (row) => row.paciente.data.nombre_completo,

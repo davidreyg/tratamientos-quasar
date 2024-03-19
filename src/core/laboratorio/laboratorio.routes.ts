@@ -7,12 +7,12 @@ export const laboratorioRoutes = (): RouteRecordRaw[] => [
     // name: 'laboratorio',
     beforeEnter: [checkPrivilegio],
     children: [
-      // {
-      //   path: '',
-      //   name: 'laboratorio.index',
-      //   component: () => import('./pages/DiagnosticoListPage.vue'),
-      //   meta: { title: 'laboratorio', action: '' },
-      // },
+      {
+        path: 'buscar-orden',
+        name: 'laboratorio.listar-ordens',
+        component: () => import('./pages/OrdenListPage.vue'),
+        meta: { title: 'Buscar Ordenes', action: '' },
+      },
       {
         path: 'registrar-orden',
         name: 'laboratorio.orden',

@@ -3,35 +3,37 @@
     <div class="col-12">
       <q-tab-panels v-model="panel" animated>
         <q-tab-panel name="list">
-          <orden-table v-if="data" :ordens="data.data">
+          <orden-table
+            v-if="data"
+            :ordens="data.data"
+            :server-pagination="data.meta.pagination"
+            :loading="isFetching"
+            @request="handleRequest"
+          >
+            <!-- <template #top>
+              <filtro-orden-form @submit="onFiltrarOrden" />
+            </template> -->
             <template #custom-actions="{ props }">
               <q-btn
-                v-if="props.row.estado !== 2"
                 color="primary"
-                icon="fas fa-file-signature"
+                icon="fas fa-eye"
                 round
                 flat
                 size="sm"
                 :loading="isOrdenLoading && selectedID === Number(props.key)"
-                @click="buscarOrdenPorId(Number(props.key))"
               >
-                <q-tooltip>Editar resultados.</q-tooltip>
+                <q-tooltip>Visualizar Orden.</q-tooltip>
               </q-btn>
               <q-btn
-                v-if="props.row.estado === 1"
-                color="positive"
-                icon="fas fa-thumbs-up"
+                v-if="props.row.estado === 2"
+                color="info"
+                icon="fas fa-print"
                 round
                 flat
                 size="sm"
-                :loading="
-                  isVerificarLoading && selectedID === Number(props.key)
-                "
-                @click="verificarOrden(Number(props.key))"
               >
-                <q-tooltip>Verificar orden.</q-tooltip>
+                <q-tooltip>Imprimir.</q-tooltip>
               </q-btn>
-              <div v-else></div>
             </template>
           </orden-table>
         </q-tab-panel>
@@ -73,49 +75,29 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { NotifyUtils, Query } from 'shared/utils';
+import { OnRequestParameter, Query } from 'shared/utils';
 import { ref, watch } from 'vue';
 import { onBeforeRouteLeave } from 'vue-router';
 import OrdenDatosForm from '../components/forms/OrdenDatosForm.vue';
 import RegistrarResultadosForm from '../components/forms/RegistrarResultadosForm.vue';
 import OrdenTable from '../components/tables/OrdenTable.vue';
-import {
-  useOrdenFetchAllQuery,
-  useOrdenVerificarMutation,
-} from '../composables';
+import { useOrdenFetchAllQuery } from '../composables';
 import { useLaboratorioFormStore } from '../stores';
-const { $reset, fetchOrdenById } = useLaboratorioFormStore();
+const { $reset } = useLaboratorioFormStore();
 const { ordenSeleccionada, isOrdenLoading } = storeToRefs(
   useLaboratorioFormStore()
 );
-const query = ref<Query>({
-  search: 'estado:1',
-  searchJoin: 'and',
-  limit: 0,
-});
+const query = ref<Query>({});
 const selectedID = ref<number>();
-const { data, refetch } = useOrdenFetchAllQuery(query);
-
+const { data, isFetching } = useOrdenFetchAllQuery(query);
 const panel = ref('list');
 
-const buscarOrdenPorId = async (id: number) => {
-  selectedID.value = id;
-  await fetchOrdenById(id);
-  if (ordenSeleccionada.value) {
-    panel.value = 'edit-examens';
-  }
-};
-const { mutateAsync, isLoading: isVerificarLoading } =
-  useOrdenVerificarMutation();
-const verificarOrden = async (id: number) => {
-  selectedID.value = id;
-  await mutateAsync(id, {
-    onSuccess: () => {
-      NotifyUtils.success('La orden se VERIFICO correctamente.');
-      refetch.value();
-      panel.value = 'list';
-    },
-  });
+const handleRequest = (req: OnRequestParameter) => {
+  query.value.page = req.pagination.page;
+  query.value.limit = req.pagination.rowsPerPage;
+  query.value.search = req.filter;
+  query.value.orderBy = req.pagination.sortBy;
+  query.value.sortedBy = req.pagination.descending ? 'desc' : 'asc';
 };
 
 const onOrdenCancel = () => {
