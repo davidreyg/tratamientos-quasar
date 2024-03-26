@@ -6,6 +6,7 @@
     :initial-values="initialValues"
     :orden-id="Number(orden.id)"
     :examens="props.orden.examens.data"
+    :items="props.orden.items.data"
     :with-observaciones="withObservaciones"
     @cancel="$emit('cancel')"
     @submit="$emit('submit')"
@@ -93,9 +94,9 @@ const schema_pivot = yup.array().of(
       resultado: yup
         .number()
         .positive()
-        .when(['is_enabled', 'is_canceled'], {
-          is: (isEnabled: boolean, isCanceled: boolean) =>
-            isEnabled && !isCanceled,
+        .when(['is_enabled', 'is_canceled', 'has_items'], {
+          is: (isEnabled: boolean, isCanceled: boolean, hasItems: boolean) =>
+            isEnabled && !isCanceled && !hasItems,
           then: (schema) => schema.required(),
           otherwise: (schema) => schema.nullable(),
         })
@@ -105,15 +106,16 @@ const schema_pivot = yup.array().of(
       fecha_resultado: yup.string().required().label('Fecha'),
       unidad_id: yup
         .number()
-        .when(['is_enabled', 'is_canceled'], {
-          is: (isEnabled: boolean, isCanceled: boolean) =>
-            isEnabled && !isCanceled,
+        .when(['is_enabled', 'is_canceled', 'has_items'], {
+          is: (isEnabled: boolean, isCanceled: boolean, hasItems: boolean) =>
+            isEnabled && !isCanceled && !hasItems,
           then: (schema) => schema.required(),
           otherwise: (schema) => schema.nullable(),
         })
         .label('Unidad'),
       is_canceled: yup.boolean().required().label('Cancelado?'),
       is_enabled: yup.boolean().required().label('Hablitad?'),
+      has_items: yup.boolean().required().label('Tiene items?'),
       motivo: yup
         .string()
         .when(['is_enabled', 'is_canceled'], {
@@ -125,12 +127,51 @@ const schema_pivot = yup.array().of(
       minimo: yup.number(),
       maximo: yup.number(),
       unidads: yup.array(),
+      items: yup.array(),
+    };
+    return yup.object().shape(reglas);
+  })
+);
+const schema_item_orden = yup.array().of(
+  yup.lazy(() => {
+    let reglas = {};
+    reglas = {
+      item_id: yup.mixed().required().label('Item'),
+      examen_id: yup.mixed().required().label('Examen'),
+      resultado: yup
+        .number()
+        .positive()
+        // .required()
+        .when(['is_enabled', 'is_canceled'], {
+          is: (isEnabled: boolean, isCanceled: boolean) =>
+            isEnabled && !isCanceled,
+          then: (schema) => schema.required(),
+          otherwise: (schema) => schema.nullable(),
+        })
+        .transform((_, value) => (value === '' ? undefined : _))
+        .typeError('Debe ingresar un numero')
+        .label('Resultado'),
+      unidad_id: yup
+        .number()
+        .when(['is_enabled', 'is_canceled'], {
+          is: (isEnabled: boolean, isCanceled: boolean) =>
+            isEnabled && !isCanceled,
+          then: (schema) => schema.required(),
+          otherwise: (schema) => schema.nullable(),
+        })
+        .label('Unidad'),
+      minimo: yup.number(),
+      maximo: yup.number(),
+      is_canceled: yup.boolean().required().label('Cancelado?'),
+      is_enabled: yup.boolean().required().label('Habilitado?'),
     };
     return yup.object().shape(reglas);
   })
 );
 
-validationSchema.value = yup.object().shape({ pivot: schema_pivot });
+validationSchema.value = yup
+  .object()
+  .shape({ pivot: schema_pivot, item_orden: schema_item_orden });
 4;
 
 //CONSTRUIR LOS VALORES INICALES
@@ -145,9 +186,35 @@ const initialValuesPivot = props.orden.pivot.map((pivot) => {
     unidad_id: pivot.unidad_id,
     is_canceled: pivot.is_canceled,
     is_enabled: true,
+    has_items: examen ? examen.items.data.length > 0 : false,
     motivo: pivot.motivo,
     unidads: examen
       ? examen.unidads.data.map((v) => ({
+          label: v.nombre,
+          value: Number(v.id),
+        }))
+      : [],
+    items: props.orden.items.data
+      .map((item, index) => ({ pivot_index: index, examen_id: item.examen_id }))
+      .filter((item) => item.examen_id === Number(examen?.id)),
+  };
+});
+const initialValuesItemOrden = props.orden.item_orden.map((pivot) => {
+  const item = props.orden.items.data.find(
+    (v) => Number(v.id) == pivot.item_id
+  );
+  const pivotExamen = props.orden.pivot.find(
+    (v) => Number(v.examen_id) == item?.examen_id
+  );
+  return {
+    item_id: pivot.item_id,
+    examen_id: item?.examen_id,
+    resultado: pivot.resultado,
+    unidad_id: pivot.unidad_id,
+    is_canceled: pivotExamen ? pivotExamen.is_canceled : false,
+    is_enabled: true,
+    unidads: item
+      ? item.unidads.data.map((v) => ({
           label: v.nombre,
           value: Number(v.id),
         }))
@@ -157,6 +224,7 @@ const initialValuesPivot = props.orden.pivot.map((pivot) => {
 
 initialValues.value = {
   pivot: initialValuesPivot,
+  item_orden: initialValuesItemOrden,
   observaciones: props.orden.observaciones,
 };
 </script>

@@ -80,12 +80,15 @@
         @update="onUpdatePaquetes"
       />
     </div>
-    <div class="col-12 row q-col-gutter-sm"><examen-card-list /></div>
+    <div class="col-12 row q-col-gutter-sm">
+      <examen-card-list v-if="examens" :examens="examens" />
+    </div>
   </base-form>
 </template>
 
 <script setup lang="ts">
 import { useEstablecimientoFetchAllQuery } from 'core/establecimiento';
+import { useExamenFetchAllQuery } from 'core/examen';
 import { useOrdenCreateMutation } from 'core/laboratorio/composables';
 import { OrdenCreateRequest } from 'core/laboratorio/requests';
 import { usePaqueteFetchAllQuery } from 'core/paquete';
@@ -94,7 +97,7 @@ import BaseCheckBoxGroup from 'shared/components/base/BaseCheckBoxGroup.vue';
 import BaseForm from 'shared/components/base/BaseForm.vue';
 import BaseInput from 'shared/components/base/BaseInput.vue';
 import BaseSelect from 'shared/components/base/BaseSelect.vue';
-import { NotifyUtils } from 'shared/utils';
+import { NotifyUtils, Query } from 'shared/utils';
 import { useForm } from 'vee-validate';
 import { computed, ref, watch } from 'vue';
 import { array, number, object, string } from 'yup';
@@ -109,6 +112,13 @@ const emit = defineEmits<{
   (e: 'submit'): void;
   // (e: 'cancel'): void;
 }>();
+
+const query = ref<Query>({
+  limit: 0,
+  search: 'is_active:1',
+  searchJoin: 'and',
+});
+const { data: examens } = useExamenFetchAllQuery(query);
 
 const { data: paquetes } = usePaqueteFetchAllQuery();
 const arr_paquetes = computed(() => {
@@ -150,6 +160,7 @@ const validationSchema = object().shape({
   fecha_registro: string().trim().required().label('Fecha de Registro'),
   medico: string().trim().required().label('Médico'),
   examen_ids: array().of(number().required()).required().label('Examenes'),
+  item_ids: array().of(number().required()).required().label('Items'),
   paquete_ids: array().of(number().required()).required().label('Paquetes'),
   establecimiento_id: number()
     .when([], {
@@ -206,6 +217,25 @@ watch(
         'paquete_ids',
         selectedPackages?.map((paquete) => Number(paquete.id)) || []
       );
+      // Buscar sus subexamenes o Items
+      let item_ids: number[] = [];
+      if (examens.value) {
+        item_ids = [];
+        newValue.forEach((examen) => {
+          const examenEncontrado = examens.value.find(
+            (e) => Number(e.id) === examen
+          );
+          if (examenEncontrado && examenEncontrado.items.data.length > 0) {
+            const items = examenEncontrado.items.data.map((exa) =>
+              Number(exa.id)
+            );
+
+            item_ids.push(...items);
+          }
+        });
+        setFieldValue('item_ids', [...new Set(item_ids)]);
+        console.log(values.item_ids);
+      }
     }
   }
 );

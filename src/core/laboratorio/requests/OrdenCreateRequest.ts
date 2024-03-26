@@ -10,6 +10,7 @@ export interface OrdenCreateRequest {
   paciente_id: number;
   empleado_id: number;
   examen_ids: number[];
+  item_ids: number[];
   establecimiento_id?: number;
   paquete_ids: number[];
 }

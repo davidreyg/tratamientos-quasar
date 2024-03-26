@@ -1,5 +1,6 @@
 import { Establecimiento } from 'core/establecimiento';
 import { Examen } from 'core/examen';
+import { Item } from 'core/item';
 import { Paciente } from 'core/paciente';
 
 export interface Orden {
@@ -17,6 +18,7 @@ export interface Orden {
   establecimiento: { data: Establecimiento } | null;
   paciente: { data: Paciente };
   examens: { data: Examen[] };
+  items: { data: Item[] };
   pivot: {
     orden_id: number;
     examen_id: number;
@@ -25,5 +27,11 @@ export interface Orden {
     fecha_resultado: string;
     is_canceled: boolean;
     motivo: string;
+  }[];
+  item_orden: {
+    orden_id: number;
+    item_id: number;
+    resultado: number;
+    unidad_id: number;
   }[];
 }

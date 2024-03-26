@@ -1,80 +1,138 @@
 <template>
   <q-form @submit.prevent="onSubmit">
-    <div
-      v-for="(_, index) in fields"
-      :key="index"
-      class="row q-col-gutter-sm q-mb-sm"
-    >
-      <base-select
-        label="Examen"
-        :name="`pivot[${index}].examen_id`"
-        :options="arr_examens"
-        class="col-4"
-        required
-        borderless
-        readonly
-        :outlined="false"
-      />
-      <base-input
-        v-if="values.pivot[index].is_canceled"
-        :name="`pivot[${index}].motivo`"
-        label="Motivo"
-        class="col-4"
-        required
-        :disable="!values.pivot[index].is_enabled"
-      />
-      <base-input
-        v-if="!values.pivot[index].is_canceled"
-        :name="`pivot[${index}].resultado`"
-        :bg-color="calcularColorResultado(index)"
-        label="Resultado"
-        class="col-2"
-        required
-        :disable="!values.pivot[index].is_enabled"
-      />
-      <base-select
-        v-if="!values.pivot[index].is_canceled"
-        label="Unidad"
-        :name="`pivot[${index}].unidad_id`"
-        :options="values.pivot[index].unidads"
-        :hint="calcularHintUnidad(index)"
-        class="col-2"
-        required
-        :disable="!values.pivot[index].is_enabled"
-      />
-      <base-input
-        label="Fecha"
-        type="date"
-        :name="`pivot[${index}].fecha_resultado`"
-        required
-        class="col-2"
-        :disable="!values.pivot[index].is_enabled"
-      />
-      <q-card-actions class="col-2 self-center justify-center">
-        <base-check-box :name="`pivot[${index}].is_enabled`" label="" dense>
-          <q-tooltip>
-            {{
-              values.pivot[index].is_enabled ? 'Deshabilitar.' : 'Habilitar.'
-            }}
-          </q-tooltip>
-        </base-check-box>
-        <q-btn
-          :icon="values.pivot[index].is_canceled ? 'fas fa-pen' : 'fas fa-ban'"
-          :color="values.pivot[index].is_canceled ? 'warning' : 'negative'"
-          :disable="!values.pivot[index].is_enabled"
-          round
-          flat
-          size="sm"
-          @click="ignorarResultado(index)"
-        >
-          <q-tooltip>{{
-            values.pivot[index].is_canceled
-              ? 'Registrar datos.'
-              : 'Cancelar examen.'
-          }}</q-tooltip>
-        </q-btn>
-      </q-card-actions>
-    </div>
+    <q-list bordered>
+      <q-item v-for="(examen, index) in examens" :key="index">
+        <q-item-section>
+          <div class="row q-col-gutter-sm q-mb-sm">
+            <base-select
+              label="Examen"
+              :name="`pivot[${index}].examen_id`"
+              :options="arr_examens"
+              class="col-4"
+              required
+              borderless
+              readonly
+              :outlined="false"
+            />
+            <base-input
+              v-if="values.pivot[index].is_canceled"
+              :name="`pivot[${index}].motivo`"
+              label="Motivo"
+              class="col-4"
+              required
+              :disable="!values.pivot[index].is_enabled"
+            />
+            <base-input
+              v-if="
+                !values.pivot[index].is_canceled &&
+                !values.pivot[index].has_items
+              "
+              :name="`pivot[${index}].resultado`"
+              :bg-color="calcularColorResultado(index)"
+              label="Resultado"
+              class="col-2"
+              required
+              :disable="!values.pivot[index].is_enabled"
+            />
+            <base-select
+              v-if="
+                !values.pivot[index].is_canceled &&
+                !values.pivot[index].has_items
+              "
+              label="Unidad"
+              :name="`pivot[${index}].unidad_id`"
+              :options="values.pivot[index].unidads"
+              :hint="calcularHintUnidad(index)"
+              class="col-2"
+              required
+              :disable="!values.pivot[index].is_enabled"
+            />
+            <base-input
+              label="Fecha"
+              type="date"
+              :name="`pivot[${index}].fecha_resultado`"
+              required
+              class="col-2"
+              :disable="!values.pivot[index].is_enabled"
+            />
+            <q-card-actions class="col-2 self-center justify-center">
+              <base-check-box
+                :name="`pivot[${index}].is_enabled`"
+                label=""
+                dense
+              >
+                <q-tooltip>
+                  {{
+                    values.pivot[index].is_enabled
+                      ? 'Deshabilitar.'
+                      : 'Habilitar.'
+                  }}
+                </q-tooltip>
+              </base-check-box>
+              <q-btn
+                :icon="
+                  values.pivot[index].is_canceled ? 'fas fa-pen' : 'fas fa-ban'
+                "
+                :color="
+                  values.pivot[index].is_canceled ? 'warning' : 'negative'
+                "
+                :disable="!values.pivot[index].is_enabled"
+                round
+                flat
+                size="sm"
+                @click="cancelarExamen(index)"
+              >
+                <q-tooltip>{{
+                  values.pivot[index].is_canceled
+                    ? 'Registrar datos.'
+                    : 'Cancelar examen.'
+                }}</q-tooltip>
+              </q-btn>
+            </q-card-actions>
+          </div>
+          <q-list
+            v-show="
+              values.pivot[index].is_enabled && !values.pivot[index].is_canceled
+            "
+            bordered
+          >
+            <q-item v-for="(_, i) in values.pivot[index].items" :key="i">
+              <q-item-section>
+                <div class="row q-col-gutter-sm q-mb-sm">
+                  <base-select
+                    label="Item"
+                    :name="`item_orden[${_.pivot_index}].item_id`"
+                    :options="arr_items"
+                    class="col-4"
+                    required
+                    borderless
+                    readonly
+                    :outlined="false"
+                  />
+                  <base-input
+                    :name="`item_orden[${_.pivot_index}].resultado`"
+                    label="Resultado"
+                    class="col-2"
+                    required
+                    :disable="!values.pivot[index].is_enabled"
+                  />
+
+                  <base-select
+                    label="Unidad"
+                    :name="`item_orden[${_.pivot_index}].unidad_id`"
+                    :options="values.item_orden[_.pivot_index].unidads"
+                    class="col-2"
+                    required
+                    :disable="!values.pivot[index].is_enabled"
+                  />
+                </div>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-item-section>
+      </q-item>
+    </q-list>
+    <!-- OBSERVACIONES -->
     <div v-if="withObservaciones" class="row q-mt-md">
       <base-input
         label="Observaciones"
@@ -107,6 +165,7 @@
 
 <script setup lang="ts">
 import { Examen } from 'core/examen';
+import { Item } from 'core/item';
 import { useOrdenUpdateExamensMutation } from 'core/laboratorio/composables';
 import { OrdenResultadosRequest } from 'core/laboratorio/requests';
 import BaseCheckBox from 'shared/components/base/BaseCheckBox.vue';
@@ -127,6 +186,10 @@ const props = defineProps({
   },
   examens: {
     type: Array<Examen>,
+    required: true,
+  },
+  items: {
+    type: Array<Item>,
     required: true,
   },
   ordenId: {
@@ -158,6 +221,14 @@ const arr_examens = computed(() => {
     });
   }
   return [];
+});
+const arr_items = computed(() => {
+  return props.items.map((val) => {
+    return {
+      label: val.nombre,
+      value: Number(val.id),
+    };
+  });
 });
 
 const { handleSubmit, setFieldValue, values } = useForm({
@@ -207,11 +278,22 @@ const calcularColorResultado = (index: number) => {
   }
   return color;
 };
-const ignorarResultado = (index: number) => {
+const cancelarExamen = (index: number) => {
   const is_canceled = 'pivot[' + index + '].is_canceled';
   const valor = values.pivot[index].is_canceled;
+
+  // Ignorar tambien los items de este examen...
+  if (values.pivot[index].has_items) {
+    const itemsDelExamen = values.pivot[index].items;
+    itemsDelExamen.forEach((piv: { pivot_index: string }) => {
+      const is_canceled_item =
+        'item_orden[' + piv.pivot_index + '].is_canceled';
+      setFieldValue(is_canceled_item, !valor);
+    });
+  }
   setFieldValue(is_canceled, !valor);
 };
+
 props.fields.forEach((_, index) => {
   watch(
     () => values.pivot[index].unidad_id,
@@ -259,6 +341,13 @@ props.fields.forEach((_, index) => {
         setFieldValue(resultado, null);
         setFieldValue(unidad_id, null);
         setFieldValue(motivo, null);
+
+        const itemsDelExamen = values.pivot[index].items;
+        itemsDelExamen.forEach((piv: { pivot_index: string }) => {
+          const is_enabled_item =
+            'item_orden[' + piv.pivot_index + '].is_enabled';
+          setFieldValue(is_enabled_item, newValue);
+        });
       }
     },
     { deep: true, immediate: true }

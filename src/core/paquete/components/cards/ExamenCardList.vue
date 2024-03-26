@@ -23,28 +23,28 @@
 </template>
 
 <script setup lang="ts">
-import { Categoria, useExamenFetchAllQuery } from 'core/examen';
+import { Categoria, Examen } from 'core/examen';
 import BaseCheckBoxGroup from 'shared/components/base/BaseCheckBoxGroup.vue';
-import { Query } from 'shared/utils';
-import { computed, ref } from 'vue';
-const query = ref<Query>({ limit: 0 });
-const { data } = useExamenFetchAllQuery(query);
+import { computed } from 'vue';
+
+const props = defineProps({
+  examens: {
+    type: Array<Examen>,
+    required: true,
+  },
+});
 const categorias = computed<Categoria[]>(() => {
-  if (data.value) {
-    const categories = data.value.map((ex) => ex.categoria.data);
-    return categories
-      .filter(
-        (ex, index, self) => self.findIndex((t) => t.id === ex.id) === index
-      )
-      .map((ex) => ({ ...ex })); // Copia de los objetos originales para evitar mutaciones
-  } else {
-    return [];
-  }
+  const categories = props.examens.map((ex) => ex.categoria.data);
+  return categories
+    .filter(
+      (ex, index, self) => self.findIndex((t) => t.id === ex.id) === index
+    )
+    .map((ex) => ({ ...ex })); // Copia de los objetos originales para evitar mutaciones
 });
 
 const examensByCategoria = (id: number) => {
-  return data.value
-    ? data.value
+  return props.examens
+    ? props.examens
         .filter((v) => v.categoria_id == id)
         .map((v) => ({ label: v.nombre, value: Number(v.id) }))
     : [];

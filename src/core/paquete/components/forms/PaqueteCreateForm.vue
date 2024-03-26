@@ -8,17 +8,21 @@
     >
       <base-input name="nombre" label="Nombre" class="col-12" />
       <div class="col-12"><q-separator spaced /> Examenes</div>
-      <div class="col-12 row q-col-gutter-sm"><examen-card-list /></div>
+      <div class="col-12 row q-col-gutter-sm">
+        <examen-card-list v-if="examens" :examens="examens" />
+      </div>
     </base-form>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useExamenFetchAllQuery } from 'core/examen';
 import { PaqueteRequest, usePaqueteCreateMutation } from 'core/paquete';
 import BaseForm from 'shared/components/base/BaseForm.vue';
 import BaseInput from 'shared/components/base/BaseInput.vue';
-import { NotifyUtils } from 'shared/utils';
+import { NotifyUtils, Query } from 'shared/utils';
 import { useForm } from 'vee-validate';
+import { ref } from 'vue';
 import { array, number, object, string } from 'yup';
 import ExamenCardList from '../cards/ExamenCardList.vue';
 const emit = defineEmits<{
@@ -36,6 +40,12 @@ const { handleSubmit, setErrors } = useForm<PaqueteRequest>({
     examen_ids: [],
   },
 });
+const query = ref<Query>({
+  limit: 0,
+  search: 'is_active:1',
+  searchJoin: 'and',
+});
+const { data: examens } = useExamenFetchAllQuery(query);
 
 const { isLoading, mutate } = usePaqueteCreateMutation();
 
