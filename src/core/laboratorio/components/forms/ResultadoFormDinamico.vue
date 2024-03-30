@@ -23,10 +23,7 @@
               :disable="!values.pivot[index].is_enabled"
             />
             <base-input
-              v-if="
-                !values.pivot[index].is_canceled &&
-                !values.pivot[index].has_items
-              "
+              v-if="!values.pivot[index].is_canceled"
               :name="`pivot[${index}].resultado`"
               :bg-color="calcularColorResultado(index)"
               label="Resultado"
@@ -324,6 +321,13 @@ props.fields.forEach((_, index) => {
         setFieldValue(minimo, undefined);
         setFieldValue(maximo, undefined);
       }
+
+      const itemsDelExamen = values.pivot[index].items;
+      itemsDelExamen.forEach((piv: { pivot_index: string }) => {
+        const is_canceled_item =
+          'item_orden[' + piv.pivot_index + '].is_canceled';
+        setFieldValue(is_canceled_item, newValue);
+      });
     },
     { deep: true, immediate: true }
   );

@@ -95,8 +95,8 @@ const schema_pivot = yup.array().of(
         .number()
         .positive()
         .when(['is_enabled', 'is_canceled', 'has_items'], {
-          is: (isEnabled: boolean, isCanceled: boolean, hasItems: boolean) =>
-            isEnabled && !isCanceled && !hasItems,
+          is: (isEnabled: boolean, isCanceled: boolean) =>
+            isEnabled && !isCanceled,
           then: (schema) => schema.required(),
           otherwise: (schema) => schema.nullable(),
         })
@@ -203,15 +203,12 @@ const initialValuesItemOrden = props.orden.item_orden.map((pivot) => {
   const item = props.orden.items.data.find(
     (v) => Number(v.id) == pivot.item_id
   );
-  const pivotExamen = props.orden.pivot.find(
-    (v) => Number(v.examen_id) == item?.examen_id
-  );
   return {
     item_id: pivot.item_id,
     examen_id: item?.examen_id,
     resultado: pivot.resultado,
     unidad_id: pivot.unidad_id,
-    is_canceled: pivotExamen ? pivotExamen.is_canceled : false,
+    is_canceled: pivot.is_canceled,
     is_enabled: true,
     unidads: item
       ? item.unidads.data.map((v) => ({
