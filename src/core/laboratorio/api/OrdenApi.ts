@@ -1,3 +1,4 @@
+import { Examen } from 'core/examen';
 import { sttpClient } from 'shared/api';
 import { Query } from 'shared/utils';
 import { Orden } from '../models';
@@ -27,5 +28,15 @@ export class OrdenApi {
 
   static async verificar(id: number) {
     await OrdenApi._api.patch(`${OrdenApi._endpoint}/${id}/verificar`);
+  }
+
+  static async getConteoExamens(query?: Query) {
+    return await OrdenApi._api.get<Examen[]>('reportes/conteo-examens', query);
+  }
+
+  static async exportConteoExamens() {
+    return await OrdenApi._api
+      .withOptions({ responseType: 'blob' })
+      .post<Blob>('excel/conteo-examens');
   }
 }

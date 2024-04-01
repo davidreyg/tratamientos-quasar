@@ -31,6 +31,12 @@ export const laboratorioRoutes = (): RouteRecordRaw[] => [
         component: () => import('./pages/VerificarResultadosPage.vue'),
         meta: { title: 'Verificar Resultados', action: '' },
       },
+      {
+        path: 'conteo-examenes',
+        name: 'laboratorio.conteo',
+        component: () => import('./pages/ExamenConteoPage.vue'),
+        meta: { title: 'Reporte de Examenes', action: '' },
+      },
     ],
   },
 ];

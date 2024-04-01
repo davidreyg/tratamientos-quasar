@@ -25,4 +25,5 @@ export interface Examen {
   items: {
     data: Item[];
   };
+  ordens_count?: number;
 }

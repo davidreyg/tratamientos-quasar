@@ -103,6 +103,10 @@ class SttpClient {
     return this.sttp.delete<ApiatoResponse<T>>(url, queryParams);
   }
 
+  withOptions(config: AxiosRequestConfig): Sttp {
+    return this.sttp.withOptions(config);
+  }
+
   // Handle global app errors
   // We can handle generic app errors depending on the status code
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
