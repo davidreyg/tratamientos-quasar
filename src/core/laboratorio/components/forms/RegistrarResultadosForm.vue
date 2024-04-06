@@ -92,23 +92,45 @@ const schema_pivot = yup.array().of(
     reglas = {
       examen_id: yup.mixed().required().label('Examen'),
       resultado: yup
-        .number()
-        .positive()
-        .when(['is_enabled', 'is_canceled', 'has_items'], {
-          is: (isEnabled: boolean, isCanceled: boolean) =>
-            isEnabled && !isCanceled,
+        .mixed()
+        .when(['tipo'], {
+          is: (tipo: string) => tipo == 'unidad',
+          then: () =>
+            yup
+              .number()
+              .positive()
+              .typeError('Debe ingresar un numero')
+              .label('Resultado'),
+          // otherwise: (schema) => schema.nullable(),
+        })
+        .when(['tipo'], {
+          is: (tipo: string) => tipo === 'string',
+          then: () => yup.string().trim().label('Resultado'),
+          // otherwise: (schema) => schema.nullable(),
+        })
+        .when(['tipo'], {
+          is: (tipo: string) => tipo === 'respuesta',
+          then: () => yup.string().trim().label('Resultado'),
+          // otherwise: (schema) => schema.nullable(),
+        })
+        .when(['is_enabled', 'is_canceled', 'tipo'], {
+          is: (isEnabled: boolean, isCanceled: boolean, tipo: string) =>
+            isEnabled && !isCanceled && tipo.toLowerCase() !== 'respuesta',
           then: (schema) => schema.required(),
           otherwise: (schema) => schema.nullable(),
         })
-        .transform((_, value) => (value === '' ? undefined : _))
-        .typeError('Debe ingresar un numero')
-        .label('Resultado'),
+        .transform((_, value) => (value === '' ? undefined : _)),
+
       fecha_resultado: yup.string().required().label('Fecha'),
       unidad_id: yup
         .number()
-        .when(['is_enabled', 'is_canceled', 'has_items'], {
-          is: (isEnabled: boolean, isCanceled: boolean, hasItems: boolean) =>
-            isEnabled && !isCanceled && !hasItems,
+        .when(['is_enabled', 'is_canceled', 'has_items', 'tipo'], {
+          is: (
+            isEnabled: boolean,
+            isCanceled: boolean,
+            hasItems: boolean,
+            tipo: string
+          ) => isEnabled && !isCanceled && !hasItems && tipo === 'unidad',
           then: (schema) => schema.required(),
           otherwise: (schema) => schema.nullable(),
         })
@@ -128,6 +150,8 @@ const schema_pivot = yup.array().of(
       maximo: yup.number(),
       unidads: yup.array(),
       items: yup.array(),
+      respuestas: yup.array(),
+      tipo: yup.string().required().label('Tipo'),
     };
     return yup.object().shape(reglas);
   })
@@ -164,6 +188,7 @@ const schema_item_orden = yup.array().of(
       maximo: yup.number(),
       is_canceled: yup.boolean().required().label('Cancelado?'),
       is_enabled: yup.boolean().required().label('Habilitado?'),
+      tipo: yup.string().required().label('Tipo'),
     };
     return yup.object().shape(reglas);
   })
@@ -172,8 +197,6 @@ const schema_item_orden = yup.array().of(
 validationSchema.value = yup
   .object()
   .shape({ pivot: schema_pivot, item_orden: schema_item_orden });
-4;
-
 //CONSTRUIR LOS VALORES INICALES
 const initialValuesPivot = props.orden.pivot.map((pivot) => {
   const examen = props.orden.examens.data.find(
@@ -184,12 +207,20 @@ const initialValuesPivot = props.orden.pivot.map((pivot) => {
     resultado: pivot.resultado,
     fecha_resultado: pivot.fecha_resultado ?? DateTime.now().toISODate(),
     unidad_id: pivot.unidad_id,
+    respuesta_id: pivot.respuesta_id,
     is_canceled: pivot.is_canceled,
     is_enabled: true,
     has_items: examen ? examen.items.data.length > 0 : false,
+    tipo: examen && examen.tipo.toLowerCase(),
     motivo: pivot.motivo,
     unidads: examen
       ? examen.unidads.data.map((v) => ({
+          label: v.nombre,
+          value: Number(v.id),
+        }))
+      : [],
+    respuestas: examen
+      ? examen.respuestas.data.map((v) => ({
           label: v.nombre,
           value: Number(v.id),
         }))

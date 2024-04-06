@@ -1,5 +1,6 @@
 <template>
   <q-form @submit.prevent="onSubmit">
+    <!-- <pre>{{ values }}</pre> -->
     <q-list bordered>
       <q-item v-for="(examen, index) in examens" :key="index">
         <q-item-section>
@@ -14,36 +15,88 @@
               readonly
               :outlined="false"
             />
-            <base-input
-              v-if="values.pivot[index].is_canceled"
-              :name="`pivot[${index}].motivo`"
-              label="Motivo"
-              class="col-4"
-              required
-              :disable="!values.pivot[index].is_enabled"
-            />
-            <base-input
-              v-if="!values.pivot[index].is_canceled"
-              :name="`pivot[${index}].resultado`"
-              :bg-color="calcularColorResultado(index)"
-              label="Resultado"
-              class="col-2"
-              required
-              :disable="!values.pivot[index].is_enabled"
-            />
-            <base-select
-              v-if="
-                !values.pivot[index].is_canceled &&
-                !values.pivot[index].has_items
-              "
-              label="Unidad"
-              :name="`pivot[${index}].unidad_id`"
-              :options="values.pivot[index].unidads"
-              :hint="calcularHintUnidad(index)"
-              class="col-2"
-              required
-              :disable="!values.pivot[index].is_enabled"
-            />
+            <!-- SI ES STRING -->
+            <div
+              v-if="examen.tipo.toLowerCase() === 'string'"
+              class="col-4 row q-col-gutter-sm"
+            >
+              <base-input
+                v-if="!values.pivot[index].is_canceled"
+                :name="`pivot[${index}].resultado`"
+                :bg-color="calcularColorResultado(index)"
+                label="Resultado"
+                class="col-12"
+                required
+                :disable="!values.pivot[index].is_enabled"
+              />
+              <base-input
+                v-if="values.pivot[index].is_canceled"
+                :name="`pivot[${index}].motivo`"
+                label="Motivo"
+                class="col-12"
+                required
+                :disable="!values.pivot[index].is_enabled"
+              />
+            </div>
+            <!-- SI ES NUMBER -->
+            <div
+              v-else-if="examen.tipo.toLowerCase() === 'unidad'"
+              class="col-4 row q-col-gutter-sm"
+            >
+              <base-input
+                v-if="!values.pivot[index].is_canceled"
+                :name="`pivot[${index}].resultado`"
+                :bg-color="calcularColorResultado(index)"
+                label="Resultado"
+                class="col-6"
+                required
+                :disable="!values.pivot[index].is_enabled"
+              />
+              <base-select
+                v-if="
+                  !values.pivot[index].is_canceled &&
+                  !values.pivot[index].has_items
+                "
+                label="Unidad"
+                :name="`pivot[${index}].unidad_id`"
+                :options="values.pivot[index].unidads"
+                :hint="calcularHintUnidad(index)"
+                class="col-6"
+                required
+                :disable="!values.pivot[index].is_enabled"
+              />
+              <base-input
+                v-if="values.pivot[index].is_canceled"
+                :name="`pivot[${index}].motivo`"
+                label="Motivo"
+                class="col-12"
+                required
+                :disable="!values.pivot[index].is_enabled"
+              />
+            </div>
+            <div
+              v-else-if="examen.tipo.toLowerCase() === 'respuesta'"
+              class="col-4 row q-col-gutter-sm"
+            >
+              <base-select
+                v-if="!values.pivot[index].is_canceled"
+                label="Respuesta"
+                :name="`pivot[${index}].respuesta_id`"
+                :options="values.pivot[index].respuestas"
+                class="col-12"
+                required
+                :disable="!values.pivot[index].is_enabled"
+              />
+              <base-input
+                v-if="values.pivot[index].is_canceled"
+                :name="`pivot[${index}].motivo`"
+                label="Motivo"
+                class="col-12"
+                required
+                :disable="!values.pivot[index].is_enabled"
+              />
+            </div>
+
             <base-input
               label="Fecha"
               type="date"
