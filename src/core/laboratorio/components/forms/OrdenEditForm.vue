@@ -173,7 +173,7 @@ const validationSchema = object().shape({
     .when([], {
       is: () => esInstitucional.value === false,
       then: (schema) => schema.required(),
-      otherwise: (schema) => schema.optional(),
+      otherwise: (schema) => schema.nullable(),
     })
     .label('Otro Establecimiento'),
 });
