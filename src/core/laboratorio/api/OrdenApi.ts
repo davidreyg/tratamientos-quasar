@@ -22,6 +22,10 @@ export class OrdenApi {
     await OrdenApi._api.patch(`${OrdenApi._endpoint}/${id}/examens`, data);
   }
 
+  static async update(id: number, data: OrdenCreateRequest) {
+    await OrdenApi._api.patch(`${OrdenApi._endpoint}/${id}`, data);
+  }
+
   static async registrar(id: number) {
     await OrdenApi._api.patch(`${OrdenApi._endpoint}/${id}/registrar`);
   }

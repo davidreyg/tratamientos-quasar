@@ -5,4 +5,5 @@ export * from './ordenFetchAllQuery';
 export * from './ordenFetchByIdQuery';
 export * from './ordenRegistrarMutation';
 export * from './ordenUpdateExamensMutation';
+export * from './ordenUpdateMutation';
 export * from './ordenVerificarMutation';

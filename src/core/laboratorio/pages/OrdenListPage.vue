@@ -1,5 +1,6 @@
 <template>
   <div class="row q-col-gutter-md">
+    <!-- <pre class="col-12">{{ orden }}</pre> -->
     <div class="col-12">
       <q-tab-panels v-model="panel" animated>
         <q-tab-panel name="list">
@@ -15,15 +16,36 @@
             </template> -->
             <template #custom-actions="{ props }">
               <q-btn
+                v-if="props.row.estado === 0"
+                color="warning"
+                icon="fas fa-edit"
+                round
+                flat
+                size="sm"
+                :loading="
+                  accion === 'edit' &&
+                  isOrdenFetching &&
+                  selectedID === Number(props.key)
+                "
+                @click="editarOrden(Number(props.key))"
+              >
+                <q-tooltip>Editar Orden.</q-tooltip>
+              </q-btn>
+              <q-btn
                 color="primary"
                 icon="fas fa-eye"
                 round
                 flat
                 size="sm"
-                :loading="isOrdenLoading && selectedID === Number(props.key)"
+                :loading="
+                  accion === 'view' &&
+                  isOrdenFetching &&
+                  selectedID === Number(props.key)
+                "
               >
                 <q-tooltip>Visualizar Orden.</q-tooltip>
               </q-btn>
+
               <q-btn
                 v-if="props.row.estado === 2"
                 color="info"
@@ -37,7 +59,7 @@
             </template>
           </orden-table>
         </q-tab-panel>
-        <q-tab-panel name="edit-examens">
+        <q-tab-panel name="edit-orden">
           <q-expansion-item
             v-if="ordenSeleccionada"
             icon="fas fa-file-signature"
@@ -45,24 +67,10 @@
           >
             <q-card class="my-card">
               <q-card-section>
-                <orden-datos-form :orden="ordenSeleccionada" />
-              </q-card-section>
-            </q-card>
-          </q-expansion-item>
-          <q-expansion-item
-            v-if="ordenSeleccionada"
-            icon="fas fa-vials"
-            label="Registrar resultados."
-            caption="Editar / Crear"
-            default-opened
-          >
-            <q-card class="my-card">
-              <q-card-section>
-                <registrar-resultados-form
+                <orden-edit-form
                   :orden="ordenSeleccionada"
-                  with-observaciones
-                  @cancel="onOrdenCancel"
                   @submit="onOrdenCancel"
+                  @cancel="onOrdenCancel"
                 />
               </q-card-section>
             </q-card>
@@ -78,18 +86,26 @@ import { storeToRefs } from 'pinia';
 import { OnRequestParameter, Query } from 'shared/utils';
 import { ref, watch } from 'vue';
 import { onBeforeRouteLeave } from 'vue-router';
-import OrdenDatosForm from '../components/forms/OrdenDatosForm.vue';
-import RegistrarResultadosForm from '../components/forms/RegistrarResultadosForm.vue';
+import OrdenEditForm from '../components/forms/OrdenEditForm.vue';
 import OrdenTable from '../components/tables/OrdenTable.vue';
-import { useOrdenFetchAllQuery } from '../composables';
+import { useOrdenFetchAllQuery, useOrdenFetchByIdQuery } from '../composables';
 import { useLaboratorioFormStore } from '../stores';
+
 const { $reset } = useLaboratorioFormStore();
-const { ordenSeleccionada, isOrdenLoading } = storeToRefs(
-  useLaboratorioFormStore()
-);
+const { ordenSeleccionada } = storeToRefs(useLaboratorioFormStore());
 const query = ref<Query>({});
-const selectedID = ref<number>();
-const { data, isFetching } = useOrdenFetchAllQuery(query);
+const selectedID = ref<number>(0);
+const accion = ref<string>('');
+const {
+  data,
+  isFetching,
+  refetch: refetchAllOrdens,
+} = useOrdenFetchAllQuery(query);
+const {
+  data: orden,
+  isFetching: isOrdenFetching,
+  refetch,
+} = useOrdenFetchByIdQuery(selectedID, !!selectedID.value);
 const panel = ref('list');
 
 const handleRequest = (req: OnRequestParameter) => {
@@ -100,8 +116,20 @@ const handleRequest = (req: OnRequestParameter) => {
   query.value.sortedBy = req.pagination.descending ? 'desc' : 'asc';
 };
 
-const onOrdenCancel = () => {
+const onOrdenCancel = async () => {
   ordenSeleccionada.value = undefined;
+  await refetchAllOrdens.value();
+};
+
+const editarOrden = async (id: number) => {
+  ordenSeleccionada.value = undefined;
+  selectedID.value = id;
+  accion.value = 'edit';
+  await refetch.value();
+  if (orden.value) {
+    ordenSeleccionada.value = orden.value;
+    panel.value = 'edit-orden';
+  }
 };
 
 onBeforeRouteLeave(() => {

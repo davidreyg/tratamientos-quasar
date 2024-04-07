@@ -188,7 +188,7 @@ const schema_item_orden = yup.array().of(
       maximo: yup.number(),
       is_canceled: yup.boolean().required().label('Cancelado?'),
       is_enabled: yup.boolean().required().label('Habilitado?'),
-      tipo: yup.string().required().label('Tipo'),
+      // tipo: yup.string().required().label('Tipo'),
     };
     return yup.object().shape(reglas);
   })

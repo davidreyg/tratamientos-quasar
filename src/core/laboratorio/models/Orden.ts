@@ -14,6 +14,7 @@ export interface Orden {
   medico: string;
   observaciones: string;
   establecimiento_id: number;
+  paciente_id: number;
   establecimiento_otro?: string;
   establecimiento: { data: Establecimiento } | null;
   paciente: { data: Paciente };
