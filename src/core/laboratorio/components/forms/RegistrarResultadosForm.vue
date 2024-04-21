@@ -163,23 +163,39 @@ const schema_item_orden = yup.array().of(
       item_id: yup.mixed().required().label('Item'),
       examen_id: yup.mixed().required().label('Examen'),
       resultado: yup
-        .number()
-        .positive()
-        // .required()
-        .when(['is_enabled', 'is_canceled'], {
-          is: (isEnabled: boolean, isCanceled: boolean) =>
-            isEnabled && !isCanceled,
+        .mixed()
+        .when(['tipo'], {
+          is: (tipo: string) => tipo == 'unidad',
+          then: () =>
+            yup
+              .number()
+              .positive()
+              .typeError('Debe ingresar un numero')
+              .label('Resultado'),
+          // otherwise: (schema) => schema.nullable(),
+        })
+        .when(['tipo'], {
+          is: (tipo: string) => tipo === 'string',
+          then: () => yup.string().trim().label('Resultado'),
+          // otherwise: (schema) => schema.nullable(),
+        })
+        .when(['tipo'], {
+          is: (tipo: string) => tipo === 'respuesta',
+          then: () => yup.string().trim().label('Resultado'),
+          // otherwise: (schema) => schema.nullable(),
+        })
+        .when(['is_enabled', 'is_canceled', 'tipo'], {
+          is: (isEnabled: boolean, isCanceled: boolean, tipo: string) =>
+            isEnabled && !isCanceled && tipo.toLowerCase() !== 'respuesta',
           then: (schema) => schema.required(),
           otherwise: (schema) => schema.nullable(),
         })
-        .transform((_, value) => (value === '' ? undefined : _))
-        .typeError('Debe ingresar un numero')
-        .label('Resultado'),
+        .transform((_, value) => (value === '' ? undefined : _)),
       unidad_id: yup
         .number()
-        .when(['is_enabled', 'is_canceled'], {
-          is: (isEnabled: boolean, isCanceled: boolean) =>
-            isEnabled && !isCanceled,
+        .when(['is_enabled', 'is_canceled', 'tipo'], {
+          is: (isEnabled: boolean, isCanceled: boolean, tipo: string) =>
+            isEnabled && !isCanceled && tipo === 'unidad',
           then: (schema) => schema.required(),
           otherwise: (schema) => schema.nullable(),
         })
@@ -188,7 +204,8 @@ const schema_item_orden = yup.array().of(
       maximo: yup.number(),
       is_canceled: yup.boolean().required().label('Cancelado?'),
       is_enabled: yup.boolean().required().label('Habilitado?'),
-      // tipo: yup.string().required().label('Tipo'),
+      respuestas: yup.array(),
+      tipo: yup.string().required().label('Tipo'),
     };
     return yup.object().shape(reglas);
   })
@@ -239,10 +256,18 @@ const initialValuesItemOrden = props.orden.item_orden.map((pivot) => {
     examen_id: item?.examen_id,
     resultado: pivot.resultado,
     unidad_id: pivot.unidad_id,
+    respuesta_id: pivot.respuesta_id,
     is_canceled: pivot.is_canceled,
     is_enabled: true,
+    tipo: item && item.tipo.toLowerCase(),
     unidads: item
       ? item.unidads.data.map((v) => ({
+          label: v.nombre,
+          value: Number(v.id),
+        }))
+      : [],
+    respuestas: item
+      ? item.respuestas.data.map((v) => ({
           label: v.nombre,
           value: Number(v.id),
         }))

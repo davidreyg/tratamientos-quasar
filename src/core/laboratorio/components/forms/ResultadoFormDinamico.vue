@@ -160,18 +160,35 @@
                     :outlined="false"
                   />
                   <base-input
+                    v-if="values.item_orden[_.pivot_index].tipo !== 'respuesta'"
                     :name="`item_orden[${_.pivot_index}].resultado`"
                     label="Resultado"
-                    class="col-2"
+                    :class="
+                      values.item_orden[_.pivot_index].tipo === 'unidad'
+                        ? 'col-2'
+                        : 'col-4'
+                    "
                     required
                     :disable="!values.pivot[index].is_enabled"
+                    :bg-color="calcularColorResultadoItem(_.pivot_index)"
                   />
 
                   <base-select
+                    v-if="values.item_orden[_.pivot_index].tipo === 'unidad'"
                     label="Unidad"
                     :name="`item_orden[${_.pivot_index}].unidad_id`"
                     :options="values.item_orden[_.pivot_index].unidads"
                     class="col-2"
+                    required
+                    :disable="!values.pivot[index].is_enabled"
+                    :hint="calcularHintUnidadItem(_.pivot_index)"
+                  />
+                  <base-select
+                    v-if="values.item_orden[_.pivot_index].tipo === 'respuesta'"
+                    label="Respuesta"
+                    :name="`item_orden[${_.pivot_index}].respuesta_id`"
+                    :options="values.item_orden[_.pivot_index].respuestas"
+                    class="col-4"
                     required
                     :disable="!values.pivot[index].is_enabled"
                   />
@@ -307,6 +324,7 @@ const onSubmit = handleSubmit(
   (e) => console.log(e)
 );
 
+// UNIDAD DEL EXAMEN
 const calcularHintUnidad = (index: number) => {
   let str = undefined;
   if (!!values.pivot[index].minimo && !!values.pivot[index].minimo) {
@@ -320,6 +338,29 @@ const calcularColorResultado = (index: number) => {
     if (
       values.pivot[index].resultado > values.pivot[index].minimo &&
       values.pivot[index].resultado < values.pivot[index].maximo
+    ) {
+      color = 'green-2';
+    } else {
+      color = 'red-2';
+    }
+  }
+  return color;
+};
+
+// UNIDAD DEL ITEM
+const calcularHintUnidadItem = (index: number) => {
+  let str = undefined;
+  if (!!values.item_orden[index].minimo && !!values.item_orden[index].minimo) {
+    str = `Min: ${values.item_orden[index].minimo} - Max: ${values.item_orden[index].maximo}`;
+  }
+  return str;
+};
+const calcularColorResultadoItem = (index: number) => {
+  let color = undefined;
+  if (!!values.item_orden[index].minimo && !!values.item_orden[index].minimo) {
+    if (
+      values.item_orden[index].resultado > values.item_orden[index].minimo &&
+      values.item_orden[index].resultado < values.item_orden[index].maximo
     ) {
       color = 'green-2';
     } else {
@@ -405,6 +446,31 @@ props.fields.forEach((_, index) => {
             'item_orden[' + piv.pivot_index + '].is_enabled';
           setFieldValue(is_enabled_item, newValue);
         });
+      }
+    },
+    { deep: true, immediate: true }
+  );
+});
+
+props.items.forEach((_, index) => {
+  // console.log(_);
+  // console.log(values.item_orden);
+  watch(
+    () => values.item_orden[index].unidad_id,
+    (newValue) => {
+      if (newValue) {
+        const item = props.items.find(
+          (v) => v.id == values.item_orden[index].item_id
+        );
+        if (!!item && !!newValue) {
+          const piv = item.pivot.find((v) => v.unidad_id === newValue);
+          const minimo = 'item_orden[' + index + '].minimo';
+          const maximo = 'item_orden[' + index + '].maximo';
+          if (piv) {
+            setFieldValue(minimo, piv.minimo);
+            setFieldValue(maximo, piv.maximo);
+          }
+        }
       }
     },
     { deep: true, immediate: true }

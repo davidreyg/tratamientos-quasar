@@ -109,9 +109,9 @@ import BaseInput from 'shared/components/base/BaseInput.vue';
 import BaseRadio from 'shared/components/base/BaseRadio.vue';
 import BaseSelect from 'shared/components/base/BaseSelect.vue';
 import { usePersonaReniecQuery } from 'shared/index';
-import { NotifyUtils, useLuxonFormat } from 'shared/utils';
+import { NotifyUtils, Query, useLuxonFormat } from 'shared/utils';
 import { useForm } from 'vee-validate';
-import { computed, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { number, object, string } from 'yup';
 const emit = defineEmits<{
   submit: [];
@@ -131,8 +131,8 @@ const arr_tipo_documentos = computed(() => {
   }
   return [];
 });
-
-const { data: establecimientos } = useEstablecimientoFetchAllQuery();
+const query = ref<Query>({ limit: 0 });
+const { data: establecimientos } = useEstablecimientoFetchAllQuery(query);
 
 const arr_establecimientos = computed(() => {
   if (establecimientos.value) {

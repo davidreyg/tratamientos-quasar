@@ -35,6 +35,7 @@ export interface Orden {
     item_id: number;
     resultado: number;
     unidad_id: number;
+    respuesta_id: number;
     is_canceled: boolean;
   }[];
 }

@@ -34,8 +34,9 @@ import BaseCheckBoxGroup from 'shared/components/base/BaseCheckBoxGroup.vue';
 import BaseForm from 'shared/components/base/BaseForm.vue';
 import BaseInput from 'shared/components/base/BaseInput.vue';
 import BaseSelect from 'shared/components/base/BaseSelect.vue';
+import { Query } from 'shared/utils';
 import { useForm } from 'vee-validate';
-import { PropType, computed } from 'vue';
+import { PropType, computed, ref } from 'vue';
 import { array, object, string } from 'yup';
 
 const props = defineProps({
@@ -62,7 +63,8 @@ const { handleSubmit, setErrors, resetForm } = useForm<UserUpdateRequest>({
   initialValues: props.user,
 });
 
-const { data: establecimientos } = useEstablecimientoFetchAllQuery();
+const query = ref<Query>({ limit: 0 });
+const { data: establecimientos } = useEstablecimientoFetchAllQuery(query);
 // const { replace } = useFieldArray('role_ids');
 // replace(props.user.role_ids);
 const arr_establecimientos = computed(() => {

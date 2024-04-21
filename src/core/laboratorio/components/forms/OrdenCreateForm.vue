@@ -133,7 +133,9 @@ const arr_paquetes = computed(() => {
   return [];
 });
 
-const { data: establecimientos } = useEstablecimientoFetchAllQuery();
+const queryEstablecimiento = ref<Query>({ limit: 0 });
+const { data: establecimientos } =
+  useEstablecimientoFetchAllQuery(queryEstablecimiento);
 
 const arr_establecimientos = computed(() => {
   if (establecimientos.value) {

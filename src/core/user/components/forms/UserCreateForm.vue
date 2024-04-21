@@ -49,9 +49,9 @@ import BaseCheckBoxGroup from 'shared/components/base/BaseCheckBoxGroup.vue';
 import BaseForm from 'shared/components/base/BaseForm.vue';
 import BaseInput from 'shared/components/base/BaseInput.vue';
 import BaseSelect from 'shared/components/base/BaseSelect.vue';
-import { NotifyUtils } from 'shared/utils';
+import { NotifyUtils, Query } from 'shared/utils';
 import { useForm } from 'vee-validate';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { array, object, string } from 'yup';
 const emit = defineEmits<{
   submit: [];
@@ -74,7 +74,8 @@ const { handleSubmit, setErrors, resetForm } = useForm<UserRequest>({
   },
 });
 
-const { data: establecimientos } = useEstablecimientoFetchAllQuery();
+const query = ref<Query>({ limit: 0 });
+const { data: establecimientos } = useEstablecimientoFetchAllQuery(query);
 
 const arr_establecimientos = computed(() => {
   if (establecimientos.value) {
