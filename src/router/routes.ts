@@ -1,5 +1,6 @@
 import { diagnosticoRoutes } from 'core/diagnostico';
 import { empleadoRoutes } from 'core/empleado';
+import { examenRoutes } from 'core/examen';
 import { laboratorioRoutes } from 'core/laboratorio';
 import { paqueteRoutes } from 'core/paquete';
 import { roleRoutes } from 'core/role';
@@ -32,6 +33,7 @@ const routes: RouteRecordRaw[] = [
       ...userRoutes(),
       ...laboratorioRoutes(),
       ...paqueteRoutes(),
+      ...examenRoutes(),
     ],
     beforeEnter: [auth, profile],
   },
