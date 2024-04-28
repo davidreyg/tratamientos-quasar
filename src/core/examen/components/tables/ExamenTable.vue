@@ -61,6 +61,13 @@ const columns: QTable['columns'] = [
     sortable: true,
   },
   {
+    name: 'tipo',
+    align: 'center',
+    label: 'Tipo',
+    field: 'tipo',
+    sortable: true,
+  },
+  {
     name: 'actions',
     align: 'right',
     label: '',

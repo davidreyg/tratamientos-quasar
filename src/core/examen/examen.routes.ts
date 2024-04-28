@@ -17,15 +17,15 @@ export const examenRoutes = (): RouteRecordRaw[] => [
         path: 'crear',
         name: 'examens.create',
         component: () => import('./pages/ExamenCreatePage.vue'),
-        meta: { title: 'Nuevo Paquete', action: 'back' },
+        meta: { title: 'Nuevo Examen', action: 'back' },
       },
-      // {
-      //   path: ':id/editar',
-      //   name: 'examens.edit',
-      //   component: () => import('./pages/PaqueteEditPage.vue'),
-      //   props: (route) => ({ id: Number(route.params.id) }),
-      //   meta: { title: 'Editar Paquete', action: 'back' },
-      // },
+      {
+        path: ':id/editar',
+        name: 'examens.edit',
+        component: () => import('./pages/ExamenEditPage.vue'),
+        props: (route) => ({ id: Number(route.params.id) }),
+        meta: { title: 'Editar Examen', action: 'back' },
+      },
     ],
   },
 ];

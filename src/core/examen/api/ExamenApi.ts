@@ -1,5 +1,6 @@
 import { sttpClient } from 'shared/api';
 import { Examen } from '../models';
+import { ExamenRequest } from '../requests';
 
 export class ExamenApi {
   private static _api = sttpClient;
@@ -13,7 +14,7 @@ export class ExamenApi {
     return await ExamenApi._api.get<Examen>(`${ExamenApi._endpoint}/${id}`);
   }
 
-  static async create(data: unknown) {
+  static async create(data: ExamenRequest) {
     return await ExamenApi._api.post<void>(ExamenApi._endpoint, data);
   }
 
@@ -21,7 +22,7 @@ export class ExamenApi {
     return await ExamenApi._api.delete(`${ExamenApi._endpoint}/${id}`);
   }
 
-  static async update(data: unknown, id: number) {
+  static async update(data: ExamenRequest, id: number) {
     return await ExamenApi._api.patch(`${ExamenApi._endpoint}/${id}`, data);
   }
 }

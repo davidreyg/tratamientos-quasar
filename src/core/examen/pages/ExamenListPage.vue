@@ -2,7 +2,7 @@
   <examen-table
     :data="data || []"
     :loading="isFetching"
-    @edit="(id:number)=> $router.push({name:'paquetes.edit',params:{id}})"
+    @edit="(id:number)=> $router.push({name:'examens.edit',params:{id}})"
     @destroy-one="destroyOne"
   />
 </template>
@@ -15,7 +15,7 @@ import { useExamenFetchAllQuery } from '../composables';
 
 const query = ref<Query>({
   limit: 0,
-  search: 'is_active:1',
+  // search: 'is_active:1',
   searchJoin: 'and',
 });
 const { data, isFetching, refetch } = useExamenFetchAllQuery(query);

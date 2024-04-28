@@ -59,6 +59,13 @@
           <q-item v-for="(_, index) in fieldsUnidades" :key="index">
             <q-item-section>
               <div class="row q-col-gutter-sm q-mb-sm">
+                <base-input
+                  v-show="false"
+                  label="examen"
+                  :name="`pivot[${index}].examen_id`"
+                  class="col-3"
+                  required
+                />
                 <base-select
                   label="Unidades"
                   :name="`pivot[${index}].unidad_id`"
@@ -150,9 +157,10 @@
 
 <script setup lang="ts">
 import {
+  Examen,
   ExamenRequest,
   useCategoriaFetchAllQuery,
-  useExamenCreateMutation,
+  useExamenUpdateMutation,
   useTipoFetchAllQuery,
 } from 'core/examen';
 import { useRespuestaFetchAllQuery } from 'core/respuesta';
@@ -163,9 +171,15 @@ import BaseInput from 'shared/components/base/BaseInput.vue';
 import BaseSelect from 'shared/components/base/BaseSelect.vue';
 import { NotifyUtils, QSelectOptions } from 'shared/utils';
 import { useFieldArray, useForm } from 'vee-validate';
-import { computed, ref } from 'vue';
+import { PropType, computed, ref } from 'vue';
 import { array, boolean, number, object, string } from 'yup';
 
+const props = defineProps({
+  examen: {
+    type: Object as PropType<Examen>,
+    required: true,
+  },
+});
 const emit = defineEmits<{
   submit: [];
   cancel: [];
@@ -225,6 +239,9 @@ const arr_respuestas = computed(() => {
   return [];
 });
 
+const selectUnidad = ref<QSelectOptions>();
+const selectRespuesta = ref<QSelectOptions>();
+
 const validationSchema = object().shape({
   nombre: string().trim().min(2).required().label('Nombre'),
   codigo: number()
@@ -253,6 +270,10 @@ const validationSchema = object().shape({
           .positive()
           .required()
           .label('Unidad'),
+        examen_id: number()
+          .typeError('Examen debe ser un numero')
+          .positive()
+          .label('Examen'),
         minimo: number()
           .typeError('Minimo debe ser un numero')
           .positive()
@@ -278,12 +299,8 @@ const validationSchema = object().shape({
 
 const { handleSubmit, setErrors, values, errors } = useForm<ExamenRequest>({
   validationSchema,
-  // initialValues: { pivot: [] },
+  initialValues: { ...props.examen },
 });
-
-const selectUnidad = ref<QSelectOptions>();
-const selectRespuesta = ref<QSelectOptions>();
-
 const {
   remove: removeUnidad,
   push: pushUnidad,
@@ -324,20 +341,21 @@ const pushSelectedRespuesta = (data: QSelectOptions) => {
   selectRespuesta.value = undefined;
 };
 
-const { isLoading, mutate, reset } = useExamenCreateMutation();
-
+const { isLoading, mutate, reset } = useExamenUpdateMutation();
 const onSubmit = handleSubmit(
   async (values) => {
-    mutate(values, {
-      onSuccess: () => {
-        NotifyUtils.success();
-        emit('submit');
-      },
-      onError: (err) => {
-        reset.value();
-        setErrors(err.data.errors);
-      },
-    });
+    mutate(
+      { data: values, id: props.examen.id },
+      {
+        onSuccess: () => {
+          emit('submit');
+        },
+        onError: (err) => {
+          reset.value();
+          setErrors(err.data.errors);
+        },
+      }
+    );
   },
   (err) => {
     console.log(err.errors);
