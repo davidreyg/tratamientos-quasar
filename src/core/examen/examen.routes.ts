@@ -13,12 +13,12 @@ export const examenRoutes = (): RouteRecordRaw[] => [
         component: () => import('./pages/ExamenListPage.vue'),
         meta: { title: 'Exámenes', action: 'new' },
       },
-      // {
-      //   path: 'crear',
-      //   name: 'examens.create',
-      //   component: () => import('./pages/PaqueteCreatePage.vue'),
-      //   meta: { title: 'Nuevo Paquete', action: 'back' },
-      // },
+      {
+        path: 'crear',
+        name: 'examens.create',
+        component: () => import('./pages/ExamenCreatePage.vue'),
+        meta: { title: 'Nuevo Paquete', action: 'back' },
+      },
       // {
       //   path: ':id/editar',
       //   name: 'examens.edit',
