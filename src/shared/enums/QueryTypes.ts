@@ -25,4 +25,6 @@ export const enum QueryTypes {
   UNIDAD_ALL = 'unidads',
   RESPUESTA_ALL = 'respuestas',
   CATEGORIA_ALL = 'categorias',
+  ITEM_ALL = 'items',
+  SECCION_ALL = 'seccion',
 }

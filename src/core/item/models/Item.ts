@@ -2,7 +2,7 @@ import { Respuesta } from 'core/respuesta';
 import { Unidad } from 'core/unidad';
 export interface Item {
   object: string;
-  id: string;
+  id: number;
   nombre: string;
   tipo: string;
   examen_id: number;

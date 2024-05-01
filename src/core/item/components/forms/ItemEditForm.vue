@@ -7,14 +7,19 @@
       @cancel="$emit('cancel')"
     >
       <base-select
-        :options="arr_categorias"
-        name="categoria_id"
-        label="Categoria"
+        :options="arr_examens"
+        name="examen_id"
+        label="Examen"
+        class="col-12"
+      />
+      <base-select
+        :options="arr_secciones"
+        name="seccion_id"
+        label="Seccion"
         class="col-xs-12 col-sm-6"
       />
       <base-input name="codigo" label="Codigo" class="col-xs-12 col-sm-6" />
-      <base-input name="nombre" label="Nombre" class="col-xs-12 col-sm-9" />
-      <base-input name="precio" label="Precio" class="col-xs-12 col-sm-3" />
+      <base-input name="nombre" label="Nombre" class="col-xs-12 col-sm-6" />
       <base-select
         :options="arr_tipos"
         name="tipo"
@@ -54,6 +59,13 @@
           <q-item v-for="(_, index) in fieldsUnidades" :key="index">
             <q-item-section>
               <div class="row q-col-gutter-sm q-mb-sm">
+                <base-input
+                  v-show="false"
+                  label="examen"
+                  :name="`pivot[${index}].examen_id`"
+                  class="col-3"
+                  required
+                />
                 <base-select
                   label="Unidades"
                   :name="`pivot[${index}].unidad_id`"
@@ -144,32 +156,54 @@
 </template>
 
 <script setup lang="ts">
-import { useCategoriaFetchAllQuery } from 'core/categoria';
-import {
-  ExamenRequest,
-  useExamenCreateMutation,
-  useTipoFetchAllQuery,
-} from 'core/examen';
+import { useExamenFetchAllQuery, useTipoFetchAllQuery } from 'core/examen';
+import { Item, ItemRequest, useItemUpdateMutation } from 'core/item';
 import { useRespuestaFetchAllQuery } from 'core/respuesta';
+import { useSeccionFetchAllQuery } from 'core/seccion';
 import { useUnidadFetchAllQuery } from 'core/unidad';
 import BaseForm from 'shared/components/base/BaseForm.vue';
 import BaseInput from 'shared/components/base/BaseInput.vue';
 import BaseSelect from 'shared/components/base/BaseSelect.vue';
-import { NotifyUtils, QSelectOptions } from 'shared/utils';
+import { NotifyUtils, QSelectOptions, Query } from 'shared/utils';
 import { useFieldArray, useForm } from 'vee-validate';
-import { computed, ref } from 'vue';
-import { array, boolean, number, object, string } from 'yup';
+import { PropType, computed, ref } from 'vue';
+import { array, number, object, string } from 'yup';
 
+const props = defineProps({
+  item: {
+    type: Object as PropType<Item>,
+    required: true,
+  },
+});
 const emit = defineEmits<{
   submit: [];
   cancel: [];
 }>();
 
-const { data: categorias } = useCategoriaFetchAllQuery();
+const { data: secciones } = useSeccionFetchAllQuery();
 
-const arr_categorias = computed(() => {
-  if (categorias.value) {
-    return categorias.value.map((val) => {
+const arr_secciones = computed(() => {
+  if (secciones.value) {
+    return secciones.value.map((val) => {
+      return {
+        label: val.nombre,
+        value: Number(val.id),
+      };
+    });
+  }
+  return [];
+});
+
+const queryExamens = ref<Query>({
+  limit: 0,
+  search: 'is_active:1',
+  searchJoin: 'and',
+});
+const { data: examens } = useExamenFetchAllQuery(queryExamens);
+
+const arr_examens = computed(() => {
+  if (examens.value) {
+    return examens.value.map((val) => {
       return {
         label: val.nombre,
         value: Number(val.id),
@@ -219,6 +253,9 @@ const arr_respuestas = computed(() => {
   return [];
 });
 
+const selectUnidad = ref<QSelectOptions>();
+const selectRespuesta = ref<QSelectOptions>();
+
 const validationSchema = object().shape({
   nombre: string().trim().min(2).required().label('Nombre'),
   codigo: number()
@@ -227,13 +264,8 @@ const validationSchema = object().shape({
     .required()
     .label('Codigo'),
   tipo: string().trim().min(2).required().label('Tipo'),
-  categoria_id: number().required().label('Categoria'),
-  is_active: boolean().required().label('¿Activo?'),
-  precio: number()
-    .typeError('Precio debe ser un numero')
-    .positive()
-    .required()
-    .label('Precio'),
+  seccion_id: number().required().label('Seccion'),
+  examen_id: number().required().label('Examen'),
   pivot: array()
     .when(['tipo'], {
       is: (tipo: string) => tipo === 'unidad',
@@ -241,12 +273,16 @@ const validationSchema = object().shape({
       otherwise: (schema) => schema.nullable(),
     })
     .of(
-      object({
+      object().shape({
         unidad_id: number()
           .typeError('Unidad debe ser un numero')
           .positive()
           .required()
           .label('Unidad'),
+        item_id: number()
+          .typeError('Item debe ser un numero')
+          .positive()
+          .label('Item'),
         minimo: number()
           .typeError('Minimo debe ser un numero')
           .positive()
@@ -270,14 +306,10 @@ const validationSchema = object().shape({
     .label('Respuestas'),
 });
 
-const { handleSubmit, setErrors, values, errors } = useForm<ExamenRequest>({
+const { handleSubmit, setErrors, values, errors } = useForm<ItemRequest>({
   validationSchema,
-  // initialValues: { pivot: [] },
+  initialValues: { ...props.item },
 });
-
-const selectUnidad = ref<QSelectOptions>();
-const selectRespuesta = ref<QSelectOptions>();
-
 const {
   remove: removeUnidad,
   push: pushUnidad,
@@ -318,20 +350,21 @@ const pushSelectedRespuesta = (data: QSelectOptions) => {
   selectRespuesta.value = undefined;
 };
 
-const { isLoading, mutate, reset } = useExamenCreateMutation();
-
+const { isLoading, mutate, reset } = useItemUpdateMutation();
 const onSubmit = handleSubmit(
   async (values) => {
-    mutate(values, {
-      onSuccess: () => {
-        NotifyUtils.success();
-        emit('submit');
-      },
-      onError: (err) => {
-        reset.value();
-        setErrors(err.data.errors);
-      },
-    });
+    mutate(
+      { data: values, id: props.item.id },
+      {
+        onSuccess: () => {
+          emit('submit');
+        },
+        onError: (err) => {
+          reset.value();
+          setErrors(err.data.errors);
+        },
+      }
+    );
   },
   (err) => {
     console.log(err.errors);

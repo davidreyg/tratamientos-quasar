@@ -1,5 +1,5 @@
 import { sttpClient } from 'shared/api';
-import { Examen } from '../models';
+import { Examen, Tipo } from '../models';
 import { ExamenRequest } from '../requests';
 
 export class ExamenApi {
@@ -24,5 +24,9 @@ export class ExamenApi {
 
   static async update(data: ExamenRequest, id: number) {
     return await ExamenApi._api.patch(`${ExamenApi._endpoint}/${id}`, data);
+  }
+
+  static async fetchAllTipos() {
+    return await ExamenApi._api.get<Tipo>('tipos');
   }
 }
