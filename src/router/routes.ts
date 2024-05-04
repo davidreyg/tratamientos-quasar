@@ -8,6 +8,7 @@ import { paqueteRoutes } from 'core/paquete';
 import { roleRoutes } from 'core/role';
 import { tipoDocumentoRoutes } from 'core/tipo-documento';
 import { triajeRoutes } from 'core/triaje';
+import { unidadRoutes } from 'core/unidad/unidad.routes';
 import { userRoutes } from 'core/user';
 import MainLayout from 'shared/layouts/MainLayout.vue';
 import { auth, guest, profile } from 'shared/middlewares';
@@ -38,6 +39,7 @@ const routes: RouteRecordRaw[] = [
       ...examenRoutes(),
       ...categoriaRoutes(),
       ...itemRoutes(),
+      ...unidadRoutes(),
     ],
     beforeEnter: [auth, profile],
   },

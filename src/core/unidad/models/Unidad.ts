@@ -2,6 +2,6 @@
 
 export interface Unidad {
   object: string;
-  id: string;
+  id: number;
   nombre: string;
 }

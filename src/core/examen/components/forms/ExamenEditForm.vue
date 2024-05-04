@@ -156,10 +156,10 @@
 </template>
 
 <script setup lang="ts">
+import { useCategoriaFetchAllQuery } from 'core/categoria';
 import {
   Examen,
   ExamenRequest,
-  useCategoriaFetchAllQuery,
   useExamenUpdateMutation,
   useTipoFetchAllQuery,
 } from 'core/examen';
