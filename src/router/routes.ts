@@ -1,6 +1,7 @@
 import { categoriaRoutes } from 'core/categoria/categoria.routes';
 import { diagnosticoRoutes } from 'core/diagnostico';
 import { empleadoRoutes } from 'core/empleado';
+import { establecimientoRoutes } from 'core/establecimiento/establecimiento.routes';
 import { examenRoutes } from 'core/examen';
 import { itemRoutes } from 'core/item/item.routes';
 import { laboratorioRoutes } from 'core/laboratorio';
@@ -42,6 +43,7 @@ const routes: RouteRecordRaw[] = [
       ...itemRoutes(),
       ...unidadRoutes(),
       ...seccionRoutes(),
+      ...establecimientoRoutes(),
     ],
     beforeEnter: [auth, profile],
   },
