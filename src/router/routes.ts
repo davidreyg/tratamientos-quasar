@@ -6,6 +6,7 @@ import { itemRoutes } from 'core/item/item.routes';
 import { laboratorioRoutes } from 'core/laboratorio';
 import { paqueteRoutes } from 'core/paquete';
 import { roleRoutes } from 'core/role';
+import { seccionRoutes } from 'core/seccion/seccion.routes';
 import { tipoDocumentoRoutes } from 'core/tipo-documento';
 import { triajeRoutes } from 'core/triaje';
 import { unidadRoutes } from 'core/unidad/unidad.routes';
@@ -40,6 +41,7 @@ const routes: RouteRecordRaw[] = [
       ...categoriaRoutes(),
       ...itemRoutes(),
       ...unidadRoutes(),
+      ...seccionRoutes(),
     ],
     beforeEnter: [auth, profile],
   },
