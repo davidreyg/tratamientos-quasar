@@ -1,5 +1,5 @@
 import { sttpClient } from 'shared/api';
-import { Unidad } from '../models';
+import { Operadores, Unidad, UnidadTipo } from '../models';
 import { UnidadRequest } from '../requests';
 
 export class UnidadApi {
@@ -12,6 +12,14 @@ export class UnidadApi {
       ...query,
     });
   }
+
+  static async fetchAllUnidadTipos() {
+    return await UnidadApi._api.get<UnidadTipo>('unidad-tipos');
+  }
+  static async fetchAllOperadores() {
+    return await UnidadApi._api.get<Operadores>('unidad-operadores');
+  }
+
   static async fetchOne(id: number) {
     return await UnidadApi._api.get<Unidad>(`${UnidadApi._endpoint}/${id}`);
   }

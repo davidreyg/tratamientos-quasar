@@ -7,6 +7,7 @@
         outlined
         :error="!!errorMessage"
         bottom-slots
+        dense
         :hide-bottom-space="!errorMessage"
         v-on="inputEvents"
       >

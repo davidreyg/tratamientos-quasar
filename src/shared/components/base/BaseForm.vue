@@ -1,6 +1,6 @@
 <template>
   <q-form @submit="$emit('submit')">
-    <div class="col-12 row q-col-gutter-lg">
+    <div class="col-12 row q-col-gutter-md">
       <slot></slot>
     </div>
     <slot name="actions">

@@ -22,6 +22,8 @@ export interface Examen {
     unidad_id: number;
     minimo: number;
     maximo: number;
+    tipo: string;
+    operador: string;
   }[];
   items: {
     data: Item[];

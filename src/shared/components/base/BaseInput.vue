@@ -7,6 +7,7 @@
     bottom-slots
     :hide-bottom-space="!errorMessage"
     outlined
+    dense
     @blur="handleBlur"
     @update:model-value="handleChange"
   >

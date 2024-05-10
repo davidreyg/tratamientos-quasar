@@ -15,6 +15,11 @@
       <base-input name="codigo" label="Codigo" class="col-xs-12 col-sm-6" />
       <base-input name="nombre" label="Nombre" class="col-xs-12 col-sm-9" />
       <base-input name="precio" label="Precio" class="col-xs-12 col-sm-3" />
+      <base-check-box
+        name="is_active"
+        label="¿Activo?"
+        class="col-xs-12 col-sm-6"
+      />
       <base-select
         :options="arr_tipos"
         name="tipo"
@@ -29,7 +34,6 @@
             :options="arr_unidades"
             borderless
             dense
-            name="unidadees1"
             label="Unidades"
             class="col-4 q-mb-md"
           >
@@ -58,18 +62,36 @@
                   label="Unidades"
                   :name="`pivot[${index}].unidad_id`"
                   :options="arr_unidades"
-                  class="col-3"
+                  class="col-2"
                   required
+                />
+                <base-select
+                  v-if="values.pivot[index].tipo === 'operador'"
+                  :name="`pivot[${index}].operador`"
+                  :options="arr_operadores"
+                  label="Operador"
+                  class="col-3"
                 />
                 <base-input
                   :name="`pivot[${index}].minimo`"
-                  label="Minimo"
-                  class="col-4"
+                  :label="
+                    values.pivot[index].tipo === 'multivalor'
+                      ? 'Minimo'
+                      : 'Valor'
+                  "
+                  class="col-3"
                 />
                 <base-input
+                  v-if="values.pivot[index].tipo === 'multivalor'"
                   :name="`pivot[${index}].maximo`"
                   label="Maximo"
-                  class="col-4"
+                  class="col-3"
+                />
+                <base-select
+                  :options="arr_unidad_tipos"
+                  :name="`pivot[${index}].tipo`"
+                  label="Tipo"
+                  class="col-3"
                 />
                 <div class="col-auto self-center">
                   <q-btn
@@ -93,7 +115,6 @@
             :options="arr_respuestas"
             borderless
             dense
-            name="respuestas1"
             label="Respuesta"
             class="col-4 q-mb-md"
           >
@@ -151,7 +172,12 @@ import {
   useTipoFetchAllQuery,
 } from 'core/examen';
 import { useRespuestaFetchAllQuery } from 'core/respuesta';
-import { useUnidadFetchAllQuery } from 'core/unidad';
+import {
+  useOperadoresFetchAllQuery,
+  useUnidadFetchAllQuery,
+  useUnidadTiposFetchAllQuery,
+} from 'core/unidad';
+import BaseCheckBox from 'shared/components/base/BaseCheckBox.vue';
 import BaseForm from 'shared/components/base/BaseForm.vue';
 import BaseInput from 'shared/components/base/BaseInput.vue';
 import BaseSelect from 'shared/components/base/BaseSelect.vue';
@@ -159,7 +185,6 @@ import { NotifyUtils, QSelectOptions } from 'shared/utils';
 import { useFieldArray, useForm } from 'vee-validate';
 import { computed, ref } from 'vue';
 import { array, boolean, number, object, string } from 'yup';
-
 const emit = defineEmits<{
   submit: [];
   cancel: [];
@@ -219,6 +244,34 @@ const arr_respuestas = computed(() => {
   return [];
 });
 
+const { data: unidad_tipos } = useUnidadTiposFetchAllQuery();
+
+const arr_unidad_tipos = computed(() => {
+  if (unidad_tipos.value) {
+    return Object.values(unidad_tipos.value).map((val) => {
+      return {
+        label: val,
+        value: val,
+      };
+    });
+  }
+  return [];
+});
+
+const { data: operadores } = useOperadoresFetchAllQuery();
+
+const arr_operadores = computed(() => {
+  if (operadores.value) {
+    return Object.entries(operadores.value).map(([key, val]) => {
+      return {
+        label: `${val} (${key})`,
+        value: key,
+      };
+    });
+  }
+  return [];
+});
+
 const validationSchema = object().shape({
   nombre: string().trim().min(2).required().label('Nombre'),
   codigo: number()
@@ -255,8 +308,21 @@ const validationSchema = object().shape({
         maximo: number()
           .typeError('Maximo debe ser un numero')
           .positive()
-          .required()
+          .when(['tipo'], {
+            is: (tipo: string) => tipo === 'multivalor',
+            then: (schema) => schema.required(),
+            otherwise: (schema) => schema.nullable(),
+          })
+          // .required()
           .label('Maximo'),
+        tipo: string().required().label('Tipo'),
+        operador: string()
+          .when(['tipo'], {
+            is: (tipo: string) => tipo === 'operador',
+            then: (schema) => schema.required(),
+            otherwise: (schema) => schema.nullable(),
+          })
+          .label('Operador'),
       })
     )
     .label('Unidades'),

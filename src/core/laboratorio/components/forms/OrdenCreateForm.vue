@@ -56,8 +56,18 @@
       required
     />
     <base-input name="CI10" label="CI10" class="col-xs-12 col-sm-4" required />
-    <base-input name="CPN" label="CPN" class="col-xs-12 col-sm-4" required />
-    <base-input name="EG" label="EG" class="col-xs-12 col-sm-4" required />
+    <base-input
+      name="CPN"
+      label="Codigo Pre Natal"
+      class="col-xs-12 col-sm-4"
+      required
+    />
+    <base-input
+      name="EG"
+      label="Edad Gestacional"
+      class="col-xs-12 col-sm-4"
+      required
+    />
     <base-input
       name="codigo_atencion"
       label="Codigo de Atención"

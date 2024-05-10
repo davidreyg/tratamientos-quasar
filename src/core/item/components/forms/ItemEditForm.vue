@@ -70,18 +70,36 @@
                   label="Unidades"
                   :name="`pivot[${index}].unidad_id`"
                   :options="arr_unidades"
-                  class="col-3"
+                  class="col-2"
                   required
+                />
+                <base-select
+                  v-if="values.pivot[index].tipo === 'operador'"
+                  :name="`pivot[${index}].operador`"
+                  :options="arr_operadores"
+                  label="Operador"
+                  class="col-3"
                 />
                 <base-input
                   :name="`pivot[${index}].minimo`"
-                  label="Minimo"
-                  class="col-4"
+                  :label="
+                    values.pivot[index].tipo === 'multivalor'
+                      ? 'Minimo'
+                      : 'Valor'
+                  "
+                  class="col-3"
                 />
                 <base-input
+                  v-if="values.pivot[index].tipo === 'multivalor'"
                   :name="`pivot[${index}].maximo`"
                   label="Maximo"
-                  class="col-4"
+                  class="col-3"
+                />
+                <base-select
+                  :options="arr_unidad_tipos"
+                  :name="`pivot[${index}].tipo`"
+                  label="Tipo"
+                  class="col-3"
                 />
                 <div class="col-auto self-center">
                   <q-btn
@@ -160,13 +178,17 @@ import { useExamenFetchAllQuery, useTipoFetchAllQuery } from 'core/examen';
 import { Item, ItemRequest, useItemUpdateMutation } from 'core/item';
 import { useRespuestaFetchAllQuery } from 'core/respuesta';
 import { useSeccionFetchAllQuery } from 'core/seccion';
-import { useUnidadFetchAllQuery } from 'core/unidad';
+import {
+  useOperadoresFetchAllQuery,
+  useUnidadFetchAllQuery,
+  useUnidadTiposFetchAllQuery,
+} from 'core/unidad';
 import BaseForm from 'shared/components/base/BaseForm.vue';
 import BaseInput from 'shared/components/base/BaseInput.vue';
 import BaseSelect from 'shared/components/base/BaseSelect.vue';
 import { NotifyUtils, QSelectOptions, Query } from 'shared/utils';
 import { useFieldArray, useForm } from 'vee-validate';
-import { PropType, computed, ref } from 'vue';
+import { PropType, computed, ref, watch } from 'vue';
 import { array, number, object, string } from 'yup';
 
 const props = defineProps({
@@ -253,6 +275,34 @@ const arr_respuestas = computed(() => {
   return [];
 });
 
+const { data: unidad_tipos } = useUnidadTiposFetchAllQuery();
+
+const arr_unidad_tipos = computed(() => {
+  if (unidad_tipos.value) {
+    return Object.values(unidad_tipos.value).map((val) => {
+      return {
+        label: val,
+        value: val,
+      };
+    });
+  }
+  return [];
+});
+
+const { data: operadores } = useOperadoresFetchAllQuery();
+
+const arr_operadores = computed(() => {
+  if (operadores.value) {
+    return Object.entries(operadores.value).map(([key, val]) => {
+      return {
+        label: `${val} (${key})`,
+        value: key,
+      };
+    });
+  }
+  return [];
+});
+
 const selectUnidad = ref<QSelectOptions>();
 const selectRespuesta = ref<QSelectOptions>();
 
@@ -291,8 +341,21 @@ const validationSchema = object().shape({
         maximo: number()
           .typeError('Maximo debe ser un numero')
           .positive()
-          .required()
+          .when(['tipo'], {
+            is: (tipo: string) => tipo === 'multivalor',
+            then: (schema) => schema.required(),
+            otherwise: (schema) => schema.nullable(),
+          })
+          // .required()
           .label('Maximo'),
+        tipo: string().required().label('Tipo'),
+        operador: string()
+          .when(['tipo'], {
+            is: (tipo: string) => tipo === 'operador',
+            then: (schema) => schema.required(),
+            otherwise: (schema) => schema.nullable(),
+          })
+          .label('Operador'),
       })
     )
     .label('Unidades'),
@@ -306,10 +369,11 @@ const validationSchema = object().shape({
     .label('Respuestas'),
 });
 
-const { handleSubmit, setErrors, values, errors } = useForm<ItemRequest>({
-  validationSchema,
-  initialValues: { ...props.item },
-});
+const { handleSubmit, setErrors, values, errors, setFieldValue } =
+  useForm<ItemRequest>({
+    validationSchema,
+    initialValues: { ...props.item },
+  });
 const {
   remove: removeUnidad,
   push: pushUnidad,
@@ -368,6 +432,15 @@ const onSubmit = handleSubmit(
   },
   (err) => {
     console.log(err.errors);
+  }
+);
+
+watch(
+  () => values.tipo,
+  (newValue) => {
+    if (newValue) {
+      setFieldValue('pivot', []);
+    }
   }
 );
 </script>

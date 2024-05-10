@@ -10,6 +10,8 @@ export interface ExamenRequest {
     unidad_id: number;
     minimo: number;
     maximo: number;
+    tipo: string;
+    operador: string;
   }[];
   respuesta_ids: number[];
 }

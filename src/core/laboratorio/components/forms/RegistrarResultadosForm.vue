@@ -147,11 +147,22 @@ const schema_pivot = yup.array().of(
         })
         .label('Motivo'),
       minimo: yup.number(),
-      maximo: yup.number(),
+      maximo: yup.number().nullable(),
+      tipo_unidad: yup.string(),
+      operador_unidad: yup.string().nullable(),
       unidads: yup.array(),
       items: yup.array(),
       respuestas: yup.array(),
       tipo: yup.string().required().label('Tipo'),
+      respuesta_id: yup
+        .number()
+        .when(['is_enabled', 'is_canceled', 'tipo'], {
+          is: (isEnabled: boolean, isCanceled: boolean, tipo: string) =>
+            isEnabled && !isCanceled && tipo === 'respuesta',
+          then: (schema) => schema.required(),
+          otherwise: (schema) => schema.nullable(),
+        })
+        .label('Respuesta'),
     };
     return yup.object().shape(reglas);
   })
@@ -200,8 +211,19 @@ const schema_item_orden = yup.array().of(
           otherwise: (schema) => schema.nullable(),
         })
         .label('Unidad'),
+      respuesta_id: yup
+        .number()
+        .when(['is_enabled', 'is_canceled', 'tipo'], {
+          is: (isEnabled: boolean, isCanceled: boolean, tipo: string) =>
+            isEnabled && !isCanceled && tipo === 'respuesta',
+          then: (schema) => schema.required(),
+          otherwise: (schema) => schema.nullable(),
+        })
+        .label('Respuesta'),
       minimo: yup.number(),
-      maximo: yup.number(),
+      maximo: yup.number().nullable(),
+      tipo_unidad: yup.string(),
+      operador_unidad: yup.string().nullable(),
       is_canceled: yup.boolean().required().label('Cancelado?'),
       is_enabled: yup.boolean().required().label('Habilitado?'),
       respuestas: yup.array(),

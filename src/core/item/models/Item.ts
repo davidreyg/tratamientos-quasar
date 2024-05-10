@@ -18,5 +18,7 @@ export interface Item {
     unidad_id: number;
     minimo: number;
     maximo: number;
+    tipo: string;
+    operador: string;
   }[];
 }

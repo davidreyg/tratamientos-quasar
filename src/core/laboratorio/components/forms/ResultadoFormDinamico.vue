@@ -327,46 +327,223 @@ const onSubmit = handleSubmit(
 // UNIDAD DEL EXAMEN
 const calcularHintUnidad = (index: number) => {
   let str = undefined;
-  if (!!values.pivot[index].minimo && !!values.pivot[index].minimo) {
-    str = `Min: ${values.pivot[index].minimo} - Max: ${values.pivot[index].maximo}`;
+
+  if (values.pivot[index].tipo_unidad === '') {
   }
+
+  switch (values.pivot[index].tipo_unidad) {
+    case 'multivalor':
+      if (!!values.pivot[index].minimo && !!values.pivot[index].maximo) {
+        str = `Min: ${values.pivot[index].minimo} - Max: ${values.pivot[index].maximo}`;
+      }
+      break;
+    case 'operador':
+      if (
+        !!values.pivot[index].minimo &&
+        !!values.pivot[index].operador_unidad
+      ) {
+        str = `${values.pivot[index].operador_unidad} ${values.pivot[index].minimo}`;
+      }
+      break;
+    case 'unico':
+      if (!!values.pivot[index].minimo) {
+        str = 'Es unico';
+      }
+      break;
+
+    default:
+      str = undefined;
+      break;
+  }
+
   return str;
 };
 const calcularColorResultado = (index: number) => {
   let color = undefined;
-  if (!!values.pivot[index].minimo && !!values.pivot[index].minimo) {
-    if (
-      values.pivot[index].resultado > values.pivot[index].minimo &&
-      values.pivot[index].resultado < values.pivot[index].maximo
-    ) {
-      color = 'green-2';
-    } else {
-      color = 'red-2';
-    }
+
+  switch (values.pivot[index].tipo_unidad) {
+    case 'multivalor':
+      if (!!values.pivot[index].minimo && !!values.pivot[index].maximo) {
+        if (
+          values.pivot[index].resultado > values.pivot[index].minimo &&
+          values.pivot[index].resultado < values.pivot[index].maximo
+        ) {
+          color = 'green-2';
+        } else {
+          color = 'red-2';
+        }
+      }
+      break;
+    case 'operador':
+      if (
+        !!values.pivot[index].minimo &&
+        !!values.pivot[index].operador_unidad
+      ) {
+        switch (values.pivot[index].operador_unidad) {
+          case '>':
+            if (values.pivot[index].resultado > values.pivot[index].minimo) {
+              color = 'green-2';
+            } else {
+              color = 'red-2';
+            }
+            break;
+          case '>=':
+            if (values.pivot[index].resultado >= values.pivot[index].minimo) {
+              color = 'green-2';
+            } else {
+              color = 'red-2';
+            }
+            break;
+          case '<':
+            if (values.pivot[index].resultado < values.pivot[index].minimo) {
+              color = 'green-2';
+            } else {
+              color = 'red-2';
+            }
+            break;
+          case '<=':
+            if (values.pivot[index].resultado <= values.pivot[index].minimo) {
+              color = 'green-2';
+            } else {
+              color = 'red-2';
+            }
+            break;
+
+          default:
+            break;
+        }
+      }
+      break;
+    case 'unico':
+      // NO SE QUE PONER ACA
+      break;
+
+    default:
+      color = undefined;
+      break;
   }
+
   return color;
 };
 
 // UNIDAD DEL ITEM
 const calcularHintUnidadItem = (index: number) => {
   let str = undefined;
-  if (!!values.item_orden[index].minimo && !!values.item_orden[index].minimo) {
-    str = `Min: ${values.item_orden[index].minimo} - Max: ${values.item_orden[index].maximo}`;
+
+  if (values.item_orden[index].tipo_unidad === '') {
   }
+
+  switch (values.item_orden[index].tipo_unidad) {
+    case 'multivalor':
+      if (
+        !!values.item_orden[index].minimo &&
+        !!values.item_orden[index].maximo
+      ) {
+        str = `Min: ${values.item_orden[index].minimo} - Max: ${values.item_orden[index].maximo}`;
+      }
+      break;
+    case 'operador':
+      if (
+        !!values.item_orden[index].minimo &&
+        !!values.item_orden[index].operador_unidad
+      ) {
+        str = `${values.item_orden[index].operador_unidad} ${values.item_orden[index].minimo}`;
+      }
+      break;
+    case 'unico':
+      if (!!values.item_orden[index].minimo) {
+        str = 'Es unico';
+      }
+      break;
+
+    default:
+      str = undefined;
+      break;
+  }
+
   return str;
 };
 const calcularColorResultadoItem = (index: number) => {
   let color = undefined;
-  if (!!values.item_orden[index].minimo && !!values.item_orden[index].minimo) {
-    if (
-      values.item_orden[index].resultado > values.item_orden[index].minimo &&
-      values.item_orden[index].resultado < values.item_orden[index].maximo
-    ) {
-      color = 'green-2';
-    } else {
-      color = 'red-2';
-    }
+
+  switch (values.item_orden[index].tipo_unidad) {
+    case 'multivalor':
+      if (
+        !!values.item_orden[index].minimo &&
+        !!values.item_orden[index].maximo
+      ) {
+        if (
+          values.item_orden[index].resultado >
+            values.item_orden[index].minimo &&
+          values.item_orden[index].resultado < values.item_orden[index].maximo
+        ) {
+          color = 'green-2';
+        } else {
+          color = 'red-2';
+        }
+      }
+      break;
+    case 'operador':
+      if (
+        !!values.item_orden[index].minimo &&
+        !!values.item_orden[index].operador_unidad
+      ) {
+        switch (values.item_orden[index].operador_unidad) {
+          case '>':
+            if (
+              values.item_orden[index].resultado >
+              values.item_orden[index].minimo
+            ) {
+              color = 'green-2';
+            } else {
+              color = 'red-2';
+            }
+            break;
+          case '>=':
+            if (
+              values.item_orden[index].resultado >=
+              values.item_orden[index].minimo
+            ) {
+              color = 'green-2';
+            } else {
+              color = 'red-2';
+            }
+            break;
+          case '<':
+            if (
+              values.item_orden[index].resultado <
+              values.item_orden[index].minimo
+            ) {
+              color = 'green-2';
+            } else {
+              color = 'red-2';
+            }
+            break;
+          case '<=':
+            if (
+              values.item_orden[index].resultado <=
+              values.item_orden[index].minimo
+            ) {
+              color = 'green-2';
+            } else {
+              color = 'red-2';
+            }
+            break;
+
+          default:
+            break;
+        }
+      }
+      break;
+    case 'unico':
+      // NO SE QUE PONER ACA
+      break;
+
+    default:
+      color = undefined;
+      break;
   }
+
   return color;
 };
 const cancelarExamen = (index: number) => {
@@ -397,9 +574,13 @@ props.fields.forEach((_, index) => {
           const piv = examen.pivot.find((v) => v.unidad_id === newValue);
           const minimo = 'pivot[' + index + '].minimo';
           const maximo = 'pivot[' + index + '].maximo';
+          const tipo_unidad = 'pivot[' + index + '].tipo_unidad';
+          const operador_unidad = 'pivot[' + index + '].operador_unidad';
           if (piv) {
             setFieldValue(minimo, piv.minimo);
             setFieldValue(maximo, piv.maximo);
+            setFieldValue(tipo_unidad, piv.tipo);
+            setFieldValue(operador_unidad, piv.operador);
           }
         }
       }
@@ -411,9 +592,13 @@ props.fields.forEach((_, index) => {
     (newValue) => {
       const minimo = 'pivot[' + index + '].minimo';
       const maximo = 'pivot[' + index + '].maximo';
+      const tipo_unidad = 'pivot[' + index + '].tipo_unidad';
+      const operador_unidad = 'pivot[' + index + '].operador_unidad';
       if (newValue) {
         setFieldValue(minimo, undefined);
         setFieldValue(maximo, undefined);
+        setFieldValue(tipo_unidad, undefined);
+        setFieldValue(operador_unidad, undefined);
       }
 
       const itemsDelExamen = values.pivot[index].items;
@@ -466,9 +651,13 @@ props.items.forEach((_, index) => {
           const piv = item.pivot.find((v) => v.unidad_id === newValue);
           const minimo = 'item_orden[' + index + '].minimo';
           const maximo = 'item_orden[' + index + '].maximo';
+          const tipo_unidad = 'item_orden[' + index + '].tipo_unidad';
+          const operador_unidad = 'item_orden[' + index + '].operador_unidad';
           if (piv) {
             setFieldValue(minimo, piv.minimo);
             setFieldValue(maximo, piv.maximo);
+            setFieldValue(tipo_unidad, piv.tipo);
+            setFieldValue(operador_unidad, piv.operador);
           }
         }
       }

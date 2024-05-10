@@ -8,6 +8,7 @@
     :options="options"
     outlined
     emit-value
+    dense
     map-options
     @blur="handleBlur"
     @update:model-value="handleChange"
