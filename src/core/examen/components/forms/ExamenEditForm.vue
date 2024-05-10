@@ -326,7 +326,7 @@ const validationSchema = object().shape({
           .label('Examen'),
         minimo: number()
           .typeError('Minimo debe ser un numero')
-          .positive()
+          .min(0)
           .required()
           .label('Minimo'),
         maximo: number()

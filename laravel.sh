@@ -10,8 +10,8 @@ laravel_public="$laravel_project/public"
 laravel_views="$laravel_project/app/Containers/AppSection/Root/UI/WEB/Views"
 
 
-# Eliminar todas las carpetas en el directorio public
-find "$laravel_public" -mindepth 1 -maxdepth 1 -type d -exec rm -r {} \;
+# Eliminar todas las carpetas en el directorio public excepto la carpeta 'css'
+find "$laravel_public" -mindepth 1 -maxdepth 1 -type d ! -name 'css' -exec rm -r {} \;
 
 # Utilizar rsync para copiar solo las carpetas de Quasar a la carpeta public de Laravel
 cp -r "$quasar_dist"/* "$laravel_public"

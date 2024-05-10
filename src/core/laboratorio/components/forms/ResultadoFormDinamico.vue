@@ -347,7 +347,7 @@ const calcularHintUnidad = (index: number) => {
       break;
     case 'unico':
       if (!!values.pivot[index].minimo) {
-        str = 'Es unico';
+        // str = 'Es unico';
       }
       break;
 
@@ -452,7 +452,7 @@ const calcularHintUnidadItem = (index: number) => {
       break;
     case 'unico':
       if (!!values.item_orden[index].minimo) {
-        str = 'Es unico';
+        // str = 'Es unico';
       }
       break;
 
