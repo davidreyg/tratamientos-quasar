@@ -1,12 +1,13 @@
 <template>
   <resultado-form-dinamico
-    v-if="fields.length > 0 && validationSchema"
+    v-if="fields.length > 0 && validationSchema && operadores"
     :fields="fields"
     :validation-schema="validationSchema"
     :initial-values="initialValues"
     :orden-id="Number(orden.id)"
     :examens="props.orden.examens.data"
     :items="props.orden.items.data"
+    :operadores="operadores"
     :with-observaciones="withObservaciones"
     @cancel="$emit('cancel')"
     @submit="$emit('submit')"
@@ -15,6 +16,7 @@
 
 <script setup lang="ts">
 import { Orden } from 'core/laboratorio/models';
+import { useOperadoresFetchAllQuery } from 'core/unidad';
 import { DateTime } from 'luxon';
 import { Field } from 'shared/utils';
 import { PropType, computed, ref } from 'vue';
@@ -37,6 +39,9 @@ const arr_examens = computed(() => {
   }
   return [];
 });
+
+const { data: operadores } = useOperadoresFetchAllQuery();
+
 const props = defineProps({
   orden: {
     type: Object as PropType<Orden>,

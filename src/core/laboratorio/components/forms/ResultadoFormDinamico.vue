@@ -1,8 +1,8 @@
 <template>
   <q-form @submit.prevent="onSubmit">
     <!-- <pre>{{ values }}</pre> -->
-    <q-list bordered>
-      <q-item v-for="(examen, index) in examens" :key="index">
+    <q-list dense>
+      <q-item v-for="(examen, index) in examens" :key="index" dense>
         <q-item-section>
           <div class="row q-col-gutter-sm q-mb-sm">
             <base-select
@@ -144,9 +144,9 @@
             v-show="
               values.pivot[index].is_enabled && !values.pivot[index].is_canceled
             "
-            bordered
+            dense
           >
-            <q-item v-for="(_, i) in values.pivot[index].items" :key="i">
+            <q-item v-for="(_, i) in values.pivot[index].items" :key="i" dense>
               <q-item-section>
                 <div class="row q-col-gutter-sm q-mb-sm">
                   <base-select
@@ -181,7 +181,6 @@
                     class="col-2"
                     required
                     :disable="!values.pivot[index].is_enabled"
-                    :hint="calcularHintUnidadItem(_.pivot_index)"
                   />
                   <base-select
                     v-if="values.item_orden[_.pivot_index].tipo === 'respuesta'"
@@ -192,6 +191,9 @@
                     required
                     :disable="!values.pivot[index].is_enabled"
                   />
+                  <span class="col-auto text-center self-center text-caption">
+                    {{ calcularHintUnidadItem(index) }}
+                  </span>
                 </div>
               </q-item-section>
             </q-item>
@@ -235,12 +237,13 @@ import { Examen } from 'core/examen';
 import { Item } from 'core/item';
 import { useOrdenUpdateExamensMutation } from 'core/laboratorio/composables';
 import { OrdenResultadosRequest } from 'core/laboratorio/requests';
+import { Operadores } from 'core/unidad';
 import BaseCheckBox from 'shared/components/base/BaseCheckBox.vue';
 import BaseInput from 'shared/components/base/BaseInput.vue';
 import BaseSelect from 'shared/components/base/BaseSelect.vue';
 import { Field, NotifyUtils } from 'shared/utils';
 import { useForm } from 'vee-validate';
-import { computed, watch } from 'vue';
+import { PropType, computed, watch } from 'vue';
 const emit = defineEmits<{
   (e: 'submit'): void;
   (e: 'cancel'): void;
@@ -274,6 +277,10 @@ const props = defineProps({
   },
   withObservaciones: {
     type: Boolean,
+    required: true,
+  },
+  operadores: {
+    type: Object as PropType<Operadores>,
     required: true,
   },
 });
@@ -447,7 +454,12 @@ const calcularHintUnidadItem = (index: number) => {
         !!values.item_orden[index].minimo &&
         !!values.item_orden[index].operador_unidad
       ) {
-        str = `${values.item_orden[index].operador_unidad} ${values.item_orden[index].minimo}`;
+        const operador_nombre =
+          props.operadores[
+            values.item_orden[index]
+              .operador_unidad as keyof PropType<Operadores>
+          ];
+        str = `${operador_nombre} ${values.item_orden[index].minimo}`;
       }
       break;
     case 'unico':
