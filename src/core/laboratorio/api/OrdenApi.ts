@@ -10,8 +10,15 @@ export class OrdenApi {
   static fetchAll(query?: Query) {
     return OrdenApi._api.get<Orden[]>(`${OrdenApi._endpoint}`, query);
   }
+
   static fetchById(id: number) {
     return OrdenApi._api.get<Orden>(`${OrdenApi._endpoint}/${id}`);
+  }
+
+  static fetchPDF(id: number) {
+    return OrdenApi._api
+      .withOptions({ responseType: 'blob' })
+      .get<BlobPart>(`${OrdenApi._endpoint}/${id}/pdf`);
   }
 
   static async create(data: OrdenCreateRequest) {
@@ -24,6 +31,10 @@ export class OrdenApi {
 
   static async update(id: number, data: OrdenCreateRequest) {
     await OrdenApi._api.patch(`${OrdenApi._endpoint}/${id}`, data);
+  }
+
+  static async destroy(id: number) {
+    await OrdenApi._api.delete(`${OrdenApi._endpoint}/${id}`);
   }
 
   static async registrar(id: number) {

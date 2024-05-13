@@ -52,19 +52,31 @@
                 icon="fas fa-print"
                 round
                 flat
+                :loading="
+                  accion === 'pdf' &&
+                  isPDFfetching &&
+                  selectedID === Number(props.key)
+                "
                 size="sm"
+                @click="verPDF(Number(props.key))"
               >
                 <q-tooltip>Imprimir.</q-tooltip>
+              </q-btn>
+              <q-btn
+                v-if="props.row.estado !== 2"
+                color="negative"
+                icon="fas fa-trash-can"
+                round
+                flat
+                size="sm"
+                @click="deleteOrden(Number(props.key))"
+              >
+                <q-tooltip>Eliminar orden.</q-tooltip>
               </q-btn>
             </template>
           </orden-table>
         </q-tab-panel>
         <q-tab-panel name="edit-orden">
-          <!-- <q-expansion-item
-            v-if="ordenSeleccionada"
-            icon="fas fa-file-signature"
-            label="Datos de la orden."
-          > -->
           <q-card class="my-card">
             <q-card-section>
               <orden-edit-form
@@ -75,21 +87,28 @@
               />
             </q-card-section>
           </q-card>
-          <!-- </q-expansion-item> -->
         </q-tab-panel>
       </q-tab-panels>
     </div>
+    <orden-PDF-modal v-if="pdfUrl" v-model="isModalOpen" :pdf-url="pdfUrl" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { OnRequestParameter, Query } from 'shared/utils';
+import { NotifyUtils, OnRequestParameter, Query } from 'shared/utils';
+import Swal from 'sweetalert2';
 import { ref, watch } from 'vue';
 import { onBeforeRouteLeave } from 'vue-router';
 import OrdenEditForm from '../components/forms/OrdenEditForm.vue';
+import OrdenPDFModal from '../components/modals/OrdenPDFModal.vue';
 import OrdenTable from '../components/tables/OrdenTable.vue';
-import { useOrdenFetchAllQuery, useOrdenFetchByIdQuery } from '../composables';
+import {
+  useOrdenDeleteMutation,
+  useOrdenFetchAllQuery,
+  useOrdenFetchByIdQuery,
+  useOrdenFetchPDFQuery,
+} from '../composables';
 import { useLaboratorioFormStore } from '../stores';
 
 const { $reset } = useLaboratorioFormStore();
@@ -107,6 +126,13 @@ const {
   isFetching: isOrdenFetching,
   refetch,
 } = useOrdenFetchByIdQuery(selectedID, !!selectedID.value);
+
+const {
+  data: pdf,
+  isFetching: isPDFfetching,
+  refetch: refetchPDF,
+} = useOrdenFetchPDFQuery(selectedID, !!selectedID.value);
+
 const panel = ref('list');
 
 const handleRequest = (req: OnRequestParameter) => {
@@ -130,6 +156,42 @@ const editarOrden = async (id: number) => {
   if (orden.value) {
     ordenSeleccionada.value = orden.value;
     panel.value = 'edit-orden';
+  }
+};
+
+const { mutateAsync } = useOrdenDeleteMutation();
+const deleteOrden = async (id: number) => {
+  ordenSeleccionada.value = undefined;
+  selectedID.value = id;
+  NotifyUtils.confirmDialog(id, {
+    title: '¿Esta seguro de eliminar esta ORDEN?',
+    preConfirm: async () => {
+      // console.log(key, typeof key);
+      await mutateAsync(id, {
+        onSuccess: async () => {
+          NotifyUtils.success('Orden eliminada correctamente.');
+          onOrdenCancel();
+        },
+        onError: () => {
+          Swal.hideLoading();
+        },
+      });
+    },
+  });
+};
+
+const pdfUrl = ref('');
+const isModalOpen = ref(false);
+const verPDF = async (id: number) => {
+  ordenSeleccionada.value = undefined;
+  selectedID.value = id;
+  accion.value = 'pdf';
+  await refetchPDF.value();
+  if (pdf.value) {
+    pdfUrl.value = URL.createObjectURL(
+      new Blob([pdf.value], { type: 'application/pdf' })
+    );
+    isModalOpen.value = true;
   }
 };
 
