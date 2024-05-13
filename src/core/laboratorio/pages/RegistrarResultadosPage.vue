@@ -71,6 +71,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { NotifyUtils, Query } from 'shared/utils';
+import Swal from 'sweetalert2';
 import { ref, watch } from 'vue';
 import { onBeforeRouteLeave } from 'vue-router';
 import OrdenDatosForm from '../components/forms/OrdenDatosForm.vue';
@@ -106,12 +107,30 @@ const { mutateAsync, isLoading: isRegistrarLoading } =
   useOrdenRegistrarMutation();
 const registrarOrden = async (id: number) => {
   selectedID.value = id;
-  await mutateAsync(id, {
-    onSuccess: () => {
-      NotifyUtils.success('La orden se REGISTRO correctamente.');
-      refetch.value();
-      panel.value = 'list';
+
+  Swal.fire({
+    title: '¿Está seguro de culminar el REGISTRO de los resultados?',
+    text: 'No podra deshacer los cambios!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Si',
+    cancelButtonText: 'No',
+    showLoaderOnConfirm: true,
+    preConfirm: async () => {
+      await mutateAsync(id, {
+        onSuccess: async () => {
+          NotifyUtils.success('La orden se VERIFICO correctamente.');
+          refetch.value();
+          panel.value = 'list';
+        },
+        onError: () => {
+          Swal.hideLoading();
+        },
+      });
     },
+    allowOutsideClick: () => !Swal.isLoading(),
   });
 };
 

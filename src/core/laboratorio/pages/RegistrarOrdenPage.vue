@@ -47,6 +47,7 @@
       </q-expansion-item>
       <q-expansion-item
         v-if="paciente"
+        v-model="isOrdenExpanded"
         icon="fas fa-vials"
         label="Datos de la Orden de Lab."
         caption="Editar / Crear"
@@ -72,7 +73,7 @@ import BaseInput from 'shared/components/base/BaseInput.vue';
 import BaseSelect from 'shared/components/base/BaseSelect.vue';
 import Swal from 'sweetalert2';
 import { useForm } from 'vee-validate';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { onBeforeRouteLeave } from 'vue-router';
 import { number, object, string } from 'yup';
 import OrdenCreateForm from '../components/forms/OrdenCreateForm.vue';
@@ -115,6 +116,7 @@ const onSubmit = handleSubmit(async (values) => {
       text: 'Paciente encontrado correctamente!',
       icon: 'success',
     });
+    isOrdenExpanded.value = true;
   } else {
     Swal.fire({
       title: 'Información!',
@@ -123,6 +125,8 @@ const onSubmit = handleSubmit(async (values) => {
     });
   }
 });
+
+const isOrdenExpanded = ref(false);
 onBeforeRouteLeave(() => {
   // const answer = window.confirm(
   //   'Esta seguro de salir? Tiene cambios sin guardar!'

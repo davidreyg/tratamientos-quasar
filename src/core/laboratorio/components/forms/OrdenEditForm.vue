@@ -52,9 +52,13 @@
       class="col-xs-12 col-sm-4"
       required
     />
-    <base-input name="CI10" label="CI10" class="col-xs-12 col-sm-4" required />
-    <base-input name="CPN" label="CPN" class="col-xs-12 col-sm-4" required />
-    <base-input name="EG" label="EG" class="col-xs-12 col-sm-4" required />
+    <base-input name="CI10" label="CI10" class="col-xs-12 col-sm-4" />
+    <base-input
+      name="CPN"
+      label="Codigo Pre Natal"
+      class="col-xs-12 col-sm-4"
+    />
+    <base-input name="EG" label="Edad Gestacional" class="col-xs-12 col-sm-4" />
     <base-input
       name="codigo_atencion"
       label="Codigo de Atención"
@@ -99,7 +103,7 @@ import BaseInput from 'shared/components/base/BaseInput.vue';
 import BaseSelect from 'shared/components/base/BaseSelect.vue';
 import { NotifyUtils, Query } from 'shared/utils';
 import { useForm } from 'vee-validate';
-import { computed, PropType, ref, watch } from 'vue';
+import { PropType, computed, ref, watch } from 'vue';
 import { array, number, object, string } from 'yup';
 
 const props = defineProps({
@@ -151,9 +155,9 @@ const arr_establecimientos = computed(() => {
 
 const validationSchema = object().shape({
   diagnostico: string().trim().min(2).required().label('Diagnostico'),
-  CI10: string().trim().min(2).required().label('CI10'),
-  CPN: string().trim().min(2).required().label('CPN'),
-  EG: string().trim().min(2).required().label('EG'),
+  CI10: string().trim().min(2).nullable().label('CI10'),
+  CPN: string().trim().min(2).nullable().label('CPN'),
+  EG: string().trim().min(2).nullable().label('EG'),
   codigo_atencion: string()
     .trim()
     .min(2)

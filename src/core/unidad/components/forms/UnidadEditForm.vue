@@ -22,7 +22,7 @@ const emit = defineEmits<{
   cancel: [];
 }>();
 const validationSchema = object().shape({
-  nombre: string().trim().min(2).required().label('Nombre'),
+  nombre: string().trim().min(1).required().label('Nombre'),
 });
 
 const { handleSubmit, setErrors } = useForm<UnidadRequest>({

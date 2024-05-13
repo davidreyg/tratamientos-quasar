@@ -192,7 +192,7 @@
                     :disable="!values.pivot[index].is_enabled"
                   />
                   <span class="col-auto text-center self-center text-caption">
-                    {{ calcularHintUnidadItem(index) }}
+                    {{ calcularHintUnidadItem(_.pivot_index) }}
                   </span>
                 </div>
               </q-item-section>

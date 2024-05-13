@@ -60,21 +60,22 @@
           </orden-table>
         </q-tab-panel>
         <q-tab-panel name="edit-orden">
-          <q-expansion-item
+          <!-- <q-expansion-item
             v-if="ordenSeleccionada"
             icon="fas fa-file-signature"
             label="Datos de la orden."
-          >
-            <q-card class="my-card">
-              <q-card-section>
-                <orden-edit-form
-                  :orden="ordenSeleccionada"
-                  @submit="onOrdenCancel"
-                  @cancel="onOrdenCancel"
-                />
-              </q-card-section>
-            </q-card>
-          </q-expansion-item>
+          > -->
+          <q-card class="my-card">
+            <q-card-section>
+              <orden-edit-form
+                v-if="ordenSeleccionada"
+                :orden="ordenSeleccionada"
+                @submit="onOrdenCancel"
+                @cancel="onOrdenCancel"
+              />
+            </q-card-section>
+          </q-card>
+          <!-- </q-expansion-item> -->
         </q-tab-panel>
       </q-tab-panels>
     </div>

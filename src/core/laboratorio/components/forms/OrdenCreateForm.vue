@@ -55,19 +55,13 @@
       class="col-xs-12 col-sm-4"
       required
     />
-    <base-input name="CI10" label="CI10" class="col-xs-12 col-sm-4" required />
+    <base-input name="CI10" label="CI10" class="col-xs-12 col-sm-4" />
     <base-input
       name="CPN"
       label="Codigo Pre Natal"
       class="col-xs-12 col-sm-4"
-      required
     />
-    <base-input
-      name="EG"
-      label="Edad Gestacional"
-      class="col-xs-12 col-sm-4"
-      required
-    />
+    <base-input name="EG" label="Edad Gestacional" class="col-xs-12 col-sm-4" />
     <base-input
       name="codigo_atencion"
       label="Codigo de Atención"
@@ -103,6 +97,7 @@ import { useOrdenCreateMutation } from 'core/laboratorio/composables';
 import { OrdenCreateRequest } from 'core/laboratorio/requests';
 import { usePaqueteFetchAllQuery } from 'core/paquete';
 import ExamenCardList from 'core/paquete/components/cards/ExamenCardList.vue';
+import { DateTime } from 'luxon';
 import BaseCheckBoxGroup from 'shared/components/base/BaseCheckBoxGroup.vue';
 import BaseForm from 'shared/components/base/BaseForm.vue';
 import BaseInput from 'shared/components/base/BaseInput.vue';
@@ -161,9 +156,9 @@ const arr_establecimientos = computed(() => {
 
 const validationSchema = object().shape({
   diagnostico: string().trim().min(2).required().label('Diagnostico'),
-  CI10: string().trim().min(2).required().label('CI10'),
-  CPN: string().trim().min(2).required().label('CPN'),
-  EG: string().trim().min(2).required().label('EG'),
+  CI10: string().trim().min(2).nullable().label('CI10'),
+  CPN: string().trim().min(2).nullable().label('CPN'),
+  EG: string().trim().min(2).nullable().label('EG'),
   codigo_atencion: string()
     .trim()
     .min(2)
@@ -196,6 +191,7 @@ const { values, setFieldValue, handleSubmit } = useForm<OrdenCreateRequest>({
     examen_ids: [],
     paquete_ids: [],
     paciente_id: props.pacienteId,
+    fecha_registro: DateTime.now().toISODate(),
   },
 });
 
