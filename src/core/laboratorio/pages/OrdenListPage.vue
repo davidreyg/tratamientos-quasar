@@ -54,13 +54,29 @@
                 flat
                 :loading="
                   accion === 'pdf' &&
-                  isPDFfetching &&
+                  isResultadosPDFfetching &&
                   selectedID === Number(props.key)
                 "
                 size="sm"
-                @click="verPDF(Number(props.key))"
+                @click="verResultadosPDF(Number(props.key))"
               >
-                <q-tooltip>Imprimir.</q-tooltip>
+                <q-tooltip>Imprimir Resultados.</q-tooltip>
+              </q-btn>
+              <q-btn
+                v-if="props.row.estado === 2"
+                color="info"
+                icon="fas fa-print"
+                round
+                flat
+                :loading="
+                  accion === 'pdf' &&
+                  isOrdenPDFfetching &&
+                  selectedID === Number(props.key)
+                "
+                size="sm"
+                @click="verOrdenPDF(Number(props.key))"
+              >
+                <q-tooltip>Imprimir Orden.</q-tooltip>
               </q-btn>
               <q-btn
                 v-if="props.row.estado !== 2"
@@ -107,7 +123,8 @@ import {
   useOrdenDeleteMutation,
   useOrdenFetchAllQuery,
   useOrdenFetchByIdQuery,
-  useOrdenFetchPDFQuery,
+  useOrdenFetchOrdenPDFQuery,
+  useOrdenFetchResultadosPDFQuery,
 } from '../composables';
 import { useLaboratorioFormStore } from '../stores';
 
@@ -128,10 +145,16 @@ const {
 } = useOrdenFetchByIdQuery(selectedID, !!selectedID.value);
 
 const {
-  data: pdf,
-  isFetching: isPDFfetching,
-  refetch: refetchPDF,
-} = useOrdenFetchPDFQuery(selectedID, !!selectedID.value);
+  data: resultadosPDF,
+  isFetching: isResultadosPDFfetching,
+  refetch: refetchResultadosPDF,
+} = useOrdenFetchResultadosPDFQuery(selectedID, !!selectedID.value);
+
+const {
+  data: ordenPDF,
+  isFetching: isOrdenPDFfetching,
+  refetch: refetchOrdenPDF,
+} = useOrdenFetchOrdenPDFQuery(selectedID, !!selectedID.value);
 
 const panel = ref('list');
 
@@ -182,16 +205,33 @@ const deleteOrden = async (id: number) => {
 
 const pdfUrl = ref('');
 const isModalOpen = ref(false);
-const verPDF = async (id: number) => {
+const verResultadosPDF = async (id: number) => {
   ordenSeleccionada.value = undefined;
   selectedID.value = id;
   accion.value = 'pdf';
-  await refetchPDF.value();
-  if (pdf.value) {
+  await refetchResultadosPDF.value();
+  if (resultadosPDF.value) {
     pdfUrl.value = URL.createObjectURL(
-      new Blob([pdf.value], { type: 'application/pdf' })
+      new Blob([resultadosPDF.value], { type: 'application/pdf' })
     );
-    isModalOpen.value = true;
+    // Abrir el PDF en una nueva pestaña del navegador
+    window.open(pdfUrl.value, '_blank');
+    // isModalOpen.value = true;
+  }
+};
+
+const verOrdenPDF = async (id: number) => {
+  ordenSeleccionada.value = undefined;
+  selectedID.value = id;
+  accion.value = 'pdf';
+  await refetchOrdenPDF.value();
+  if (ordenPDF.value) {
+    pdfUrl.value = URL.createObjectURL(
+      new Blob([ordenPDF.value], { type: 'application/pdf' })
+    );
+    // Abrir el PDF en una nueva pestaña del navegador
+    window.open(pdfUrl.value, '_blank');
+    // isModalOpen.value = true;
   }
 };
 

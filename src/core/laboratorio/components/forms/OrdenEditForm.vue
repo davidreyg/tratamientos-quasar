@@ -1,6 +1,12 @@
 <template>
   <base-form :loading="isLoading" @submit="onSubmit" @cancel="$emit('cancel')">
     <base-input
+      name="numero_orden"
+      label="Numero de Orden"
+      class="col-xs-12 col-sm-6"
+      required
+    />
+    <base-input
       name="medico"
       label="Medico"
       class="col-xs-12 col-sm-6"
@@ -49,7 +55,7 @@
     <base-input
       name="diagnostico"
       label="Diagnostico"
-      class="col-xs-12 col-sm-4"
+      class="col-xs-12 col-sm-6"
       required
     />
     <base-input name="CI10" label="CI10" class="col-xs-12 col-sm-4" />
@@ -163,6 +169,12 @@ const validationSchema = object().shape({
     .min(2)
     .required()
     .label('Codigo de Atencion'),
+  numero_orden: number()
+    .required()
+    .typeError('Debe ingresar un numero')
+    .positive()
+    .integer()
+    .label('Numero de Orden'),
   fecha_registro: string().trim().required().label('Fecha de Registro'),
   medico: string().trim().required().label('Médico'),
   examen_ids: array().of(number().required()).required().label('Examenes'),

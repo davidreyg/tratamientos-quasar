@@ -10,6 +10,7 @@ export interface Orden {
   CPN?: string;
   EG?: string;
   codigo_atencion: string;
+  numero_orden: number;
   fecha_registro: string;
   medico: string;
   observaciones: string;

@@ -4,6 +4,7 @@ export interface OrdenCreateRequest {
   CPN?: string;
   EG?: string;
   codigo_atencion: string;
+  numero_orden: number;
   fecha_registro: string;
   establecimiento_otro?: string;
   medico: string;

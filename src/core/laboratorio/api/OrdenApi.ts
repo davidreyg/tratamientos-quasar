@@ -15,10 +15,16 @@ export class OrdenApi {
     return OrdenApi._api.get<Orden>(`${OrdenApi._endpoint}/${id}`);
   }
 
-  static fetchPDF(id: number) {
+  static fetchResultadosPDF(id: number) {
     return OrdenApi._api
       .withOptions({ responseType: 'blob' })
-      .get<BlobPart>(`${OrdenApi._endpoint}/${id}/pdf`);
+      .get<BlobPart>(`${OrdenApi._endpoint}/${id}/resultados-pdf`);
+  }
+
+  static fetchOrdenPDF(id: number) {
+    return OrdenApi._api
+      .withOptions({ responseType: 'blob' })
+      .get<BlobPart>(`${OrdenApi._endpoint}/${id}/orden-pdf`);
   }
 
   static async create(data: OrdenCreateRequest) {
