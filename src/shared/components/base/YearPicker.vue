@@ -1,24 +1,23 @@
 <template>
   <VueDatePicker
-    v-model.string="inputValue"
-    text-input
+    v-model="inputValue"
     locale="es"
     model-type="yyyy-MM-dd"
     auto-apply
-    format="dd/MM/yyyy"
     :teleport-center="true"
+    year-picker
+    text-input
   >
     <template #dp-input="{ value: v, onInput, onBlur }">
       <q-input
-        class="q-ma-none q-pa-none"
-        type="text"
         :model-value="v"
         :label="label"
         outlined
         :error="!!errorMessage"
         bottom-slots
+        class="q-ma-none q-pa-none"
         dense
-        @input="onInput"
+        @update:model-value="onInput"
         @blur="onBlur"
       >
         <template #error>
@@ -40,7 +39,7 @@ import { useField } from 'vee-validate';
 import { toRef } from 'vue';
 const props = defineProps({
   value: {
-    type: [String, Number],
+    type: String,
     default: undefined,
   },
   name: {

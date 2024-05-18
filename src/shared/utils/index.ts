@@ -1,5 +1,6 @@
 export * from './ArrayHelpers';
 export * from './AxiosHelpers';
+export * from './DateUtils';
 export * from './InstallationManager';
 export * from './NotifyUtils';
 export * from './QuasarUtils';

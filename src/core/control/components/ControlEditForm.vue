@@ -1,21 +1,21 @@
 <template>
   <base-form :loading="isLoading" @submit="onSubmit" @cancel="$emit('cancel')">
-    <div class="col-xs-12 col-sm-4">
-      <base-date-picker
-        required
-        name="fecha_inicio"
-        label="Fecha Inicio"
-        :min-date="DateTime.now()"
-      />
-    </div>
-    <div class="col-xs-12 col-sm-4">
-      <base-date-picker
-        required
-        name="fecha_fin"
-        label="Fecha Fin"
-        :min-date="DateTime.now()"
-      />
-    </div>
+    <base-input
+      required
+      type="date"
+      name="fecha_inicio"
+      label="Fecha Inicio"
+      class="col-xs-12 col-sm-4"
+      :min-date="DateTime.now().toISODate()"
+    />
+    <base-input
+      required
+      type="date"
+      name="fecha_fin"
+      label="Fecha Fin"
+      class="col-xs-12 col-sm-4"
+      :min-date="DateTime.now().toISODate()"
+    />
     <base-select
       :options="arr_medicos"
       name="empleado_id"
@@ -115,7 +115,6 @@ import { useEmpleadoFetchAllMedicosQuery } from 'core/empleado';
 import { useMedicamentoFetchAllQuery } from 'core/medicamento';
 import { DateTime } from 'luxon';
 import { QSelectOption } from 'quasar';
-import BaseDatePicker from 'shared/components/base/BaseDatePicker.vue';
 import BaseForm from 'shared/components/base/BaseForm.vue';
 import BaseInput from 'shared/components/base/BaseInput.vue';
 import BaseSelect from 'shared/components/base/BaseSelect.vue';

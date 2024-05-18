@@ -1,4 +1,6 @@
 export interface FiltroOrdenRequest {
-  filtro: string;
-  valor: string;
+  fecha_inicio: string;
+  fecha_fin: string;
+  ris: string;
+  establecimiento_id?: number;
 }

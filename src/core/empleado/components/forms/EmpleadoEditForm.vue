@@ -64,13 +64,13 @@
       required
     />
 
-    <div class="col-xs-12 col-sm-4">
-      <base-date-picker
-        required
-        name="fecha_nacimiento"
-        label="Fecha Nacimiento"
-      />
-    </div>
+    <base-input
+      required
+      class="col-xs-12 col-sm-4"
+      name="fecha_nacimiento"
+      label="Fecha Nacimiento"
+      type="date"
+    />
     <base-input
       name="direccion"
       label="Dirección"
@@ -108,7 +108,6 @@ import {
 import { useEstablecimientoFetchAllQuery } from 'core/establecimiento';
 import { useTipoDocumentoFetchAllQuery } from 'core/tipo-documento';
 import { DateTime } from 'luxon';
-import BaseDatePicker from 'shared/components/base/BaseDatePicker.vue';
 import BaseForm from 'shared/components/base/BaseForm.vue';
 import BaseInput from 'shared/components/base/BaseInput.vue';
 import BaseRadio from 'shared/components/base/BaseRadio.vue';

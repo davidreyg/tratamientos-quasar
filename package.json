@@ -21,6 +21,7 @@
     "@quasar/extras": "^1.16.9",
     "@supercharge/sttp": "^1.4.0",
     "@vee-validate/rules": "^4.12.5",
+    "@vuepic/vue-datepicker": "^8.6.0",
     "@vueuse/core": "^10.6.1",
     "@vueuse/router": "^10.6.1",
     "https": "^1.0.0",

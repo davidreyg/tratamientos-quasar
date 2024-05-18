@@ -31,6 +31,7 @@ export interface Query {
   searchJoin?: string;
   include?: string;
   fetchAll?: boolean;
+  [key: string]: any;
 }
 export interface ApiatoResponse<T> {
   data: T;
