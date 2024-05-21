@@ -51,26 +51,39 @@ export function onChangeDateRange(rango: string): {
   fecha_fin: string;
 } {
   const fechas = { fecha_inicio: '', fecha_fin: '' };
+  const fecha = DateTime.local().setLocale('es-PE');
   switch (rango) {
     case 'Hoy':
-      fechas.fecha_inicio = DateTime.now().toISODate();
-      fechas.fecha_fin = DateTime.now().toISODate();
+      fechas.fecha_inicio = fecha.toISODate();
+      fechas.fecha_fin = fecha.toISODate();
       break;
     case 'Esta semana':
-      fechas.fecha_inicio = DateTime.now().startOf('week').toISODate();
-      fechas.fecha_fin = DateTime.now().endOf('week').toISODate();
+      fechas.fecha_inicio = fecha
+        .startOf('week', { useLocaleWeeks: true })
+        .toISODate();
+      fechas.fecha_fin = fecha
+        .endOf('week', { useLocaleWeeks: true })
+        .toISODate();
       break;
     case 'Este mes':
-      fechas.fecha_inicio = DateTime.now().startOf('month').toISODate();
-      fechas.fecha_fin = DateTime.now().endOf('month').toISODate();
+      fechas.fecha_inicio = fecha
+        .startOf('month', { useLocaleWeeks: true })
+        .toISODate();
+      fechas.fecha_fin = fecha
+        .endOf('month', { useLocaleWeeks: true })
+        .toISODate();
       break;
     case 'Este año':
-      fechas.fecha_inicio = DateTime.now().startOf('year').toISODate();
-      fechas.fecha_fin = DateTime.now().endOf('year').toISODate();
+      fechas.fecha_inicio = fecha
+        .startOf('year', { useLocaleWeeks: true })
+        .toISODate();
+      fechas.fecha_fin = fecha
+        .endOf('year', { useLocaleWeeks: true })
+        .toISODate();
       break;
     case 'Personalizado':
-      fechas.fecha_inicio = DateTime.now().toISODate();
-      fechas.fecha_fin = DateTime.now().toISODate();
+      fechas.fecha_inicio = fecha.toISODate();
+      fechas.fecha_fin = fecha.toISODate();
       break;
     default:
       break;

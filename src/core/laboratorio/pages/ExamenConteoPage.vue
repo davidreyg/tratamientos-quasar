@@ -9,7 +9,7 @@
         label="Limpiar"
         color="negative"
         icon="fas fa-broom"
-        @click="() => resetForm()"
+        @click="resetForm"
       />
     </q-card-actions>
     <div class="col-12">
@@ -122,22 +122,26 @@ const validationSchema = object().shape({
   fecha_fin: date().required().min(yupRef('fecha_inicio')).label('Fecha Fin'),
 });
 
-const { handleSubmit, resetForm, values, setFieldValue } =
-  useForm<FiltroOrdenRequest>({
-    validationSchema,
-    initialValues: {
-      fecha_inicio: DateTime.local(
-        DateTime.now().year,
-        DateTime.now().month,
-        1
-      ).toISODate() as string,
-      fecha_fin: DateTime.local(
-        DateTime.now().year,
-        DateTime.now().month,
-        DateTime.now().daysInMonth
-      ).toISODate() as string,
-    },
-  });
+const {
+  handleSubmit,
+  resetForm: resetFormConteo,
+  values,
+  setFieldValue,
+} = useForm<FiltroOrdenRequest>({
+  validationSchema,
+  initialValues: {
+    fecha_inicio: DateTime.local(
+      DateTime.now().year,
+      DateTime.now().month,
+      1
+    ).toISODate() as string,
+    fecha_fin: DateTime.local(
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().daysInMonth
+    ).toISODate() as string,
+  },
+});
 const query = ref<Query>({ ...values });
 const { data: examens } = useExamenGetConteoQuery(query);
 const onSubmit = handleSubmit(async (values) => {
@@ -158,6 +162,10 @@ const exportToExcel = async () => {
   }
 };
 
+const resetForm = () => {
+  rango.value = 'Este mes';
+  resetFormConteo();
+};
 watch(
   () => values,
   (newValue) => {
